@@ -8,10 +8,10 @@ namespace Petzey.Backend.Appointment.Domain.DTO
 {
     public class AppointmentStatusCountsDto
     {
-        int Pending { get; set; }   
-        int Confirmed { get; set; }
-        int Cancelled { get; set; }
-        int Total { get; set; }
-        int Closed { get; set; }
+        public int Pending { get; set; }   
+        public int Confirmed { get; set; }
+        public int Cancelled { get; set; }
+        public int Total { get; set; }
+        public int Closed { get; set; }
     }
 }
