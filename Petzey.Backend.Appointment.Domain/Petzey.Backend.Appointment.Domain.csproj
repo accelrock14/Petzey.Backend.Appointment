@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTO\AppointmentDto.cs" />
+    <Compile Include="DTO\AppointmentCardDto.cs" />
+    <Compile Include="DTO\PetReportHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
     <Compile Include="Entities\Dosage.cs" />
     <Compile Include="Entities\Feedback.cs" />
