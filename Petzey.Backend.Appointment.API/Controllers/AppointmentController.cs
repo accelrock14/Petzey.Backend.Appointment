@@ -9,5 +9,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class AppointmentController : ApiController
     {
+
     }
 }

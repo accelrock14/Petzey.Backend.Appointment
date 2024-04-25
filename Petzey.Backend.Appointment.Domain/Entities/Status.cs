@@ -8,9 +8,9 @@ namespace Petzey.Backend.Appointment.Domain.Entities
 {
     public enum Status
     {
+        Pending,
         Confirmed,
         Cancelled,
-        Pending,
         Closed
     }
 }

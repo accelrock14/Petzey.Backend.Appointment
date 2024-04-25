@@ -8,7 +8,7 @@ namespace Petzey.Backend.Appointment.Domain.Entities
 {
     public class PetIssue
     {
-        public int PetissueID { get; set; }
+        public int PetIssueID { get; set; }
         public string IssueName { get; set; }
     }
 }
