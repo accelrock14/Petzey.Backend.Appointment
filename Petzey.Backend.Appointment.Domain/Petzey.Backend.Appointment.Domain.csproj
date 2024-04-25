@@ -68,6 +68,7 @@
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="Entities\Test.cs" />
     <Compile Include="Interfaces\IAppointmentRepository.cs" />
+    <Compile Include="Interfaces\IReportRepository.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
