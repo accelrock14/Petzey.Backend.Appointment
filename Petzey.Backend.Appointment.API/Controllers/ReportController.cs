@@ -22,6 +22,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             //Report report = db.AppointmentDetails.Find(id).Report;
             Report report = db.Reports.Find(id);
+
+            if(report == null)
+            {
+                return NotFound();
+            }
+
             return Ok(report);
         }
 
@@ -67,25 +73,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(report);
         }
 
-        // Temp api to post a new report
-        [HttpPost]
-        [Route("api/appointment/report")]
-        public IHttpActionResult PostReport(Report report)
-        {
-            if (report == null)
-            {
-                return BadRequest("Missing data to patch");
-            }
-            db.Reports.Add(report);
-            db.SaveChanges();
-            return Created("location", report.ReportID);
-        }
-
-
-
-
-
-
+        
 
 
 
@@ -98,7 +86,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 return BadRequest("Bad Request");
             }
-            var recentAppointments=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).OrderByDescending(a=>a.ScheduleDate).Take(10).ToList();
+            var recentAppointments=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).OrderByDescending(a=>a.ScheduleDate).Take(10);
             return Ok(recentAppointments);
         }
 
@@ -108,7 +96,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/medicine")]
         public IHttpActionResult GetAllMedicine()
         {
-            var allMedicines=db.Medicines.ToList();
+            var allMedicines=db.Medicines;
             return Ok(allMedicines);
         }
 
@@ -161,4 +149,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
             r.Tests = new List<Test>();
             r.Symptoms.Add(new Symptom());
             r.Tests.Add(new Test());
+
+
+// Temp api to post a new report
+        [HttpPost]
+        [Route("api/appointment/report")]
+        public IHttpActionResult PostReport(Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+            db.Reports.Add(report);
+            db.SaveChanges();
+            return Created("location", report.ReportID);
+        }
  */
