@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
-    public class AppointmentRepository : IAppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository, IReportRepository
     {
         PetzeyDbContext db = new PetzeyDbContext();
         public AppointmentStatusCountsDto AppointmentStatusCounts()
@@ -111,5 +111,36 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
+
+
+
+
+        // --------------------------------------------------------------------------------
+        // Report Repository Methods
+        // --------------------------------------------------------------------------------
+
+        // Get Report details by ID
+        public Report GetReportByID(int id) 
+        { 
+            throw new NotImplementedException(); 
+        }
+
+        // Update the detials of a report
+        public void UpdateReport(Report report)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Get list of all symptoms
+        public List<Symptom> GetSymptoms()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Get list of all tests
+        public List<Test> GetTests()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
