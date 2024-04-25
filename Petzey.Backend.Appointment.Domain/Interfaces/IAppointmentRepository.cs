@@ -11,6 +11,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
     {
        List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams);
        AppointmentStatusCountsDto AppointmentStatusCounts();
-
+       List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
+       List<AppointmentCardDto> AppointmentByPetId(int petId);
     }
 }

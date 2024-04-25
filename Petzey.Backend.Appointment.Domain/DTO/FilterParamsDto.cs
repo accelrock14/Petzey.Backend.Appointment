@@ -10,6 +10,6 @@ namespace Petzey.Backend.Appointment.Domain.DTO
     public class FilterParamsDto
     {
         public DateTime ScheduleDate { get; set; }
-        public Status Status { get; set; }
+        public Status? Status { get; set; } = null;
     }
 }
