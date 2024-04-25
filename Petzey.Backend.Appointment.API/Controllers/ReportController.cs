@@ -45,21 +45,25 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
-        public IHttpActionResult PutEditReport([FromBody] Delta<Report> report)
+        public IHttpActionResult PutEditReport([FromBody] Report report)
         {
             if (report == null)
             {
-                return BadRequest("Missing data to patch");
+                return BadRequest("Missing data to put");
             }
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid report details");
             }
-
+            foreach(PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
+            {
+                db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
+            }
             db.Entry(report).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
 
-            return Ok("report updated");
+            return Ok(report);
         }
 
         // Temp api to post a new report
