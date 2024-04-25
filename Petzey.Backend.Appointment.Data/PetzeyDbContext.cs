@@ -24,6 +24,6 @@ namespace Petzey.Backend.Appointment.Data
         public DbSet<PetIssue> PetIssues { get; set; }
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
-
+        public DbSet<Report> Reports { get; set; }
     }
 }
