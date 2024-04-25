@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DTO\AppointmentDto.cs" />
     <Compile Include="Entities\Dosage.cs" />
     <Compile Include="Entities\Medicine.cs" />
@@ -51,7 +50,15 @@
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="Entities\Test.cs" />
     <Compile Include="Interfaces\IAppointmentRepository.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\Petzey.Backend.Appointment.Domain.csproj.AssemblyReference.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
