@@ -42,7 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\AppointmentDto.cs" />
-    <Compile Include="Entities\Class1.cs" />
+    <Compile Include="Entities\Dosage.cs" />
+    <Compile Include="Entities\Medicine.cs" />
+    <Compile Include="Entities\PrescribedMedicine.cs" />
+    <Compile Include="Entities\Prescription.cs" />
+    <Compile Include="Entities\Report.cs" />
+    <Compile Include="Entities\Symptom.cs" />
+    <Compile Include="Entities\Test.cs" />
     <Compile Include="Interfaces\IAppointmentRepository.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
