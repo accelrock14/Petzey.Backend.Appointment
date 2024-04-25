@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Petzey.Backend.Appointment.Domain.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace Petzey.Backend.Appointment.Domain.Entities
+namespace Petzey.Backend.Appointment.Domain
 {
-    public class Appointment
+    public class AppointmentDetail
     {
+        [Key]
         public int AppointmentID { get; set; }
         public int DoctorID { get; set; }
         public int PetID { get; set; }
@@ -16,8 +16,7 @@ namespace Petzey.Backend.Appointment.Domain.Entities
         public DateTime BookingDate { get; set; }
         public string ReasonForVisit { get; set; }
         public Status Status { get; set; }
-        public Report Report { get; set; }
-        public Feedback Feedback { get; set; }
-        public List<PetIssue> Petissues { get; set; } = new List<PetIssue>();
+        public virtual Report Report { get; set; }
+        public virtual List<PetIssue> PetIssues { get; set; } 
     }
 }

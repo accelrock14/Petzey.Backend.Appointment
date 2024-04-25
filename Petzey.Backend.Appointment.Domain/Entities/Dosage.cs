@@ -4,7 +4,10 @@
     {
         Morning,
         Afternoon,
-        Night
+        Night,
+        MorningAfternoon,
+        MorningNight,
+        AfternoonNight,
+        MorningAfternoonNight,
     }
-
 }

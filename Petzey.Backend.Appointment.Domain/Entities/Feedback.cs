@@ -11,7 +11,7 @@ namespace Petzey.Backend.Appointment.Domain.Entities
         public int FeedbackID { get; set; }
         public int AppointmentID { get; set; }
         //public Appointment Appointment { get; set; } // Navigation property for one-to-one
-        public List<Rating> Ratings { get; set; } = new List<Rating>();
+        public virtual List<Rating> Ratings { get; set; } 
         public string Comment { get; set; }
     }
 }
