@@ -10,6 +10,7 @@ namespace Petzey.Backend.Appointment.Domain.Entities
     {
         Confirmed,
         Cancelled,
+        Pending,
         Closed
     }
 }
