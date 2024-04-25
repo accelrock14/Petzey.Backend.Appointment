@@ -1,12 +1,13 @@
 ﻿using Petzey.Backend.Appointment.Data;
 using Petzey.Backend.Appointment.Domain;
+using Petzey.Backend.Appointment.Domain.DTO;
+using Petzey.Backend.Appointment.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.OData;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
@@ -78,6 +79,66 @@ namespace Petzey.Backend.Appointment.API.Controllers
             db.Reports.Add(report);
             db.SaveChanges();
             return Created("location", report.ReportID);
+        }
+
+
+
+
+
+
+
+
+
+        //get recent appointment history of in the pet profile
+        [HttpGet]
+        [Route("api/appointment/recent/{PetID}")]
+        public IHttpActionResult GetRecentAppointments(int PetID)
+        {
+            if (PetID<=0)
+            {
+                return BadRequest("Bad Request");
+            }
+            var recentAppointments=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).OrderByDescending(a=>a.ScheduleDate).Take(10).ToList();
+            return Ok(recentAppointments);
+        }
+
+
+        //get all medicines for search bar in prescription
+        [HttpGet]
+        [Route("api/appointment/medicine")]
+        public IHttpActionResult GetAllMedicine()
+        {
+            var allMedicines=db.Medicines.ToList();
+            return Ok(allMedicines);
+        }
+
+
+
+        //get report history of a pet
+        [HttpGet]
+        [Route("api/appointment/reporthistory/{PetID}")]
+        public IHttpActionResult GetReportHistoryOfThePet(int PetID)
+        {
+            if (PetID <= 0)
+            {
+                return BadRequest("Bad Request");
+            }
+            var mostRecentAppointment = db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
+
+            if(mostRecentAppointment == null)
+            {
+                return NotFound();
+            }
+
+            PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
+            petReportHistoryDto.HeartRate=mostRecentAppointment.Report.HeartRate;
+            petReportHistoryDto.Temperature=mostRecentAppointment.Report.Temperature;
+            petReportHistoryDto.OxygenLevel=mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.Symptoms=mostRecentAppointment.Report.Symptoms;
+            petReportHistoryDto.Tests=mostRecentAppointment.Report.Tests;
+            petReportHistoryDto.Prescriptions=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).Select(a=>a.Report.Prescription).ToList();
+
+            return Ok(petReportHistoryDto);
         }
     }
 }
