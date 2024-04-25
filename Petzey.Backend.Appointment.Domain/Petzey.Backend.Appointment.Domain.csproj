@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\AppointmentCardDto.cs" />
+    <Compile Include="DTO\AppointmentStatusCountsDto.cs" />
+    <Compile Include="DTO\FilterParamsDto.cs" />
     <Compile Include="DTO\PetReportHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
     <Compile Include="Entities\Dosage.cs" />
