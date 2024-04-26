@@ -11,9 +11,7 @@ namespace Petzey.Backend.Appointment.Domain
         public int HeartRate {  get; set; }
         public float Temperature { get; set; }
         public float OxygenLevel { get; set; }
-        public List<int> RecommendedDoctorIDs { get; set; }
+        public List<RecommendedDoctor> RecommendedDoctors { get; set; }
         public string Comment {  get; set; }
-
     }
-
 }
