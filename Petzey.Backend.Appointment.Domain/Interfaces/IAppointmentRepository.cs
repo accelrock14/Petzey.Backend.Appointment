@@ -9,26 +9,33 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
     public interface IAppointmentRepository
     {
+        // GET METHODS
+        // APPOINTMENTS
         List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams);
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
+        List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
+        AppointmentDetail MostRecentAppointmentByPetID(int PetID);
+        //REPORT
         Report GetReportByID(int id);
         IEnumerable<Symptom> GetAllSymptoms();
         IEnumerable<Test> GetAllTests();
-        void AddReport(Report report);
-        void EditReport(Report report);
-        List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
         List<Medicine> GetAllMedicines();
         List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID);
-        AppointmentDetail MostRecentAppointmentByPetID(int PetID);
         Medicine GetMedicineById(int id);
+
+        // POST METHODS
+        void AddReport(Report report);
+        void EditReport(Report report);
         void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine);
-        void RemoveMedicineFromPrescription(int prescriptionId);
         void AddSymptomToReport(int reportID, ReportSymptom reportSymptom);
-        void DeleteSymptomFromReport(int reportsymptomID);
         void AddTestToReport(int reportID, ReportTest reportTest);
+
+        // DELETE METHODS
+        void DeleteSymptomFromReport(int reportsymptomID);
         void DeleteTestFromReport(int reportTestID);
+        void RemoveMedicineFromPrescription(int prescriptionId);
        
     }
 }

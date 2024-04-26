@@ -26,32 +26,42 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
         // Get the report details for a particular appointment
+        // Pass the ReportID
         [HttpGet]
-        [Route("api/appointment/report/{id}")]
-        public IHttpActionResult GetReport(int id)
+        [Route("api/appointment/report/{reportId}")]
+        public IHttpActionResult GetReport(int reportId)
         {
             //Report report = db.AppointmentDetails.Find(id).Report;
-            Report report = repo.GetReportByID(id);
+            Report report = repo.GetReportByID(reportId);
+
+            if(report == null)
+            {
+                return NotFound();
+            }
+
             return Ok(report);
         }
 
+
         // Get the names of all the symptoms present
         [HttpGet]
-        [Route("api/appointment/symptom")]
+        [Route("api/appointment/symptoms")]
         public IHttpActionResult GetSymptoms()
         {
             IEnumerable<Symptom> symptoms = repo.GetAllSymptoms();
             return Ok(symptoms);
         }
 
+
         // Get the names of all the tests available
         [HttpGet]
-        [Route("api/appointment/test")]
+        [Route("api/appointment/tests")]
         public IHttpActionResult GetTests()
         {
             IEnumerable<Test> tests = repo.GetAllTests();
             return Ok(tests);
         }
+
 
         // Edit details in a report for an appointment
         [HttpPut]
@@ -73,11 +83,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        // Get the medicine details by id
+        // Pass the MedicineID
         [HttpGet]
-        [Route("api/appointment/medicine/{id}")]
-        public IHttpActionResult GetMedicine(int id)
+        [Route("api/appointment/medicine/{medicineId}")]
+        public IHttpActionResult GetMedicine(int medicineId)
         {
-            Medicine medicine = repo.GetMedicineById(id);
+            Medicine medicine = repo.GetMedicineById(medicineId);
             if (medicine == null)
             {
                 return NotFound();
@@ -85,24 +97,30 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(medicine);
         }
 
+
+        // Remove a PrescribedMedicine from the list in Prescription
+        // Pass the PrescribedMedicineID of which you want to delete
         [HttpDelete]
-        [Route("api/appointment/prescription/{id}")]
-        public IHttpActionResult DeleteMedicine(int id)
+        [Route("api/appointment/prescription/{prescribedMedicineId}")]
+        public IHttpActionResult DeleteMedicine(int prescribedMedicineId)
         {
-            repo.RemoveMedicineFromPrescription(id);
-            return Ok();
+            repo.RemoveMedicineFromPrescription(prescribedMedicineId);
+            return Ok("deleted successfully");
         }
 
+
+        // Add a new Medicine to the list in Prescription
+        // Pass the PrescriptionID of the prescription to which you want to add the PrescribedMedicine
         [HttpPost]
-        [Route("api/appointment/prescription/{id}")]
-        public IHttpActionResult AddMedicine(int id, PrescribedMedicine medicine)
+        [Route("api/appointment/prescription/{prescriptionId}")]
+        public IHttpActionResult AddMedicine(int prescriptionId, PrescribedMedicine prescribedMedicine)
         {
-            if (medicine == null)
+            if (prescribedMedicine == null)
             {
                 return BadRequest("invalid medicine data");
             }
-            repo.AddMedicineToPrescription(id, medicine);
-            return Ok(medicine.PrescribedMedicineID);
+            repo.AddMedicineToPrescription(prescriptionId, prescribedMedicine);
+            return Created("location",prescribedMedicine.PrescribedMedicineID);
         }
 
 
@@ -120,14 +138,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-
-
-
-
-
-
-
-        //get recent appointment history of in the pet profile
+        // Get recent appointment history of in the pet profile
+        // Pass the PetID of the pet
         [HttpGet]
         [Route("api/appointment/recent/{PetID}")]
         public IHttpActionResult GetRecentAppointments(int PetID)
@@ -137,13 +149,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest("Bad Request");
             }
             var recentAppointments = repo.GetRecentAppointmentsByPetID(PetID);
+
+            if(recentAppointments == null)
+            {
+                NotFound();
+            }
+
             return Ok(recentAppointments);
         }
 
 
-        //get all medicines for search bar in prescription
+        // Get all medicines for search bar in prescription
         [HttpGet]
-        [Route("api/appointment/medicine")]
+        [Route("api/appointment/medicines")]
         public IHttpActionResult GetAllMedicine()
         {
             var allMedicines = repo.GetAllMedicines();
@@ -152,7 +170,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
 
-        //get report history of a pet
+        // Get report history of a pet
+        // Pass the PetID of the pet
         [HttpGet]
         [Route("api/appointment/reporthistory/{PetID}")]
         public IHttpActionResult GetReportHistoryOfThePet(int PetID)
@@ -178,74 +197,48 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(petReportHistoryDto);
         }
 
+
+        // Add a symptom to the report
+        // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
-        [Route("api/appointment/reportsymptom/{reportID}/{symptomID}")]
+        [Route("api/appointment/reportsymptom/{reportID}")]
         public IHttpActionResult AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
         {
             repo.AddSymptomToReport( reportID, reportSymptom);
-            return Ok();
+            return Created("location",reportSymptom.ReportSymptomID);
         }
 
+
+        // Remove a symptom from the report
+        // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
         [Route("api/appointment/reportsymptom/{reportsymptomID}")]
-        public IHttpActionResult DeleteSymptomFromReport(int reportsymptomID)
+        public IHttpActionResult DeleteSymptomFromReport(int reportSymptomID)
         {
-            repo.DeleteSymptomFromReport(reportsymptomID);
-            return Ok();
+            repo.DeleteSymptomFromReport(reportSymptomID);
+            return Ok("deleted successfully");
         }
 
 
-
+        // Add a test to the report
+        // Pass the ReportId of the report to which you want to add the test
         [HttpPost]
-        [Route("api/appointment/reporttest/{reportID}/{reportTest}")]
+        [Route("api/appointment/reporttest/{reportID}")]
         public IHttpActionResult AddTestToReport(int reportID, ReportTest reportTest)
         {
             repo.AddTestToReport(reportID, reportTest);
-            return Ok();
+            return Created("location",reportTest.ReportTestID);
         }
 
+
+        // Remove a test from the report
+        // Pass the reportTestID of the test you want to remove
         [HttpDelete]
         [Route("api/appointment/reporttest/{reportTestID}")]
         public IHttpActionResult DeleteTestFromReport(int reportTestID)
         {
             repo.DeleteTestFromReport(reportTestID);
-            return Ok();
+            return Ok("deleted successfully");
         }
-
     }
 }
-
-
-
-
-/*
- trial object
-
-            Report r = new Report();
-            Prescription p = new Prescription();
-            PrescribedMedicine p1 = new PrescribedMedicine();
-            PrescribedMedicine p2 = new PrescribedMedicine();
-            p1.Medicine = new Medicine();
-            p2.Medicine = new Medicine();
-            p.PrescribedMedicines = new List<PrescribedMedicine> { p1, p2 };
-            r.Prescription = p;
-            r.Symptoms = new List<Symptom>();
-            r.Tests = new List<Test>();
-            r.Symptoms.Add(new Symptom());
-            r.Tests.Add(new Test());
-
-
-// Temp api to post a new report
-        [HttpPost]
-        [Route("api/appointment/report")]
-        public IHttpActionResult PostReport(Report report)
-        {
-            if (report == null)
-            {
-                return BadRequest("Missing data to patch");
-            }
-            db.Reports.Add(report);
-            db.SaveChanges();
-            return Created("location", report.ReportID);
-        }
- */
