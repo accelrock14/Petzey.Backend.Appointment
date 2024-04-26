@@ -225,9 +225,19 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             db.ReportTests.Remove(db.ReportTests.Find(reportTestID));
             db.SaveChanges();
+        }
 
+        public void AddDoctorRecommendation(int reportID, RecommendedDoctor recommendedDoctor)
+        {
+            db.Reports.Find(reportID).RecommendedDoctors.Add(recommendedDoctor);
+            db.SaveChanges();
+        }
+
+        public void RemoveDoctorRecommendation(int recommendedDoctorID)
+        {
+            db.RecommendedDoctors.Remove(db.RecommendedDoctors.Find(recommendedDoctorID));
+            db.SaveChanges();
         }
     }
-
 }
 
