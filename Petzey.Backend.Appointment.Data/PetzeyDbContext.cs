@@ -1,5 +1,6 @@
 ﻿using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.Entities;
+using Petzey.Backend.Appointment.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Data
 {
-    public class PetzeyDbContext:DbContext
+    public class PetzeyDbContext:DbContext, IRepo
     {
 
         public PetzeyDbContext():base("DefaultConnection")
@@ -25,5 +26,10 @@ namespace Petzey.Backend.Appointment.Data
         public DbSet<AppointmentDetail> AppointmentDetails { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Report> Reports { get; set; }
+
+        public IEnumerable<Symptom> GetSymptoms()
+        {
+            return Symptoms;
+        }
     }
 }

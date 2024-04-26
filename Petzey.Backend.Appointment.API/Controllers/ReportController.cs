@@ -2,6 +2,7 @@
 using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
+using Petzey.Backend.Appointment.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,26 +16,42 @@ namespace Petzey.Backend.Appointment.API.Controllers
     {
         PetzeyDbContext db = new PetzeyDbContext();
 
-        // Get the report details for a particular appointment
-        [HttpGet]
-        [Route("api/appointment/report/{id}")]
-        public IHttpActionResult GetReport(int id)
+       
+
+        /*private readonly IRepo db=new ;
+
+        public ReportController(IRepo dbContext)
         {
-            //Report report = db.AppointmentDetails.Find(id).Report;
-            Report report = db.Reports.Find(id);
-            return Ok(report);
+            db = dbContext;
         }
+
+        public ReportController()
+        {
+        }*/
+
+        // Get the report details for a particular appointment
+        /* [HttpGet]
+         [Route("api/appointment/report/{id}")]
+         public IHttpActionResult GetReport(int id)
+         {
+             //Report report = db.AppointmentDetails.Find(id).Report;
+             Report report = db.Reports.Find(id);
+             return Ok(report);
+         }*/
 
         // Get the names of all the symptoms present
         [HttpGet]
         [Route("api/appointment/symptom")]
         public IHttpActionResult GetSymptoms()
         {
-            IEnumerable<Symptom> symptoms = db.Symptoms.Distinct();
+
+           // return BadRequest();
+
+            IEnumerable<Symptom> symptoms = db.GetSymptoms();
             return Ok(symptoms);
         }
 
-        // Get the names of all the tests available
+     /*   // Get the names of all the tests available
         [HttpGet]
         [Route("api/appointment/test")]
         public IHttpActionResult GetTests()
@@ -139,7 +156,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             petReportHistoryDto.Prescriptions=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).Select(a=>a.Report.Prescription).ToList();
 
             return Ok(petReportHistoryDto);
-        }
+        }*/
     }
 }
 

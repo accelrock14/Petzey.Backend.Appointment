@@ -13,4 +13,5 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
        AppointmentStatusCountsDto AppointmentStatusCounts();
 
     }
+
 }
