@@ -63,26 +63,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-        // Edit details in a report for an appointment
-        [HttpPut]
-        [Route("api/appointment/report")]
-        public IHttpActionResult PutEditReport([FromBody] Report report)
-        {
-            if (report == null)
-            {
-                return BadRequest("Missing data to put");
-            }
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid report details");
-            }
-
-            repo.EditReport(report);
-
-            return Ok(report);
-        }
-
-
         // Get the medicine details by id
         // Pass the MedicineID
         [HttpGet]
@@ -95,46 +75,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return NotFound();
             }
             return Ok(medicine);
-        }
-
-
-        // Remove a PrescribedMedicine from the list in Prescription
-        // Pass the PrescribedMedicineID of which you want to delete
-        [HttpDelete]
-        [Route("api/appointment/prescription/{prescribedMedicineId}")]
-        public IHttpActionResult DeleteMedicine(int prescribedMedicineId)
-        {
-            repo.RemoveMedicineFromPrescription(prescribedMedicineId);
-            return Ok("deleted successfully");
-        }
-
-
-        // Add a new Medicine to the list in Prescription
-        // Pass the PrescriptionID of the prescription to which you want to add the PrescribedMedicine
-        [HttpPost]
-        [Route("api/appointment/prescription/{prescriptionId}")]
-        public IHttpActionResult AddMedicine(int prescriptionId, PrescribedMedicine prescribedMedicine)
-        {
-            if (prescribedMedicine == null)
-            {
-                return BadRequest("invalid medicine data");
-            }
-            repo.AddMedicineToPrescription(prescriptionId, prescribedMedicine);
-            return Created("location",prescribedMedicine.PrescribedMedicineID);
-        }
-
-
-        // Temp api to post a new report
-        [HttpPost]
-        [Route("api/appointment/report")]
-        public IHttpActionResult PostReport(Report report)
-        {
-            if (report == null)
-            {
-                return BadRequest("Missing data to patch");
-            }
-            repo.AddReport(report);
-            return Created("location", report.ReportID);
         }
 
 
@@ -169,7 +109,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-
         // Get report history of a pet
         // Pass the PetID of the pet
         [HttpGet]
@@ -198,6 +137,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        // Add a new Medicine to the list in Prescription
+        // Pass the PrescriptionID of the prescription to which you want to add the PrescribedMedicine
+        [HttpPost]
+        [Route("api/appointment/prescription/{prescriptionId}")]
+        public IHttpActionResult AddMedicine(int prescriptionId, PrescribedMedicine prescribedMedicine)
+        {
+            if (prescribedMedicine == null)
+            {
+                return BadRequest("invalid medicine data");
+            }
+            repo.AddMedicineToPrescription(prescriptionId, prescribedMedicine);
+            return Created("location",prescribedMedicine.PrescribedMedicineID);
+        }
+
+
         // Add a symptom to the report
         // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
@@ -206,17 +160,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.AddSymptomToReport( reportID, reportSymptom);
             return Created("location",reportSymptom.ReportSymptomID);
-        }
-
-
-        // Remove a symptom from the report
-        // Pass the reportSymptomID of the symptom you want to remove
-        [HttpDelete]
-        [Route("api/appointment/reportsymptom/{reportsymptomID}")]
-        public IHttpActionResult DeleteSymptomFromReport(int reportSymptomID)
-        {
-            repo.DeleteSymptomFromReport(reportSymptomID);
-            return Ok("deleted successfully");
         }
 
 
@@ -231,6 +174,48 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        // Edit details in a report for an appointment
+        [HttpPut]
+        [Route("api/appointment/report")]
+        public IHttpActionResult PutEditReport([FromBody] Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to put");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid report details");
+            }
+
+            repo.EditReport(report);
+
+            return Ok(report);
+        }
+
+
+        // Remove a PrescribedMedicine from the list in Prescription
+        // Pass the PrescribedMedicineID of which you want to delete
+        [HttpDelete]
+        [Route("api/appointment/prescription/{prescribedMedicineId}")]
+        public IHttpActionResult DeleteMedicine(int prescribedMedicineId)
+        {
+            repo.RemoveMedicineFromPrescription(prescribedMedicineId);
+            return Ok("deleted successfully");
+        }
+
+
+        // Remove a symptom from the report
+        // Pass the reportSymptomID of the symptom you want to remove
+        [HttpDelete]
+        [Route("api/appointment/reportsymptom/{reportsymptomID}")]
+        public IHttpActionResult DeleteSymptomFromReport(int reportSymptomID)
+        {
+            repo.DeleteSymptomFromReport(reportSymptomID);
+            return Ok("deleted successfully");
+        }
+
+
         // Remove a test from the report
         // Pass the reportTestID of the test you want to remove
         [HttpDelete]
@@ -239,6 +224,20 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.DeleteTestFromReport(reportTestID);
             return Ok("deleted successfully");
+        }
+
+
+        // Temp api to post a new report
+        [HttpPost]
+        [Route("api/appointment/report")]
+        public IHttpActionResult PostReport(Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+            repo.AddReport(report);
+            return Created("location", report.ReportID);
         }
     }
 }
