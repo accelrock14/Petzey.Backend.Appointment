@@ -8,8 +8,10 @@ namespace Petzey.Backend.Appointment.Domain.Entities
 {
     public class Rating
     {
-        public int RatingID { get; set; }
-        public string Question { get; set; }
-        public int RatingValue {  get; set; }
+        public int Competence { get; set; }
+        public int Outcome { get; set; }
+        public int Booking { get; set; }
+        public string Recommendation { get; set; }
+        public string Comments { get; set; }
     }
 }
