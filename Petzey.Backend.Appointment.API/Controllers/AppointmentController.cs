@@ -33,8 +33,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
-                Logger.Info("id does not exist...");
-                Logger.Error("id does not exists ... error");
+                //Logger.Info($"id {id} does not exist...");
+                Logger.Error($"id {id} does not exists ... error");
                 return NotFound();
             }
 
