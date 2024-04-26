@@ -16,7 +16,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
     {
         PetzeyDbContext db = new PetzeyDbContext();
 
-       
+
 
         /*private readonly IRepo db=new ;
 
@@ -30,14 +30,14 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }*/
 
         // Get the report details for a particular appointment
-        /* [HttpGet]
-         [Route("api/appointment/report/{id}")]
-         public IHttpActionResult GetReport(int id)
-         {
-             //Report report = db.AppointmentDetails.Find(id).Report;
-             Report report = db.Reports.Find(id);
-             return Ok(report);
-         }*/
+        [HttpGet]
+        [Route("api/appointment/report/{id}")]
+        public HttpResponseMessage GetReport(int id)
+        {
+            //Report report = db.AppointmentDetails.Find(id).Report;
+            Report report = db.Reports.Find(id);
+            return Request.CreateResponse(HttpStatusCode.OK,report);
+        }
 
         // Get the names of all the symptoms present
         [HttpGet]
@@ -47,11 +47,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
            // return BadRequest();
 
-            IEnumerable<Symptom> symptoms = db.GetSymptoms();
+            IEnumerable<Symptom> symptoms = db.Symptoms;
             return Ok(symptoms);
         }
 
-     /*   // Get the names of all the tests available
+        // Get the names of all the tests available
         [HttpGet]
         [Route("api/appointment/test")]
         public IHttpActionResult GetTests()
@@ -73,7 +73,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 return BadRequest("Invalid report details");
             }
-            foreach(PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
+            foreach (PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
             {
                 db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
                 db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
@@ -111,11 +111,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/recent/{PetID}")]
         public IHttpActionResult GetRecentAppointments(int PetID)
         {
-            if (PetID<=0)
+            if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
-            var recentAppointments=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).OrderByDescending(a=>a.ScheduleDate).Take(10).ToList();
+            var recentAppointments = db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).Take(10).ToList();
             return Ok(recentAppointments);
         }
 
@@ -125,7 +125,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/medicine")]
         public IHttpActionResult GetAllMedicine()
         {
-            var allMedicines=db.Medicines.ToList();
+            var allMedicines = db.Medicines.ToList();
             return Ok(allMedicines);
         }
 
@@ -142,21 +142,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
             var mostRecentAppointment = db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
 
-            if(mostRecentAppointment == null)
+            if (mostRecentAppointment == null)
             {
                 return NotFound();
             }
 
             PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
-            petReportHistoryDto.HeartRate=mostRecentAppointment.Report.HeartRate;
-            petReportHistoryDto.Temperature=mostRecentAppointment.Report.Temperature;
-            petReportHistoryDto.OxygenLevel=mostRecentAppointment.Report.OxygenLevel;
-            petReportHistoryDto.Symptoms=mostRecentAppointment.Report.Symptoms;
-            petReportHistoryDto.Tests=mostRecentAppointment.Report.Tests;
-            petReportHistoryDto.Prescriptions=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).Select(a=>a.Report.Prescription).ToList();
+            petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
+            petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
+            petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
+            petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
+            petReportHistoryDto.Prescriptions = db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(a => a.Report.Prescription).ToList();
 
             return Ok(petReportHistoryDto);
-        }*/
+        }
     }
 }
 
