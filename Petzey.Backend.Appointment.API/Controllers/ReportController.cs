@@ -72,6 +72,40 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(report);
         }
 
+
+        [HttpGet]
+        [Route("api/appointment/medicine/{id}")]
+        public IHttpActionResult GetMedicine(int id)
+        {
+            Medicine medicine = repo.GetMedicineById(id);
+            if (medicine == null)
+            {
+                return NotFound();
+            }
+            return Ok(medicine);
+        }
+
+        [HttpDelete]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult DeleteMedicine(int id)
+        {
+            repo.RemoveMedicineFromPrescription(id);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult AddMedicine(int id, PrescribedMedicine medicine)
+        {
+            if (medicine == null)
+            {
+                return BadRequest("invalid medicine data");
+            }
+            repo.AddMedicineToPrescription(id, medicine);
+            return Ok(medicine.PrescribedMedicineID);
+        }
+
+
         // Temp api to post a new report
         [HttpPost]
         [Route("api/appointment/report")]

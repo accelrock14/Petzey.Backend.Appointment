@@ -21,6 +21,9 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
         List<Medicine> GetAllMedicines();
         List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID);
-        AppointmentDetail MostRecentAppointmentByPetID(int PetID);        
+        AppointmentDetail MostRecentAppointmentByPetID(int PetID);
+        Medicine GetMedicineById(int id);
+        void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine);
+        void RemoveMedicineFromPrescription(int prescriptionId);
     }
 }
