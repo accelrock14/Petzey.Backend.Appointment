@@ -179,7 +179,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
         [HttpPost]
-        [Route("api/appointment/reportsymptom/{reportID}/{symptomID}")]
+        [Route("api/appointment/reportsymptom/{reportID}")]
         public IHttpActionResult AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
         {
             repo.AddSymptomToReport( reportID, reportSymptom);
@@ -197,7 +197,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
         [HttpPost]
-        [Route("api/appointment/reporttest/{reportID}/{reportTest}")]
+        [Route("api/appointment/reporttest/{reportID}")]
         public IHttpActionResult AddTestToReport(int reportID, ReportTest reportTest)
         {
             repo.AddTestToReport(reportID, reportTest);
