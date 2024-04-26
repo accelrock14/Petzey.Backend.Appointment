@@ -31,11 +31,12 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine);
         void AddSymptomToReport(int reportID, ReportSymptom reportSymptom);
         void AddTestToReport(int reportID, ReportTest reportTest);
+        void AddDoctorRecommendation(int reportID, RecommendedDoctor recommendedDoctor);
 
         // DELETE METHODS
         void DeleteSymptomFromReport(int reportsymptomID);
         void DeleteTestFromReport(int reportTestID);
         void RemoveMedicineFromPrescription(int prescriptionId);
-       
+        void RemoveDoctorRecommendation(int recommendedDoctorID);
     }
 }

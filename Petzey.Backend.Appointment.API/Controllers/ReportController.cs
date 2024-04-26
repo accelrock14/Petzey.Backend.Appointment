@@ -174,6 +174,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        // Add a recommended doctor to the report
+        // Pass the ReportId of the report to which you want to add the recommendation
+        [HttpPost]
+        [Route("api/appointment/recommendation/{reportID}")]
+        public IHttpActionResult AddRecommendationToReport(int reportID, RecommendedDoctor recommendedDoctor)
+        {
+            repo.AddDoctorRecommendation(reportID, recommendedDoctor);
+            return Created("location", recommendedDoctor.ID);
+        }
+
+
         // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
@@ -223,6 +234,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         public IHttpActionResult DeleteTestFromReport(int reportTestID)
         {
             repo.DeleteTestFromReport(reportTestID);
+            return Ok("deleted successfully");
+        }
+
+
+        // Remove a doctor recommendation from the report
+        // Pass the recommendeddoctorID that you want to remove
+        [HttpDelete]
+        [Route("api/appointment/recommendation/{recommendedDoctorID}")]
+        public IHttpActionResult DeleteRecommendationFromReport(int recommendedDoctorID)
+        {
+            repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
         }
 
