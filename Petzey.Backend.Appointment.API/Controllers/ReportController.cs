@@ -177,6 +177,41 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             return Ok(petReportHistoryDto);
         }
+
+        [HttpPost]
+        [Route("api/appointment/reportsymptom/{reportID}/{symptomID}")]
+        public IHttpActionResult AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
+        {
+            repo.AddSymptomToReport( reportID, reportSymptom);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("api/appointment/reportsymptom/{reportsymptomID}")]
+        public IHttpActionResult DeleteSymptomFromReport(int reportsymptomID)
+        {
+            repo.DeleteSymptomFromReport(reportsymptomID);
+            return Ok();
+        }
+
+
+
+        [HttpPost]
+        [Route("api/appointment/reporttest/{reportID}/{reportTest}")]
+        public IHttpActionResult AddTestToReport(int reportID, ReportTest reportTest)
+        {
+            repo.AddTestToReport(reportID, reportTest);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("api/appointment/reporttest/{reportTestID}")]
+        public IHttpActionResult DeleteTestFromReport(int reportTestID)
+        {
+            repo.DeleteTestFromReport(reportTestID);
+            return Ok();
+        }
+
     }
 }
 

@@ -25,5 +25,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         Medicine GetMedicineById(int id);
         void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine);
         void RemoveMedicineFromPrescription(int prescriptionId);
+        void AddSymptomToReport(int reportID, ReportSymptom reportSymptom);
+        void DeleteSymptomFromReport(int reportsymptomID);
+        void AddTestToReport(int reportID, ReportTest reportTest);
+        void DeleteTestFromReport(int reportTestID);
+       
     }
 }

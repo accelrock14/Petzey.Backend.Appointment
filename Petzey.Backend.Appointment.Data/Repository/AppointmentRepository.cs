@@ -186,5 +186,37 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.PrescribedMedics.Remove(db.PrescribedMedics.Find(prescriptionId));
             db.SaveChanges();
         }
+
+        public void AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
+        {
+
+            db.Reports.Find(reportID).Symptoms.Add(reportSymptom);
+            db.SaveChanges();
+        }
+
+        public void DeleteSymptomFromReport(int reportsymptomID){
+
+            db.ReportSymptoms.Remove(db.ReportSymptoms.Find(reportsymptomID));
+            db.SaveChanges();
+
+         }
+
+
+        public void AddTestToReport(int reportID, ReportTest reportTest)
+        {
+
+            db.Reports.Find(reportID).Tests.Add(reportTest);
+            db.SaveChanges();
+        }
+
+        public void DeleteTestFromReport(int reportTestID)
+        {
+
+            db.ReportTests.Remove(db.ReportTests.Find(reportTestID));
+            db.SaveChanges();
+
+        }
     }
+
 }
+
