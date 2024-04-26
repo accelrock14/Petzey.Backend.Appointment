@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Text;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
@@ -38,6 +39,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         // PUT: api/Appointment/5
         [ResponseType(typeof(void))]
+        // sample url https://localhost:44327/api/Appointment/1
         public IHttpActionResult PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
         {
             if (!ModelState.IsValid)
@@ -252,7 +254,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             List<bool> schedules = new List<bool>(18);
             for (int i = 0; i < 18; i++)
             {
-                schedules.Add(false);
+                schedules[i] = false;
             }
 
             var dateOnly = date.Date;
