@@ -64,6 +64,8 @@
     <Compile Include="Entities\Prescription.cs" />
     <Compile Include="Entities\Rating.cs" />
     <Compile Include="Entities\Report.cs" />
+    <Compile Include="Entities\ReportSymptom.cs" />
+    <Compile Include="Entities\ReportTest.cs" />
     <Compile Include="Entities\Status.cs" />
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="Entities\Test.cs" />
