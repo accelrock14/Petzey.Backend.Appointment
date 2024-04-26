@@ -11,12 +11,14 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Text;
+using NLog;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class AppointmentController : ApiController
     {
         private PetzeyDbContext db = new PetzeyDbContext();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         // GET: api/Appointment
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
@@ -31,6 +33,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
+                Logger.Info("id does not exist...");
+                Logger.Error("id does not exists ... error");
                 return NotFound();
             }
 
@@ -78,10 +82,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 db.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!AppointmentDetailExists(id))
                 {
+                    Logger.Error(ex, "Error while saving...");
                     return NotFound();
                 }
                 else
@@ -228,10 +233,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!AppointmentDetailExists(id))
                 {
+                    Logger.Error(ex, "Error in saving in db inside patch appointment");
+                    
                     return NotFound();
                 }
                 else
