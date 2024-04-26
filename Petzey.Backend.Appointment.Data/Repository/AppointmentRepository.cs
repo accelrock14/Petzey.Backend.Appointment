@@ -17,7 +17,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public AppointmentStatusCountsDto AppointmentStatusCounts()
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList(); 
+            var allAppointments = db.AppointmentDetails.ToList();
             dto.Total = allAppointments.Count;
             dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
             dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
@@ -111,36 +111,59 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
-
-
-
-
-        // --------------------------------------------------------------------------------
-        // Report Repository Methods
-        // --------------------------------------------------------------------------------
-
-        // Get Report details by ID
-        public Report GetReportByID(int id) 
-        { 
-            throw new NotImplementedException(); 
+        public void AddReport(Report report)
+        {
+            db.Reports.Add(report);
+            db.SaveChanges();
         }
 
-        // Update the detials of a report
-        public void UpdateReport(Report report)
+        public void EditReport(Report report)
         {
-            throw new NotImplementedException();
+            foreach (PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
+            {
+                db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
+            }
+            db.Entry(report).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
         }
 
-        // Get list of all symptoms
-        public List<Symptom> GetSymptoms()
+        public List<Medicine> GetAllMedicines()
         {
-            throw new NotImplementedException();
+            return db.Medicines.ToList();
         }
 
-        // Get list of all tests
-        public List<Test> GetTests()
+        public IEnumerable<Symptom> GetAllSymptoms()
         {
-            throw new NotImplementedException();
+            return db.Symptoms.Distinct();
+        }
+
+        public IEnumerable<Test> GetAllTests()
+        {
+            return db.Tests.Distinct();
+        }
+
+        public List<AppointmentDetail> GetRecentAppointmentsByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).Take(10).ToList();
+
+        }
+
+        public Report GetReportByID(int id)
+        {
+            return db.Reports.Find(id);
+        }
+
+        public List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(a => a.Report.Prescription).ToList();
+
+        }
+
+        public AppointmentDetail MostRecentAppointmentByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
+
         }
     }
 }

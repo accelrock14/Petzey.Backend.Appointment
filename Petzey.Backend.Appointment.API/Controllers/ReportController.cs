@@ -2,6 +2,7 @@
 using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
+using Petzey.Backend.Appointment.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,16 @@ namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class ReportController : ApiController
     {
-        PetzeyDbContext db = new PetzeyDbContext();
+        IAppointmentRepository repo;
+
+        public ReportController(IAppointmentRepository _repo)
+        {
+            repo = _repo;
+        }
+
+        public ReportController()
+        {
+        }
 
         // Get the report details for a particular appointment
         [HttpGet]
@@ -21,13 +31,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         public IHttpActionResult GetReport(int id)
         {
             //Report report = db.AppointmentDetails.Find(id).Report;
-            Report report = db.Reports.Find(id);
-
-            if(report == null)
-            {
-                return NotFound();
-            }
-
+            Report report = repo.GetReportByID(id);
             return Ok(report);
         }
 
@@ -36,7 +40,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/symptom")]
         public IHttpActionResult GetSymptoms()
         {
-            IEnumerable<Symptom> symptoms = db.Symptoms.Distinct();
+            IEnumerable<Symptom> symptoms = repo.GetAllSymptoms();
             return Ok(symptoms);
         }
 
@@ -45,7 +49,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/test")]
         public IHttpActionResult GetTests()
         {
-            IEnumerable<Test> tests = db.Tests.Distinct();
+            IEnumerable<Test> tests = repo.GetAllTests();
             return Ok(tests);
         }
 
@@ -62,18 +66,30 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 return BadRequest("Invalid report details");
             }
-            foreach(PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
-            {
-                db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
-                db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
-            }
-            db.Entry(report).State = System.Data.Entity.EntityState.Modified;
-            db.SaveChanges();
+
+            repo.EditReport(report);
 
             return Ok(report);
         }
 
-        
+        // Temp api to post a new report
+        [HttpPost]
+        [Route("api/appointment/report")]
+        public IHttpActionResult PostReport(Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+            repo.AddReport(report);
+            return Created("location", report.ReportID);
+        }
+
+
+
+
+
+
 
 
 
@@ -82,11 +98,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/recent/{PetID}")]
         public IHttpActionResult GetRecentAppointments(int PetID)
         {
-            if (PetID<=0)
+            if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
-            var recentAppointments=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).OrderByDescending(a=>a.ScheduleDate).Take(10);
+            var recentAppointments = repo.GetRecentAppointmentsByPetID(PetID);
             return Ok(recentAppointments);
         }
 
@@ -96,7 +112,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/medicine")]
         public IHttpActionResult GetAllMedicine()
         {
-            var allMedicines=db.Medicines;
+            var allMedicines = repo.GetAllMedicines();
             return Ok(allMedicines);
         }
 
@@ -111,20 +127,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 return BadRequest("Bad Request");
             }
-            var mostRecentAppointment = db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
-
-            if(mostRecentAppointment == null)
+            var mostRecentAppointment = repo.MostRecentAppointmentByPetID(PetID);
+            if (mostRecentAppointment == null)
             {
                 return NotFound();
             }
 
             PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
-            petReportHistoryDto.HeartRate=mostRecentAppointment.Report.HeartRate;
-            petReportHistoryDto.Temperature=mostRecentAppointment.Report.Temperature;
-            petReportHistoryDto.OxygenLevel=mostRecentAppointment.Report.OxygenLevel;
-            petReportHistoryDto.Symptoms=mostRecentAppointment.Report.Symptoms;
-            petReportHistoryDto.Tests=mostRecentAppointment.Report.Tests;
-            petReportHistoryDto.Prescriptions=db.AppointmentDetails.Where(a=>a.PetID==PetID && a.Status==Status.Closed).Select(a=>a.Report.Prescription).ToList();
+            petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
+            petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
+            petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
+            petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
+            petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
 
             return Ok(petReportHistoryDto);
         }
