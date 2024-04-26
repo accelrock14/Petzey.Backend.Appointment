@@ -1,4 +1,6 @@
-﻿namespace Petzey.Backend.Appointment.Domain
+﻿using System.Collections.Generic;
+
+namespace Petzey.Backend.Appointment.Domain
 {
     public class Symptom
     {

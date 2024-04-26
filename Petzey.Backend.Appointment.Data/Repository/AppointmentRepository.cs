@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
@@ -164,6 +165,27 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
 
+        }
+
+        public Medicine GetMedicineById(int medicineId)
+        {
+            return db.Medicines.Find(medicineId);
+        }
+
+        public PrescribedMedicine GetPrescribedMedicine(int medicineId)
+        {
+            return db.PrescribedMedics.Find(medicineId);
+        }
+
+        public void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine)
+        {
+            db.Prescriptions.Find(prescriptionId).PrescribedMedicines.Add(medicine);
+            db.SaveChanges();
+        } 
+        public void RemoveMedicineFromPrescription(int prescriptionId)
+        {
+            db.PrescribedMedics.Remove(db.PrescribedMedics.Find(prescriptionId));
+            db.SaveChanges();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
+        PetzeyDbContext db = new PetzeyDbContext();
 
         public ReportController(IAppointmentRepository _repo)
         {
@@ -32,6 +33,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             //Report report = db.AppointmentDetails.Find(id).Report;
             Report report = repo.GetReportByID(id);
+            
             return Ok(report);
         }
 
@@ -72,7 +74,38 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(report);
         }
 
-        // Temp api to post a new report
+        [HttpGet]
+        [Route("api/appointment/medicine/{id}")]
+        public IHttpActionResult GetMedicine(int id)
+        {
+            Medicine medicine = repo.GetMedicineById(id);
+            if (medicine == null)
+            {
+                return NotFound();
+            }
+            return Ok(medicine);
+        }
+
+        [HttpDelete]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult DeleteMedicine(int id)
+        {
+            repo.RemoveMedicineFromPrescription(id);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult AddMedicine(int id, PrescribedMedicine medicine)
+        {
+            if (medicine == null)
+            {
+                return BadRequest("invalid medicine data");
+            }
+            repo.AddMedicineToPrescription(id, medicine);
+            return Ok(medicine.PrescribedMedicineID);
+        }
+
         [HttpPost]
         [Route("api/appointment/report")]
         public IHttpActionResult PostReport(Report report)
@@ -84,12 +117,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
             repo.AddReport(report);
             return Created("location", report.ReportID);
         }
-
-
-
-
-
-
 
 
 

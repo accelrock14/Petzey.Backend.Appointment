@@ -1,4 +1,6 @@
-﻿namespace Petzey.Backend.Appointment.Domain
+﻿using System.Collections.Generic;
+
+namespace Petzey.Backend.Appointment.Domain
 {
     public class Test
     {
@@ -6,5 +8,4 @@
         public string TestName { get; set; }
 
     }
-
 }
