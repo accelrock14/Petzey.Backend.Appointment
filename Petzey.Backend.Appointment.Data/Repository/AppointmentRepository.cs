@@ -14,6 +14,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
     public class AppointmentRepository : IAppointmentRepository
     {
         PetzeyDbContext db = new PetzeyDbContext();
+
+        // get count of appointments in different statuses
         public AppointmentStatusCountsDto AppointmentStatusCounts()
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
@@ -27,6 +29,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return dto;
         }
 
+        // filter appointments by date
         public List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails;
@@ -72,6 +75,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return filteredAppointments;
         }
+
+        // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petId);
@@ -95,6 +100,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return appointments;
         }
+
+        // get all appointments for a pet
         public List<AppointmentCardDto> AppointmentByPetId(int petId)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petId);
@@ -117,6 +124,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        // edit contents of a report
         public void EditReport(Report report)
         {
             foreach (PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
@@ -128,16 +136,19 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        // get all medicines
         public List<Medicine> GetAllMedicines()
         {
             return db.Medicines.ToList();
         }
 
+        // get all symptoms
         public IEnumerable<Symptom> GetAllSymptoms()
         {
             return db.Symptoms.Distinct();
         }
 
+        // get all tests
         public IEnumerable<Test> GetAllTests()
         {
             return db.Tests.Distinct();
@@ -214,9 +225,19 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             db.ReportTests.Remove(db.ReportTests.Find(reportTestID));
             db.SaveChanges();
+        }
 
+        public void AddDoctorRecommendation(int reportID, RecommendedDoctor recommendedDoctor)
+        {
+            db.Reports.Find(reportID).RecommendedDoctors.Add(recommendedDoctor);
+            db.SaveChanges();
+        }
+
+        public void RemoveDoctorRecommendation(int recommendedDoctorID)
+        {
+            db.RecommendedDoctors.Remove(db.RecommendedDoctors.Find(recommendedDoctorID));
+            db.SaveChanges();
         }
     }
-
 }
 
