@@ -63,6 +63,7 @@
     <Compile Include="Entities\PrescribedMedicine.cs" />
     <Compile Include="Entities\Prescription.cs" />
     <Compile Include="Entities\Rating.cs" />
+    <Compile Include="Entities\RecommendedDoctor.cs" />
     <Compile Include="Entities\Report.cs" />
     <Compile Include="Entities\ReportSymptom.cs" />
     <Compile Include="Entities\ReportTest.cs" />
