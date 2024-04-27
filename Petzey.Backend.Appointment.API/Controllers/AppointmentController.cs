@@ -17,7 +17,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class AppointmentController : ApiController
     {
-        private PetzeyDbContext db = new PetzeyDbContext();
+        public PetzeyDbContext db = new PetzeyDbContext();
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         // GET: api/Appointment
