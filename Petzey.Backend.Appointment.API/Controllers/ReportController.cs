@@ -21,9 +21,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
             repo = _repo;
         }
 
-        public ReportController()
-        {
-        }
 
         // Get the report details for a particular appointment
         // Pass the ReportID
@@ -92,7 +89,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             if(recentAppointments == null)
             {
-                NotFound();
+                return NotFound();
             }
 
             return Ok(recentAppointments);

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Petzey.Backend.Appointment.API.Controllers;
 using Petzey.Backend.Appointment.Domain;
@@ -84,9 +85,24 @@ namespace PetzeyAPIUnitTest
             Assert.AreEqual(expectedReport.Temperature, contentResult.Content.Temperature);
             Assert.AreEqual(expectedReport.OxygenLevel, contentResult.Content.OxygenLevel);
             Assert.AreEqual(expectedReport.Comment, contentResult.Content.Comment);
-            Assert.IsNull(contentResult.Content.Prescription); 
-            Assert.AreEqual(0, contentResult.Content.Symptoms.Count); 
+            Assert.IsNull(contentResult.Content.Prescription);
+            Assert.AreEqual(0, contentResult.Content.Symptoms.Count);
             Assert.AreEqual(0, contentResult.Content.Tests.Count);
+        }
+
+        [TestMethod]
+        public void GetReport_Returns_NotFound_With_InValid_Data()
+        {
+            // Arrange
+
+            mockDbContext.Setup(db => db.GetReportByID(1)).Returns((Report)null);
+
+            // Act
+            IHttpActionResult actionResult = controller.GetReport(1);
+
+
+            // Assert
+            Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
         }
 
         [TestMethod]
@@ -147,7 +163,7 @@ namespace PetzeyAPIUnitTest
             IHttpActionResult actionResult = controller.GetMedicine(99);
 
             // Assert
-            Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(actionResult, typeof(System.Web.Http.Results.NotFoundResult));
         }
 
         [TestMethod]
@@ -184,9 +200,9 @@ namespace PetzeyAPIUnitTest
                     PetID = petId,
                     ScheduleDate = DateTime.Now.AddDays(-2),
                     Status = Status.Closed,
-                    PetIssues = null 
+                    PetIssues = null
                 },
-               
+
             };
             mockDbContext.Setup(db => db.GetRecentAppointmentsByPetID(petId)).Returns(expectedAppointments);
 
@@ -197,7 +213,23 @@ namespace PetzeyAPIUnitTest
             // Assert
             Assert.IsNotNull(contentResult);
             Assert.IsNotNull(contentResult.Content);
-            CollectionAssert.AreEqual(expectedAppointments,contentResult.Content);
+            CollectionAssert.AreEqual(expectedAppointments, contentResult.Content);
+        }
+
+        [TestMethod]
+        public void GetRecentAppointments_Returns_NotFound_With_InValid_Data()
+        {
+            // Arrange
+            int petId = 1; // Replace with a invalid pet ID with no appointmnets
+
+            mockDbContext.Setup(db => db.GetRecentAppointmentsByPetID(petId)).Returns((List<AppointmentDetail>)null);
+
+            // Act
+            IHttpActionResult actionResult = controller.GetRecentAppointments(petId);
+
+            // Assert
+            Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
+
         }
 
         [TestMethod]
@@ -246,27 +278,28 @@ namespace PetzeyAPIUnitTest
             IHttpActionResult actionResult = controller.GetReportHistoryOfThePet(PetId);
 
             // Assert
-            Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(actionResult, typeof(System.Web.Http.Results.NotFoundResult));
         }
 
+
         [TestMethod]
-        public void AddSymptomToReport_Returns_Ok()
+        public void AddSymptomToReport_ReturnsCreatedResult()
         {
             // Arrange
             int reportId = 1; // Replace with a valid report ID
             var reportSymptom = new ReportSymptom
             {
                 ReportSymptomID = 1,
-                SymptomID = 10, 
-                Symptom = new Symptom { SymptomID = 10, SymptomName = "Fever" } 
+                SymptomID = 10,
+                Symptom = new Symptom { SymptomID = 10, SymptomName = "Fever" }
             };
 
             // Act
-            IHttpActionResult actionResult = controller.AddSymptomToReport(reportId, reportSymptom);
+            var result = controller.AddSymptomToReport(reportId, reportSymptom);
 
             // Assert
-            Assert.IsInstanceOfType(actionResult, typeof(OkResult));
-    }
+            Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
+        }
 
         [TestMethod]
         public void AddSymptomToReport_CallsRepoAddSymptomToReport()
@@ -284,7 +317,6 @@ namespace PetzeyAPIUnitTest
             IHttpActionResult actionResult = controller.AddSymptomToReport(reportId, reportSymptom);
 
             // Assert
-            Assert.IsInstanceOfType(actionResult, typeof(OkResult));
 
             // Verify that the symptom was added to the database
             mockDbContext.Verify(db => db.AddSymptomToReport(reportId, reportSymptom), Times.Once);
@@ -300,7 +332,7 @@ namespace PetzeyAPIUnitTest
             var result = controller.DeleteSymptomFromReport(reportSymptomId);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<string>));
         }
 
         [TestMethod]
@@ -327,7 +359,7 @@ namespace PetzeyAPIUnitTest
             var result = controller.AddTestToReport(reportId, reportTest);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
         }
 
         [TestMethod]
@@ -344,6 +376,234 @@ namespace PetzeyAPIUnitTest
             mockDbContext.Verify(repo => repo.AddTestToReport(reportId, reportTest), Times.Once);
         }
 
+        [TestMethod]
+        public void DeleteTestFromReport_ReturnsOkResult()
+        {
+            // Arrange
+            int reportTestId = 123; // Replace with your actual report test ID
 
+            // Act
+            var result = controller.DeleteTestFromReport(reportTestId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<string>));
+        }
+
+        [TestMethod]
+        public void DeleteTestFromReport_CallsRepoDeleteTestFromReport()
+        {
+            // Arrange
+            int reportTestId = 123; // Replace with your actual report test ID
+
+            // Act
+            controller.DeleteTestFromReport(reportTestId);
+
+            // Assert
+            mockDbContext.Verify(repo => repo.DeleteTestFromReport(reportTestId), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddMedicine_ReturnsCreatedResult()
+        {
+            // Arrange
+            int prescriptionId = 1; // Replace with a valid prescription ID
+            var prescribedMedicine = new PrescribedMedicine
+            {
+                PrescribedMedicineID = 1,
+                MedicineID = 10,
+                Medicine = new Medicine { MedicineID = 10, MedicineName = "Paracetamol" },
+                NumberOfDays = 5,
+                Consume = false,
+                Dosages = Dosage.Morning,
+            };
+
+            // Act
+            var result = controller.AddMedicine(prescriptionId, prescribedMedicine);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
+        }
+
+        [TestMethod]
+        public void AddMedicine_CallsRepoAddMedicineToPrescription()
+        {
+            // Arrange
+            int prescriptionId = 1; // Replace with a valid prescription ID
+            var prescribedMedicine = new PrescribedMedicine
+            {
+                PrescribedMedicineID = 1,
+                MedicineID = 10,
+                Medicine = new Medicine { MedicineID = 10, MedicineName = "Paracetamol" },
+                NumberOfDays = 5,
+                Consume = false,
+                Dosages = Dosage.Morning
+            };
+
+            // Act
+            controller.AddMedicine(prescriptionId, prescribedMedicine);
+
+            // Assert
+            mockDbContext.Verify(repo => repo.AddMedicineToPrescription(prescriptionId, prescribedMedicine), Times.Once);
+        }
+
+        [TestMethod]
+        public void AddMedicine_ReturnsBAdRequest_With_InvalidData()
+        {
+            // Arrange
+            int prescriptionId = 1; // Replace with a valid prescription ID
+
+
+            // Act
+            var result = controller.AddMedicine(prescriptionId, null);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
+
+        }
+
+
+        [TestMethod]
+        public void AddRecommendationToReport_ReturnsCreatedResult()
+        {
+            // Arrange
+            int reportId = 1; // Replace with a valid report ID
+            var recommendedDoctor = new RecommendedDoctor
+            {
+                ID = 1,
+                DoctorID = 10
+            };
+            // Act
+            var result = controller.AddRecommendationToReport(reportId, recommendedDoctor);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
+        }
+
+        [TestMethod]
+        public void AddRecommendationToReport_CallsRepoAddDoctorRecommendation()
+        {
+            // Arrange
+            int reportId = 1; // Replace with a valid report ID
+            var recommendedDoctor = new RecommendedDoctor
+            {
+                ID = 1,
+                DoctorID = 10
+            };
+
+            // Act
+            controller.AddRecommendationToReport(reportId, recommendedDoctor);
+            // Assert
+            mockDbContext.Verify(repo => repo.AddDoctorRecommendation(reportId, recommendedDoctor), Times.Once);
+        }
+
+
+        [TestMethod]
+        public void Test_PutEditReport_Returns_OK_With_ValidInput()
+        {
+            // Arrange
+            var mockReport = new Report
+            {
+                ReportID = 1,
+                Prescription = null,
+                Symptoms = new List<ReportSymptom>(),
+                Tests = new List<ReportTest>(),
+                HeartRate = 80,
+                Temperature = 37.5f,
+                OxygenLevel = 98.0f,
+                RecommendedDoctors = new List<RecommendedDoctor>(),
+                Comment = "Test comment"
+            };
+
+
+            // Act
+            var response = controller.PutEditReport(mockReport) as OkNegotiatedContentResult<Report>;
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.AreEqual(mockReport, response.Content);
+            Assert.IsInstanceOfType(response, typeof(OkNegotiatedContentResult<Report>));
+        }
+
+
+        [TestMethod]
+        public void Test_PutEditReport_Calls_RepoEditReport_With_ValidInput()
+        {
+            // Arrange
+            var mockReport = new Report
+            {
+                ReportID = 1,
+                Prescription = null,
+                Symptoms = new List<ReportSymptom>(),
+                Tests = new List<ReportTest>(),
+                HeartRate = 80,
+                Temperature = 37.5f,
+                OxygenLevel = 98.0f,
+                RecommendedDoctors = new List<RecommendedDoctor>(),
+                Comment = "Test comment"
+            };
+
+
+            // Act
+            controller.PutEditReport(mockReport);
+
+           //Assert
+           mockDbContext.Verify(r => r.EditReport(mockReport), Times.Once);
+        }
+
+        [TestMethod]
+        public void Test_PutEditReport_Returns_BadRequest_With_NullInput()
+        {
+            // Arrange
+
+
+            var response = controller.PutEditReport(null);
+
+            // Assert
+           Assert.IsInstanceOfType(response,typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public void Test_DeleteMedicine_Return_OKResult_With_ValidInput()
+        {
+            // Arrange
+            var medicineIdToDelete = 123;
+
+            // Act
+            var response = controller.DeleteMedicine(medicineIdToDelete);
+
+            Assert.IsInstanceOfType(response, typeof(OkNegotiatedContentResult<String>));
+        }
+
+        [TestMethod]
+        public void Test_DeleteMedicine_Calls_RepoRemoveMedicineFromPrescription_With_ValidInput()
+        {
+            // Arrange
+            var medicineIdToDelete = 123;
+
+            // Act
+           controller.DeleteMedicine(medicineIdToDelete);
+
+            //assert
+            mockDbContext.Verify(db=>db.RemoveMedicineFromPrescription(medicineIdToDelete), Times.Once);
+
+
+        }
+
+
+        [TestMethod]
+        public void DeleteRecommendationFromReport_Should_Return_Ok()
+        {
+            // Arrange
+            int recommendedDoctorId = 123;
+
+            // Act
+            IHttpActionResult response = controller.DeleteRecommendationFromReport(recommendedDoctorId);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsInstanceOfType(response, typeof(OkNegotiatedContentResult<String>));
+        }
+
+
+        }
     }
-}
