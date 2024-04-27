@@ -167,30 +167,30 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // GET: api/AppointmentDetails
         [HttpGet]
 
-        [Route("api/AppointmentDetails/PetIssues")]
-        // sample url https://localhost:44327/api/AppointmentDetails/PetIssues
+        [Route("api/AppointmentDetails/GeneralPetIssues")]
+        // sample url https://localhost:44327/api/AppointmentDetails/GeneralPetIssues
 
-        public IQueryable<PetIssue> GetAllPetIssues()
+        public IQueryable<GeneralPetIssue> GetAllGeneralPetIssues()
         {
-            return db.PetIssues;
+            return db.GeneralPetIssues;
         }
 
         // end point for adding a new petissue
         [HttpPost]
-        [Route("api/AppointmentDetails/PetIssues")]
-        // sample url https://localhost:44327/api/AppointmentDetails/PetIssues
-        public IHttpActionResult PostPetIssue(PetIssue petIssue)
+        [Route("api/AppointmentDetails/GeneralPetIssues")]
+        // sample url https://localhost:44327/api/AppointmentDetails/GeneralPetIssues
+        public IHttpActionResult PostGeneralPetIssue(GeneralPetIssue generalPetIssue)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.PetIssues.Add(petIssue);
+            db.GeneralPetIssues.Add(generalPetIssue);
             db.SaveChanges();
 
             //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
-            return Ok(petIssue);
+            return Ok(generalPetIssue);
         }
 
         [HttpGet]
@@ -261,7 +261,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
             List<bool> schedules = new List<bool>(18);
             for (int i = 0; i < 18; i++)
             {
-                schedules[i] = false;
+                //schedules[i] = false;
+                schedules.Add(false);
             }
 
             var dateOnly = date.Date;
