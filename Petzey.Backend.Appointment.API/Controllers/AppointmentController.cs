@@ -12,25 +12,29 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using System.Text;
 using NLog;
+using Petzey.Backend.Appointment.Domain.Interfaces;
+using Petzey.Backend.Appointment.Data.Repository;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class AppointmentController : ApiController
     {
-        private PetzeyDbContext db = new PetzeyDbContext();
+
+        //private PetzeyDbContext db = new PetzeyDbContext();
+        IAppointmentRepository repo = new AppointmentRepository();
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         // GET: api/Appointment
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
         {
-            return db.AppointmentDetails;
+            return repo.GetAppointmentDetails();
         }
 
         // GET: api/Appointment/5
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult GetAppointmentDetail(int id)
         {
-            AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
+            AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);  //db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
                 Logger.Info("id does not exist...");
@@ -45,62 +49,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [ResponseType(typeof(void))]
         // sample url https://localhost:44327/api/Appointment/1
         public IHttpActionResult PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            int slot = appointmentDetail.ScheduleTimeSlot;
-
-            int hoursToAdd = 9 + (slot * 30 / 60);  
-            int minutesToAdd = (slot * 30) % 60;    
-
-            // if it is the lunch break theen
-            if (slot >= 8)
-            {
-                hoursToAdd += 1;  
-            }
-
-            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
-
-            if (slot < 0 || slot > 17)
-            {
-                return BadRequest("Invalid time slot.");
-            }
-
-            
-
-            if (id != appointmentDetail.AppointmentID)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(appointmentDetail).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!AppointmentDetailExists(id))
-                {
-                    Logger.Error(ex, "Error while saving...");
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        // POST: api/Appointment
-        [ResponseType(typeof(AppointmentDetail))]
-        public IHttpActionResult PostAppointmentDetail(AppointmentDetail appointmentDetail)
         {
             if (!ModelState.IsValid)
             {
@@ -127,40 +75,101 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
 
-            db.AppointmentDetails.Add(appointmentDetail);
-            db.SaveChanges();
+            if (id != appointmentDetail.AppointmentID)
+            {
+                return BadRequest();
+            }
+
+            //db.Entry(appointmentDetail).State = EntityState.Modified;
+
+            //try
+            //{
+            //    db.SaveChanges();
+            //}
+            //catch (DbUpdateConcurrencyException ex)
+            //{
+            //    if (!AppointmentDetailExists(id))
+            //    {
+            //        Logger.Error(ex, "Error while saving...");
+            //        return NotFound();
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
+
+            if( ! repo.PutAppointmentDetail(id, appointmentDetail))
+            {
+                return NotFound();
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // POST: api/Appointment
+        [ResponseType(typeof(AppointmentDetail))]
+        public IHttpActionResult PostAppointmentDetail(AppointmentDetail appointmentDetail)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            int slot = appointmentDetail.ScheduleTimeSlot;
+
+            int hoursToAdd = 9 + (slot * 30 / 60);
+            int minutesToAdd = (slot * 30) % 60;
+
+            // if it is the lunch break theen
+            if (slot >= 8)
+            {
+                hoursToAdd += 1;
+            }
+
+            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+
+            if (slot < 0 || slot > 17)
+            {
+                return BadRequest("Invalid time slot.");
+            }
+
+            if ( ! repo.PostAppointmentDetail(appointmentDetail))
+            {
+                return BadRequest();
+            }
+
+            
+
+
 
             return CreatedAtRoute("DefaultApi", new { id = appointmentDetail.AppointmentID }, appointmentDetail);
+
         }
 
         // DELETE: api/Appointment/5
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult DeleteAppointmentDetail(int id)
         {
-            AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
+            AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);   // db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
                 return NotFound();
             }
 
-            db.AppointmentDetails.Remove(appointmentDetail);
-            db.SaveChanges();
+            if (!repo.DeleteAppointmentDetail(id))
+            {
+                return NotFound();
+            }
 
             return Ok(appointmentDetail);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        
 
         private bool AppointmentDetailExists(int id)
         {
-            return db.AppointmentDetails.Count(e => e.AppointmentID == id) > 0;
+            return repo.AppointmentDetailExists(id);
         }
 
         // end point to fetch all list of petissues
@@ -172,7 +181,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         public IQueryable<GeneralPetIssue> GetAllGeneralPetIssues()
         {
-            return db.GeneralPetIssues;
+            return repo.GetAllGeneralPetIssues();
         }
 
         // end point for adding a new petissue
@@ -186,8 +195,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.GeneralPetIssues.Add(generalPetIssue);
-            db.SaveChanges();
+            if (!repo.PostGeneralPetIssue(generalPetIssue))
+            {
+                return BadRequest();
+            }
+
+            
 
             //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
             return Ok(generalPetIssue);
@@ -198,12 +211,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/docondate/1/2024-04-26
         public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
         {
-            // Ensuring the date comparison includes only the date part, not the time part
-            var dateOnly = date.Date;
-
-            return db.AppointmentDetails
-                .Where(a => a.DoctorID == doctorId && DbFunctions.TruncateTime(a.ScheduleDate) == dateOnly)
-                .ToList();
+            
+            
+            return repo.GetAppointmentsOfDocOnDate(doctorId, date);
         }
 
 
@@ -220,7 +230,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var appointment = db.AppointmentDetails.Find(id);
+            var appointment = repo.GetAppointmentDetail(id);
             if (appointment == null)
             {
                 return NotFound();
@@ -228,23 +238,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             appointment.Status = status;
 
-            try
+            if (!repo.PatchAppointmentStatus(id, status))
             {
-                db.Entry(appointment).State = EntityState.Modified;
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                if (!AppointmentDetailExists(id))
-                {
-                    Logger.Error(ex, "Error in saving in db inside patch appointment");
-                    
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return InternalServerError();
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -258,24 +254,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/schedules/1/2024-04-26
         public IHttpActionResult GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
         {
-            List<bool> schedules = new List<bool>(18);
-            for (int i = 0; i < 18; i++)
-            {
-                //schedules[i] = false;
-                schedules.Add(false);
-            }
-
-            var dateOnly = date.Date;
-
-            // Ensuring the date comparison includes only the date part, not the time part
-            var scheuledTimeSlots = db.AppointmentDetails
-               .Where(a => a.DoctorID == doctorId && DbFunctions.TruncateTime(a.ScheduleDate) == dateOnly)
-               .Select(a => a.ScheduleTimeSlot);
-
-            foreach (var item in scheuledTimeSlots)
-            {
-                schedules[item] = true;
-            }
+            List<bool> schedules = repo.GetScheduledTimeSlotsBasedOnDocIDandDate(doctorId,date);
 
             return Ok(schedules);
 
