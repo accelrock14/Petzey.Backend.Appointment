@@ -14,7 +14,7 @@ namespace Petzey.Backend.Appointment.Domain.DTO
         // PET PHOTO
         public string DoctorName { get; set; }
         public string VetSpecialization { get; set; }
-        // VET PHOTO
+        public string DoctorPhoto { get; set; }
         public DateTime ScheduleDate { get; set; }
     }
 }

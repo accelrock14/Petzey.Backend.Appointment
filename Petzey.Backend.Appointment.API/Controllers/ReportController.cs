@@ -200,6 +200,15 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        [HttpGet]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult GetPrescription(int id)
+        {
+            PrescribedMedicine prescribedMedicine = repo.GetPrescribed(id);
+            return Ok(prescribedMedicine);
+        }
+
+
         // Add a new Medicine to the list in Prescription
         // Pass the PrescriptionID of the prescription to which you want to add the PrescribedMedicine
         [HttpPost]
@@ -413,6 +422,52 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError();
 
             }
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/report/{id}")]
+        public IHttpActionResult PatchReport(int id, [FromBody] Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingReport = repo.GetReportByID(id);
+
+
+            if (existingReport == null)
+            {
+
+                return BadRequest("canot find the report with this id");
+
+            }
+
+            repo.UpdateReportStatus(existingReport, report);
+            return Ok(report);
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult PatchPrescription(int id, [FromBody] PrescribedMedicine prescribedMedicine)
+        {
+            if (prescribedMedicine == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingPrescription = repo.GetPrescribed(id);
+
+
+            if (existingPrescription == null)
+            {
+
+                return BadRequest("canot find the prescription with this id");
+
+            }
+
+            repo.UpdateMedicine(existingPrescription, prescribedMedicine);
+            return Ok(prescribedMedicine);
         }
     }
 }
