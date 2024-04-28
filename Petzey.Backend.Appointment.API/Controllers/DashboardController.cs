@@ -28,21 +28,36 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(status);
         }
         [HttpGet]
-        [Route("api/dashboard/filter/{offset?}")]
-        public IHttpActionResult FilterDateStatus(FilterParamsDto filters, int offset = 0)
+        [Route("api/dashboard/appointments/filter/{offset?}")]
+        public IHttpActionResult GetAllAppointmentsWithFilters(FilterParamsDto filters, int offset = 0)
         {
-            var appointments = repo.FilterDateStatus(filters);
+            var appointments = repo.GetAllAppointmentsWithFilters(filters); 
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
         }
         [HttpGet]
-        [Route("api/dashboard/petappointments/{petid}/{date}")]
+        [Route("api/dashboard/petappointments/filter/{petid}/{offset?}")]
+        public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, int petid, int offset = 0)
+        {
+            var appointments = repo.GetAppointmentsByPetIdWithFilters(filters, petid);
+            return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+        }
+        [HttpGet]
+        [Route("api/dashboard/vetappointments/filter/{vetid}/{offset?}")]
+        public IHttpActionResult GetVetAppointmentsWithFilters(FilterParamsDto filters, int vetid, int offset = 0)
+        {
+            var appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
+            return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+        }
+
+        [HttpGet]
+        [Route("api/appointment/petappointments/{petid}/{date}")]
         public IHttpActionResult GetAppointmentsByPetIdAndDate(int petid, DateTime date)
         {
             var appointments = repo.AppointmentByPetIdAndDate(petid, date);
             return Ok(appointments);
         }
         [HttpGet]
-        [Route("api/dashboard/petappointments/{petid}")]
+        [Route("api/appointment/petappointments/{petid}")]
         public IHttpActionResult GetAppointmentsByPetId(int petid)
         {
             var appointments = repo.AppointmentByPetId(petid);
