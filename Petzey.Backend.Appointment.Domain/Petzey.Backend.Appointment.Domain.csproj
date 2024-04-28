@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="DTO\AppointmentCardDto.cs" />
     <Compile Include="DTO\AppointmentStatusCountsDto.cs" />
+    <Compile Include="DTO\CardPetDetailsDto.cs" />
+    <Compile Include="DTO\CardVetDetailsDto.cs" />
     <Compile Include="DTO\FilterParamsDto.cs" />
     <Compile Include="DTO\PetReportHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
@@ -64,12 +66,14 @@
     <Compile Include="Entities\PrescribedMedicine.cs" />
     <Compile Include="Entities\Prescription.cs" />
     <Compile Include="Entities\Rating.cs" />
+    <Compile Include="Entities\RecommendedDoctor.cs" />
     <Compile Include="Entities\Report.cs" />
+    <Compile Include="Entities\ReportSymptom.cs" />
+    <Compile Include="Entities\ReportTest.cs" />
     <Compile Include="Entities\Status.cs" />
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="Entities\Test.cs" />
     <Compile Include="Interfaces\IAppointmentRepository.cs" />
-    <Compile Include="Interfaces\IReportRepository.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
