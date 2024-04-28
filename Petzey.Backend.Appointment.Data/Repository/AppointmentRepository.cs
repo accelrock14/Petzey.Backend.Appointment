@@ -347,6 +347,19 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
                 db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
             }
+            Report curReport = db.Reports.Find(report.ReportID);
+            curReport.Symptoms.Clear();
+            curReport.Tests.Clear();
+
+            foreach(ReportSymptom symptom in report.Symptoms)
+            {
+                curReport.Symptoms.Add(symptom);
+            }
+            foreach(ReportTest test in report.Tests)
+            {
+                curReport.Tests.Add(test);
+            }
+
             db.Entry(report).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
         }
