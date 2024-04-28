@@ -51,7 +51,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         [HttpGet]
         [Route("api/appointment/petappointments/{petid}/{date}")]
-        public IHttpActionResult GetAppointmentsByOwnerIdAndDate(int petid, DateTime date)
+        public IHttpActionResult GetAppointmentsByPetIdAndDate(int petid, DateTime date)
         {
             var appointments = repo.AppointmentByPetIdAndDate(petid, date);
             return Ok(appointments);
