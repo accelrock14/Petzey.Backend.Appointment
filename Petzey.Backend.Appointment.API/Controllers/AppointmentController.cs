@@ -141,10 +141,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest();
             }
 
-            
-
-
-
             return CreatedAtRoute("DefaultApi", new { id = appointmentDetail.AppointmentID }, appointmentDetail);
 
         }
@@ -174,7 +170,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return repo.AppointmentDetailExists(id);
         }
 
-        // end point to fetch all list of petissues
+        // end point to fetch all list of general pet issues
         // GET: api/AppointmentDetails
         [HttpGet]
 
@@ -213,8 +209,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/docondate/1/2024-04-26
         public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
         {
-            
-            
             return repo.GetAppointmentsOfDocOnDate(doctorId, date);
         }
 
