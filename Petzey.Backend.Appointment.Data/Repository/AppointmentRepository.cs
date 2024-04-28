@@ -429,6 +429,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
             }
             db.Entry(report).State = System.Data.Entity.EntityState.Modified;
+            
             db.SaveChanges();
         }
 
@@ -535,8 +536,87 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        public void UpdateReportStatus(Report oldReport, Report newReport)
+        {
+            int id = oldReport.ReportID;
+            oldReport.HeartRate = newReport.HeartRate;
+            oldReport.Temperature = newReport.Temperature;
+            oldReport.OxygenLevel = newReport.OxygenLevel;
+            oldReport.Comment = newReport.Comment;
 
+            UpdateSymptoms(id,oldReport.Symptoms, newReport.Symptoms);
+            UpdateTests(id, oldReport.Tests, newReport.Tests);
+            UpdateRecommendation(id,oldReport.RecommendedDoctors,newReport.RecommendedDoctors);
+            db.SaveChanges ();
+        }
 
+        public void UpdateSymptoms(int id,List<ReportSymptom> oldSymptoms, List<ReportSymptom> newSymptoms)
+        {
+            for (int i = 0; i < oldSymptoms.Count(); i++)
+            {
+                if (!newSymptoms.Select(s => s.SymptomID).Contains(oldSymptoms[i].SymptomID))
+                {
+                    //oldReport.Symptoms.Remove(oldReport.Symptoms[i]);
+                    DeleteSymptomFromReport(oldSymptoms[i].ReportSymptomID);
+                }
+            }
+            foreach (ReportSymptom symptom in newSymptoms)
+            {
+                if (!oldSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
+                {
+                    AddSymptomToReport(id, symptom);
+                }
+            }
+        }
+
+        public void UpdateTests(int id, List<ReportTest> oldTests, List<ReportTest> newTests)
+        {
+            for (int i = 0; i < oldTests.Count(); i++)
+            {
+                if (!newTests.Select(t=>t.TestID).Contains(oldTests[i].TestID))
+                {
+                    DeleteTestFromReport(oldTests[i].ReportTestID);
+                }
+            }
+            foreach (ReportTest test in newTests)
+            {
+                if (!oldTests.Select(t=>t.TestID).Contains(test.TestID))
+                {
+                    AddTestToReport(id, test);
+                }
+            }
+        }
+
+        public void UpdateRecommendation(int id, List<RecommendedDoctor> oldDoctors, List<RecommendedDoctor> newDoctors)
+        {
+            for (int i = 0; i < oldDoctors.Count(); i++)
+            {
+                if (!newDoctors.Select(r => r.DoctorID).Contains(oldDoctors[i].DoctorID))
+                {
+                    DeleteTestFromReport(oldDoctors[i].ID);
+                }
+            }
+            foreach (RecommendedDoctor doctor in newDoctors)
+            {
+                if (!oldDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
+                {
+                    AddDoctorRecommendation(id, doctor);
+                }
+            }
+        }
+
+        public PrescribedMedicine GetPrescribed(int id)
+        {
+            return db.PrescribedMedics.Find(id);
+        }
+
+        public void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription)
+        {
+            oldPrescription.MedicineID = newPrescription.MedicineID;
+            oldPrescription.NumberOfDays = newPrescription.NumberOfDays;
+            oldPrescription.Dosages = newPrescription.Dosages;
+            oldPrescription.Consume =  newPrescription.Consume;
+        }
 
 
 
