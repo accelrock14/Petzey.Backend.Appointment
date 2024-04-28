@@ -29,29 +29,24 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return dto;
         }
 
-        // filter appointments by date
-        public List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams)
+        public List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails;
 
-            // Check if both Status and ScheduleDate are null or default values
-            if ((filterParams.Status == null) &&
-                (filterParams.ScheduleDate == null || filterParams.ScheduleDate == default(DateTime)))
+            // Filter by DoctorID if provided
+            if (filterParams.DoctorID != null)
             {
-                // Return all appointments
-                return query
-                    .Select(appointment => new AppointmentCardDto
-                    {
-                        AppointmentID = appointment.AppointmentID,
-                        DoctorID = appointment.DoctorID,
-                        PetID = appointment.PetID,
-                        ScheduleDate = appointment.ScheduleDate
-                    })
-                    .ToList();
+                query = query.Where(appointment => appointment.DoctorID == filterParams.DoctorID);
+            }
+
+            // If no appointments found for the given doctor, return empty list
+            if (!query.Any())
+            {
+                return new List<AppointmentCardDto>();
             }
 
             // Filter by ScheduleDate if provided
-            if (filterParams.ScheduleDate != null && filterParams.ScheduleDate != default(DateTime))
+            if (filterParams.ScheduleDate != default(DateTime))
             {
                 query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
             }
@@ -75,6 +70,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return filteredAppointments;
         }
+
 
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
@@ -100,6 +96,90 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return appointments;
         }
+
+        public List<AppointmentCardDto> GetAppointmentsByPetIdWithFilters(FilterParamsDto filterParams, int petid)
+        {
+            // Execute the query to check if appointments exist for the given petid
+            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petid);
+            List<AppointmentDetail> appointments = query.ToList();
+
+            // If no appointments found, return empty list
+            if (appointments.Count == 0)
+            {
+                return new List<AppointmentCardDto>();
+            }
+
+            // Filter appointments based on filterParams
+            query = query.AsQueryable();
+
+            // Filter by ScheduleDate if provided
+            if (filterParams.ScheduleDate != default(DateTime))
+            {
+                query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
+            }
+
+            // Filter by Status if provided
+            if (filterParams.Status != null)
+            {
+                query = query.Where(appointment => appointment.Status == filterParams.Status);
+            }
+
+            // Map to AppointmentCardDto
+            List<AppointmentCardDto> filteredAppointments = query
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate
+                })
+                .ToList();
+
+            return filteredAppointments;
+        }
+
+
+        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid)
+        {
+            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
+            List<AppointmentDetail> appointments = query.ToList();
+
+            // If no appointments found, return empty list
+            if (appointments.Count == 0)
+            {
+                return new List<AppointmentCardDto>();
+            }
+
+            // Filter appointments based on filterParams
+            query = query.AsQueryable();
+
+            // Filter by ScheduleDate if provided
+            if (filterParams.ScheduleDate != default(DateTime))
+            {
+                query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
+            }
+
+            // Filter by Status if provided
+            if (filterParams.Status != null)
+            {
+                query = query.Where(appointment => appointment.Status == filterParams.Status);
+            }
+
+            // Map to AppointmentCardDto
+            List<AppointmentCardDto> filteredAppointments = query
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate
+                })
+                .ToList();
+
+            return filteredAppointments;
+        }
+
+
 
         // get all appointments for a pet
         public List<AppointmentCardDto> AppointmentByPetId(int petId)
