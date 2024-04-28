@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="DTO\AppointmentCardDto.cs" />
     <Compile Include="DTO\AppointmentStatusCountsDto.cs" />
+    <Compile Include="DTO\CardPetDetailsDto.cs" />
+    <Compile Include="DTO\CardVetDetailsDto.cs" />
     <Compile Include="DTO\FilterParamsDto.cs" />
     <Compile Include="DTO\PetReportHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
@@ -60,9 +62,9 @@
     <Compile Include="Entities\Feedback.cs" />
     <Compile Include="Entities\Medicine.cs" />
     <Compile Include="Entities\PetIssue.cs" />
+    <Compile Include="Entities\GeneralPetIssue.cs" />
     <Compile Include="Entities\PrescribedMedicine.cs" />
     <Compile Include="Entities\Prescription.cs" />
-    <Compile Include="Entities\Rating.cs" />
     <Compile Include="Entities\RecommendedDoctor.cs" />
     <Compile Include="Entities\Report.cs" />
     <Compile Include="Entities\ReportSymptom.cs" />

@@ -27,9 +27,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             return Ok(status);
         }
-        [HttpPost]
+        [HttpGet]
         [Route("api/dashboard/filter/{offset?}")]
-        public IHttpActionResult FilterDateStatus([FromBody] FilterParamsDto filters, int offset = 0)
+        public IHttpActionResult FilterDateStatus(FilterParamsDto filters, int offset = 0)
         {
             var appointments = repo.FilterDateStatus(filters);
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
