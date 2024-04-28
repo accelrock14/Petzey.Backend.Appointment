@@ -21,32 +21,68 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/dashboard/statuscounts")]
         public IHttpActionResult GetStatusCounts()
         {
-            var status = repo.AppointmentStatusCounts();
+            try
+            {
+                var status = repo.AppointmentStatusCounts();
             if (status == null)
                 return NotFound();
 
             return Ok(status);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
         [HttpGet]
         [Route("api/dashboard/filter/{offset?}")]
         public IHttpActionResult FilterDateStatus(FilterParamsDto filters, int offset = 0)
         {
-            var appointments = repo.FilterDateStatus(filters);
-            return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+            try
+            {
+                var appointments = repo.FilterDateStatus(filters);
+            return Ok(appointments.Skip(offset).Take(20));
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }//20 appointments per page    
         }
         [HttpGet]
         [Route("api/dashboard/petappointments/{petid}/{date}")]
         public IHttpActionResult GetAppointmentsByPetIdAndDate(int petid, DateTime date)
         {
-            var appointments = repo.AppointmentByPetIdAndDate(petid, date);
+            try
+            {
+                var appointments = repo.AppointmentByPetIdAndDate(petid, date);
             return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
         [HttpGet]
         [Route("api/dashboard/petappointments/{petid}")]
         public IHttpActionResult GetAppointmentsByPetId(int petid)
         {
-            var appointments = repo.AppointmentByPetId(petid);
+            try
+            {
+                var appointments = repo.AppointmentByPetId(petid);
             return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
     }
 }

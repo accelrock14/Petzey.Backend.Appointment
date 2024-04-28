@@ -1,4 +1,5 @@
-﻿using Petzey.Backend.Appointment.Domain;
+﻿using Elmah;
+using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
@@ -11,6 +12,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.ModelBinding;
+
+
+
+
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
@@ -113,11 +118,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 return false;
             }
-
-
-
-            db.AppointmentDetails.Add(appointmentDetail);
-            db.SaveChanges();
+            
+               
+                db.AppointmentDetails.Add(appointmentDetail);
+                db.SaveChanges();
+            
+          
 
             return true;
         }
@@ -464,10 +470,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
         ///
         public IQueryable<Feedback> getAllFeedbacks()
         {
+            
             return db.Feedbacks;
         }
         public Feedback getFeedbackByAppointmrntId(int id)
         {
+           
             Feedback feedback = db.Feedbacks.Where(f => f.AppointmentId == id).FirstOrDefault();
             return feedback;
         }

@@ -36,5 +36,6 @@ namespace Petzey.Backend.Appointment.API
             var exception = Server.GetLastError();
             LogManager.GetCurrentClassLogger().Error(exception, "Unhandled exception");
         }
+
     }
 }
