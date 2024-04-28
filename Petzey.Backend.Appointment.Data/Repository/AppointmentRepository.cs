@@ -5,15 +5,229 @@ using Petzey.Backend.Appointment.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.ModelBinding;
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
     public class AppointmentRepository : IAppointmentRepository
     {
         PetzeyDbContext db = new PetzeyDbContext();
+
+        
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        //-------------------------------------------------
+
+        public IQueryable<AppointmentDetail> GetAppointmentDetails()
+        {
+            return db.AppointmentDetails;
+        }
+
+        public AppointmentDetail GetAppointmentDetail(int id)
+        {
+            AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
+            if (appointmentDetail == null)
+            {
+                Logger.Info("id does not exist...");
+                Logger.Error("id does not exists ... error");
+                return null;
+            }
+
+            return appointmentDetail;
+        }
+
+        public bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
+        {
+
+
+            int slot = appointmentDetail.ScheduleTimeSlot;
+
+            int hoursToAdd = 9 + (slot * 30 / 60);
+            int minutesToAdd = (slot * 30) % 60;
+
+            // if it is the lunch break theen
+            if (slot >= 8)
+            {
+                hoursToAdd += 1;
+            }
+
+            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+
+            if (slot < 0 || slot > 17)
+            {
+                return false;
+            }
+
+
+
+            if (id != appointmentDetail.AppointmentID)
+            {
+                return false;
+            }
+
+            db.Entry(appointmentDetail).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!AppointmentDetailExists(id))
+                {
+                    Logger.Error(ex, "Error while saving...");
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return true;
+        }
+
+        public bool PostAppointmentDetail(AppointmentDetail appointmentDetail)
+        {
+
+            int slot = appointmentDetail.ScheduleTimeSlot;
+
+            int hoursToAdd = 9 + (slot * 30 / 60);
+            int minutesToAdd = (slot * 30) % 60;
+
+            // if it is the lunch break theen
+            if (slot >= 8)
+            {
+                hoursToAdd += 1;
+            }
+
+            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+
+            if (slot < 0 || slot > 17)
+            {
+                return false;
+            }
+
+
+
+            db.AppointmentDetails.Add(appointmentDetail);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public bool DeleteAppointmentDetail(int id)
+        {
+
+            AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
+            if (appointmentDetail == null)
+            {
+                return false;
+            }
+
+            db.AppointmentDetails.Remove(appointmentDetail);
+            db.SaveChanges();
+
+            return true;
+        }
+
+        public bool AppointmentDetailExists(int id)
+        {
+            return db.AppointmentDetails.Count(e => e.AppointmentID == id) > 0;
+        }
+
+        public IQueryable<GeneralPetIssue> GetAllGeneralPetIssues()
+        {
+            return db.GeneralPetIssues;
+        }
+
+        public bool PostGeneralPetIssue(GeneralPetIssue generalPetIssue)
+        {
+
+            db.GeneralPetIssues.Add(generalPetIssue);
+            db.SaveChanges();
+
+            //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
+            return true;
+        }
+
+        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
+        {
+
+            var dateOnly = date.Date;
+
+            return db.AppointmentDetails
+                .Where(a => a.DoctorID == doctorId && DbFunctions.TruncateTime(a.ScheduleDate) == dateOnly)
+                .ToList();
+        }
+
+        public bool PatchAppointmentStatus(int id, Status status)
+        {
+
+            var appointment = db.AppointmentDetails.Find(id);
+            if (appointment == null)
+            {
+                return false;
+            }
+
+            appointment.Status = status;
+
+            try
+            {
+                db.Entry(appointment).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!AppointmentDetailExists(id))
+                {
+                    Logger.Error(ex, "Error in saving in db inside patch appointment");
+
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return true;
+        }
+
+        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
+        {
+
+            List<bool> schedules = new List<bool>(18);
+            for (int i = 0; i < 18; i++)
+            {
+
+                schedules.Add(false);
+            }
+
+            var dateOnly = date.Date;
+
+            // Ensuring the date comparison includes only the date part, not the time part
+            var scheuledTimeSlots = db.AppointmentDetails
+               .Where(a => a.DoctorID == doctorId && DbFunctions.TruncateTime(a.ScheduleDate) == dateOnly)
+               .Select(a => a.ScheduleTimeSlot);
+
+            foreach (var item in scheuledTimeSlots)
+            {
+                schedules[item] = true;
+            }
+
+            return schedules;
+        }
+
+        
+        //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 
         // get count of appointments in different statuses
         public AppointmentStatusCountsDto AppointmentStatusCounts()
@@ -117,6 +331,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return appointments;
         }
+
 
         public void AddReport(Report report)
         {
@@ -238,6 +453,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.RecommendedDoctors.Remove(db.RecommendedDoctors.Find(recommendedDoctorID));
             db.SaveChanges();
         }
+
     }
 }
 
