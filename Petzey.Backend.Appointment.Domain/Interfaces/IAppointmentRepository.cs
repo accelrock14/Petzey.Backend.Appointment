@@ -13,42 +13,26 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
     public interface IAppointmentRepository
     {
+        //BOOK APPOINTMENT
         IQueryable<AppointmentDetail> GetAppointmentDetails();
-
 
         AppointmentDetail GetAppointmentDetail(int id);
 
-
-
         bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail);
-
 
         bool PostAppointmentDetail(AppointmentDetail appointmentDetail);
 
-
         bool DeleteAppointmentDetail(int id);
-
-        
-
 
         bool AppointmentDetailExists(int id);
 
-
-
-
         IQueryable<GeneralPetIssue> GetAllGeneralPetIssues();
-
-
 
         bool PostGeneralPetIssue(GeneralPetIssue generalPetIssue);
 
-
         List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date);
 
-
-
         bool PatchAppointmentStatus(int id, Status status);
-
 
         List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date);
 
