@@ -21,6 +21,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        
         //-------------------------------------------------
 
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
@@ -465,6 +466,29 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             db.RecommendedDoctors.Remove(db.RecommendedDoctors.Find(recommendedDoctorID));
             db.SaveChanges();
+        }
+
+
+
+
+
+
+        /////////////////////////////// feedback
+        ///
+        public IQueryable<Feedback> getAllFeedbacks()
+        {
+            return db.Feedbacks;
+        }
+        public Feedback getFeedbackByAppointmrntId(int id)
+        {
+            Feedback feedback = db.Feedbacks.Where(f => f.AppointmentId == id).FirstOrDefault();
+            return feedback;
+        }
+        public bool Addfeedback(Feedback feedback)
+        {
+            db.Feedbacks.Add(feedback);
+            db.SaveChanges();
+            return true;
         }
 
     }

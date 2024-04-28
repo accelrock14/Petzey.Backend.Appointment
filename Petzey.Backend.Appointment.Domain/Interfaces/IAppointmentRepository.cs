@@ -66,6 +66,20 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         void DeleteTestFromReport(int reportTestID);
         void RemoveMedicineFromPrescription(int prescriptionId);
         void RemoveDoctorRecommendation(int recommendedDoctorID);
+
+
+
+
+
+
+
+
+        ///////feedback
+        ///
+
+        IQueryable<Feedback> getAllFeedbacks();
+        Feedback getFeedbackByAppointmrntId(int id);
+        bool Addfeedback(Feedback feedback);
     }
 }
 

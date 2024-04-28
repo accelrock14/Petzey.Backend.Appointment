@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Text;
-using NLog;
 using Petzey.Backend.Appointment.Domain.Interfaces;
 using Petzey.Backend.Appointment.Data.Repository;
 
