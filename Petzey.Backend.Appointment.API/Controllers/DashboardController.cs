@@ -40,22 +40,49 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/dashboard/appointments/filter/{offset?}")]
         public IHttpActionResult GetAllAppointmentsWithFilters(FilterParamsDto filters, int offset = 0)
         {
-            var appointments = repo.GetAllAppointmentsWithFilters(filters); 
+            try
+            {
+                var appointments = repo.GetAllAppointmentsWithFilters(filters); 
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
         [HttpGet]
         [Route("api/dashboard/petappointments/filter/{ownerid}/{offset?}")]
         public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, int ownerid, int offset = 0)
         {
-            var appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
+            try
+            {
+                var appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+             }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
         [HttpGet]
         [Route("api/dashboard/vetappointments/filter/{vetid}/{offset?}")]
         public IHttpActionResult GetVetAppointmentsWithFilters(FilterParamsDto filters, int vetid, int offset = 0)
         {
-            var appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
+            try
+            {
+                var appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         [HttpGet]
