@@ -455,6 +455,29 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+
+
+
+
+
+        /////////////////////////////// feedback
+        ///
+        public IQueryable<Feedback> getAllFeedbacks()
+        {
+            return db.Feedbacks;
+        }
+        public Feedback getFeedbackByAppointmrntId(int id)
+        {
+            Feedback feedback = db.Feedbacks.Where(f => f.AppointmentId == id).FirstOrDefault();
+            return feedback;
+        }
+        public bool Addfeedback(Feedback feedback)
+        {
+            db.Feedbacks.Add(feedback);
+            db.SaveChanges();
+            return true;
+        }
+
     }
 }
 

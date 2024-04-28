@@ -65,7 +65,6 @@
     <Compile Include="Entities\GeneralPetIssue.cs" />
     <Compile Include="Entities\PrescribedMedicine.cs" />
     <Compile Include="Entities\Prescription.cs" />
-    <Compile Include="Entities\Rating.cs" />
     <Compile Include="Entities\RecommendedDoctor.cs" />
     <Compile Include="Entities\Report.cs" />
     <Compile Include="Entities\ReportSymptom.cs" />
