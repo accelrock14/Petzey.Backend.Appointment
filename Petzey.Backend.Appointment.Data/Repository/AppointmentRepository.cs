@@ -14,7 +14,7 @@ using System.Web.ModelBinding;
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
-    public class AppointmentRepository : IAppointmentRepository, IReportRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
         PetzeyDbContext db = new PetzeyDbContext();
 

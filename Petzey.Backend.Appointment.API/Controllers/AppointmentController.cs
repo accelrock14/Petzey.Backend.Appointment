@@ -21,8 +21,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
     {
 
         //private PetzeyDbContext db = new PetzeyDbContext();
-        IAppointmentRepository repo = new AppointmentRepository();
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        //IAppointmentRepository repo = new AppointmentRepository();
+        IAppointmentRepository repo = null;
+        public AppointmentController(IAppointmentRepository repo)
+        {
+            this.repo = repo;
+        }
 
         // GET: api/Appointment
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
@@ -37,8 +41,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);  //db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
-                Logger.Info("id does not exist...");
-                Logger.Error("id does not exists ... error");
+                
                 return NotFound();
             }
 
