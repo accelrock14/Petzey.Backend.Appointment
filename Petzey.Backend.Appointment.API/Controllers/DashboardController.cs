@@ -35,10 +35,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
         }
         [HttpGet]
-        [Route("api/dashboard/petappointments/filter/{petid}/{offset?}")]
-        public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, int petid, int offset = 0)
+        [Route("api/dashboard/petappointments/filter/{ownerid}/{offset?}")]
+        public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, int ownerid, int offset = 0)
         {
-            var appointments = repo.GetAppointmentsByPetIdWithFilters(filters, petid);
+            var appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
             return Ok(appointments.Skip(offset).Take(20)); //20 appointments per page    
         }
         [HttpGet]
@@ -51,7 +51,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         [HttpGet]
         [Route("api/appointment/petappointments/{petid}/{date}")]
-        public IHttpActionResult GetAppointmentsByPetIdAndDate(int petid, DateTime date)
+        public IHttpActionResult GetAppointmentsByOwnerIdAndDate(int petid, DateTime date)
         {
             var appointments = repo.AppointmentByPetIdAndDate(petid, date);
             return Ok(appointments);
