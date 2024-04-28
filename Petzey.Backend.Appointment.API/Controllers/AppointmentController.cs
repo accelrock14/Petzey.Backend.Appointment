@@ -83,24 +83,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest();
             }
 
-            //db.Entry(appointmentDetail).State = EntityState.Modified;
-
-            //try
-            //{
-            //    db.SaveChanges();
-            //}
-            //catch (DbUpdateConcurrencyException ex)
-            //{
-            //    if (!AppointmentDetailExists(id))
-            //    {
-            //        Logger.Error(ex, "Error while saving...");
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
 
             if( ! repo.PutAppointmentDetail(id, appointmentDetail))
             {
