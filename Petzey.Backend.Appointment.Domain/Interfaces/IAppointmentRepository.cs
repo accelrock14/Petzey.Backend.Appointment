@@ -67,12 +67,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         void RemoveMedicineFromPrescription(int prescriptionId);
         void RemoveDoctorRecommendation(int recommendedDoctorID);
 
+        void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription);
+        void UpdateReportStatus(Report oldReport, Report newReport);
 
-
-
-
-
-
+        PrescribedMedicine GetPrescribed(int prescriptionID);
 
         ///////feedback
         ///
