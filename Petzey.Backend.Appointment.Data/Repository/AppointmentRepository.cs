@@ -21,6 +21,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        
         //-------------------------------------------------
 
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
