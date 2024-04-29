@@ -177,7 +177,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
-
+            if (status == Status.Closed)
+            {
+                appointment.Report = new Report();
+            }
             try
             {
                 db.Entry(appointment).State = EntityState.Modified;
