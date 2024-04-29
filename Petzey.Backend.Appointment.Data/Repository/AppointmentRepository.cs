@@ -177,7 +177,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
-
+            if (status == Status.Closed)
+            {
+                appointment.Report = new Report();
+            }
             try
             {
                 db.Entry(appointment).State = EntityState.Modified;
@@ -312,10 +315,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
-        public List<AppointmentCardDto> GetAppointmentsByPetIdWithFilters(FilterParamsDto filterParams, int petid)
+        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid)
         {
             // Execute the query to check if appointments exist for the given petid
-            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petid);
+            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
             List<AppointmentDetail> appointments = query.ToList();
 
             // If no appointments found, return empty list

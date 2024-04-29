@@ -40,7 +40,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         // GET METHODS
         // APPOINTMENTS 
         List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);
-        List<AppointmentCardDto> GetAppointmentsByPetIdWithFilters(FilterParamsDto filterParams, int petid);
+        List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid);
         List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);    
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
