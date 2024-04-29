@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
@@ -137,6 +139,15 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        [HttpGet]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult GetPrescription(int id)
+        {
+            PrescribedMedicine prescribedMedicine = repo.GetPrescribed(id);
+            return Ok(prescribedMedicine);
+        }
+
+
         // Add a new Medicine to the list in Prescription
         // Pass the PrescriptionID of the prescription to which you want to add the PrescribedMedicine
         [HttpPost]
@@ -151,7 +162,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Created("location",prescribedMedicine.PrescribedMedicineID);
         }
 
-
+/*
         // Add a symptom to the report
         // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
@@ -182,7 +193,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.AddDoctorRecommendation(reportID, recommendedDoctor);
             return Created("location", recommendedDoctor.ID);
-        }
+        }*/
 
 
         // Edit details in a report for an appointment
@@ -215,7 +226,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok("deleted successfully");
         }
 
-
+/*
         // Remove a symptom from the report
         // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
@@ -246,7 +257,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
-        }
+        }*/
 
 
         // Temp api to post a new report
@@ -260,6 +271,52 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
             repo.AddReport(report);
             return Created("location", report.ReportID);
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/report/{id}")]
+        public IHttpActionResult PatchReport(int id, [FromBody] Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingReport = repo.GetReportByID(id);
+
+
+            if (existingReport == null)
+            {
+
+                return BadRequest("canot find the report with this id");
+
+            }
+
+            repo.UpdateReportStatus(existingReport, report);
+            return Ok(report);
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult PatchPrescription(int id, [FromBody] PrescribedMedicine prescribedMedicine)
+        {
+            if (prescribedMedicine == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingPrescription = repo.GetPrescribed(id);
+
+
+            if (existingPrescription == null)
+            {
+
+                return BadRequest("canot find the prescription with this id");
+
+            }
+
+            repo.UpdateMedicine(existingPrescription, prescribedMedicine);
+            return Ok(prescribedMedicine);
         }
     }
 }
