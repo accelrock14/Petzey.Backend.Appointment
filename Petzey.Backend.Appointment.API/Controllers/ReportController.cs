@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
@@ -160,7 +162,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Created("location",prescribedMedicine.PrescribedMedicineID);
         }
 
-
+/*
         // Add a symptom to the report
         // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
@@ -191,7 +193,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.AddDoctorRecommendation(reportID, recommendedDoctor);
             return Created("location", recommendedDoctor.ID);
-        }
+        }*/
 
 
         // Edit details in a report for an appointment
@@ -224,7 +226,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok("deleted successfully");
         }
 
-
+/*
         // Remove a symptom from the report
         // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
@@ -255,7 +257,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
-        }
+        }*/
 
 
         // Temp api to post a new report
