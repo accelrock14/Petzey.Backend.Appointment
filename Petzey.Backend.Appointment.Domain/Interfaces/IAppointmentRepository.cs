@@ -38,8 +38,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
 
 
         // GET METHODS
-        // APPOINTMENTS
-        List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams);
+        // APPOINTMENTS 
+        List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);
+        List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);    
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
@@ -67,12 +69,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         void RemoveMedicineFromPrescription(int prescriptionId);
         void RemoveDoctorRecommendation(int recommendedDoctorID);
 
+        void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription);
+        void UpdateReportStatus(Report oldReport, Report newReport);
 
-
-
-
-
-
+        PrescribedMedicine GetPrescribed(int prescriptionID);
 
         ///////feedback
         ///
