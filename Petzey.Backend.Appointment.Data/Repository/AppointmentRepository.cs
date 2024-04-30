@@ -599,11 +599,13 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public void UpdateRecommendation(int id, List<RecommendedDoctor> oldDoctors, List<RecommendedDoctor> newDoctors)
         {
-            for (int i = 0; i < oldDoctors.Count(); i++)
+            List<RecommendedDoctor> deletedDoctors = new List<RecommendedDoctor>();
+            foreach(RecommendedDoctor doctor in oldDoctors)
             {
-                if (!newDoctors.Select(r => r.DoctorID).Contains(oldDoctors[i].DoctorID))
+                if (!newDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
                 {
-                    DeleteTestFromReport(oldDoctors[i].ID);
+                    //DeleteTestFromReport(oldDoctors[i].ID);
+                    deletedDoctors.Add(doctor);
                 }
             }
             foreach (RecommendedDoctor doctor in newDoctors)
@@ -612,6 +614,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 {
                     AddDoctorRecommendation(id, doctor);
                 }
+            }
+            foreach (RecommendedDoctor doctor in deletedDoctors)
+            {
+                db.RecommendedDoctors.Remove(doctor);
             }
         }
 
@@ -626,6 +632,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             oldPrescription.NumberOfDays = newPrescription.NumberOfDays;
             oldPrescription.Dosages = newPrescription.Dosages;
             oldPrescription.Consume =  newPrescription.Consume;
+            oldPrescription.Comment = newPrescription.Comment;
             db.SaveChanges();
         }
 
