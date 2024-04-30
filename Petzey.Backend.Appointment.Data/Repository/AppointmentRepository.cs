@@ -630,6 +630,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             oldPrescription.NumberOfDays = newPrescription.NumberOfDays;
             oldPrescription.Dosages = newPrescription.Dosages;
             oldPrescription.Consume =  newPrescription.Consume;
+            oldPrescription.Comment = newPrescription.Comment;
             db.SaveChanges();
         }
 
