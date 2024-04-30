@@ -19,7 +19,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
         PetzeyDbContext db = new PetzeyDbContext();
 
         
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         
         //-------------------------------------------------
@@ -34,8 +33,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
-                Logger.Info("id does not exist...");
-                Logger.Error("id does not exists ... error");
+                
                 return null;
             }
 
@@ -81,7 +79,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error while saving...");
                     return false;
                 }
                 else
@@ -190,7 +187,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error in saving in db inside patch appointment");
 
                     return false;
                 }
@@ -555,12 +551,13 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public void UpdateSymptoms(int id,List<ReportSymptom> oldSymptoms, List<ReportSymptom> newSymptoms)
         {
-            for (int i = 0; i < oldSymptoms.Count(); i++)
+            List<ReportSymptom> deletedSymptoms = new List<ReportSymptom>();
+            foreach(ReportSymptom symptom in oldSymptoms)
             {
-                if (!newSymptoms.Select(s => s.SymptomID).Contains(oldSymptoms[i].SymptomID))
+                if (!newSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
                 {
-                    //oldReport.Symptoms.Remove(oldReport.Symptoms[i]);
-                    DeleteSymptomFromReport(oldSymptoms[i].ReportSymptomID);
+                    //DeleteSymptomFromReport(oldSymptoms[i].ReportSymptomID);
+                    deletedSymptoms.Add(symptom);
                 }
             }
             foreach (ReportSymptom symptom in newSymptoms)
@@ -570,15 +567,21 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AddSymptomToReport(id, symptom);
                 }
             }
+            foreach(ReportSymptom symptom in deletedSymptoms)
+            {
+                DeleteSymptomFromReport(symptom.ReportSymptomID);
+            }
         }
 
         public void UpdateTests(int id, List<ReportTest> oldTests, List<ReportTest> newTests)
         {
-            for (int i = 0; i < oldTests.Count(); i++)
+            List<ReportTest> deletedTests = new List<ReportTest>();
+            foreach(ReportTest test in oldTests)
             {
-                if (!newTests.Select(t=>t.TestID).Contains(oldTests[i].TestID))
+                if (!newTests.Select(t=>t.TestID).Contains(test.TestID))
                 {
-                    DeleteTestFromReport(oldTests[i].ReportTestID);
+                    //DeleteTestFromReport(oldTests[i].ReportTestID);
+                    deletedTests.Add(test);
                 }
             }
             foreach (ReportTest test in newTests)
@@ -588,15 +591,21 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AddTestToReport(id, test);
                 }
             }
+            foreach(ReportTest test in deletedTests)
+            {
+                DeleteTestFromReport(test.ReportTestID);
+            }
         }
 
         public void UpdateRecommendation(int id, List<RecommendedDoctor> oldDoctors, List<RecommendedDoctor> newDoctors)
         {
-            for (int i = 0; i < oldDoctors.Count(); i++)
+            List<RecommendedDoctor> deletedDoctors = new List<RecommendedDoctor>();
+            foreach(RecommendedDoctor doctor in oldDoctors)
             {
-                if (!newDoctors.Select(r => r.DoctorID).Contains(oldDoctors[i].DoctorID))
+                if (!newDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
                 {
-                    DeleteTestFromReport(oldDoctors[i].ID);
+                    //DeleteTestFromReport(oldDoctors[i].ID);
+                    deletedDoctors.Add(doctor);
                 }
             }
             foreach (RecommendedDoctor doctor in newDoctors)
@@ -605,6 +614,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 {
                     AddDoctorRecommendation(id, doctor);
                 }
+            }
+            foreach (RecommendedDoctor doctor in deletedDoctors)
+            {
+                db.RecommendedDoctors.Remove(doctor);
             }
         }
 
@@ -619,6 +632,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
             oldPrescription.NumberOfDays = newPrescription.NumberOfDays;
             oldPrescription.Dosages = newPrescription.Dosages;
             oldPrescription.Consume =  newPrescription.Consume;
+            oldPrescription.Comment = newPrescription.Comment;
+            db.SaveChanges();
         }
 
 

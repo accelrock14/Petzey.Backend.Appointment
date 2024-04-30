@@ -131,6 +131,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
             petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.ScheduleDate=mostRecentAppointment.ScheduleDate;
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
             petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
