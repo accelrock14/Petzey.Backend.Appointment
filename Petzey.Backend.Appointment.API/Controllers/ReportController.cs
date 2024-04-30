@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
@@ -185,6 +187,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
             petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.ScheduleDate=mostRecentAppointment.ScheduleDate;
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
             petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
@@ -229,6 +232,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+/*
             }
         }
 
@@ -283,6 +287,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 repo.AddDoctorRecommendation(reportID, recommendedDoctor);
             return Created("location", recommendedDoctor.ID);
+        }*/
             }
             catch (Exception ex)
             {
@@ -341,7 +346,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
-
+/*
         // Remove a symptom from the report
         // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
@@ -392,6 +397,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
+        }*/
             }
             catch (Exception ex)
             {
