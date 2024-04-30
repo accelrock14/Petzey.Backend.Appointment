@@ -214,13 +214,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         
 
-        private bool AppointmentDetailExists(int id)
+       /* private bool AppointmentDetailExists(int id)
         {
-           
+            try
+            {
+
                 return repo.AppointmentDetailExists(id);
-            
-          
-        }
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }*/
 
         // end point to fetch all list of petissues
         // GET: api/AppointmentDetails
