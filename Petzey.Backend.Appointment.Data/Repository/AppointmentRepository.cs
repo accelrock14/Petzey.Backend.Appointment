@@ -664,6 +664,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
+        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(int docId)
+        {
+            return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
+        }
     }
 }
 

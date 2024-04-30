@@ -44,6 +44,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
+        // get all appointments of a doctor
+        [HttpGet]
+        [Route("api/AppointmentDetails/ofdoctor")]
+        public IHttpActionResult GetAppointmentsOfDoctor(int docId)
+        {
+            try
+            {
+                // call repo
+                return Ok(repo.GetAppointmentsOfDoctor(docId));
+                
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+            }
+        }
+
         // GET: api/Appointment/5
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult GetAppointmentDetail(int id)
