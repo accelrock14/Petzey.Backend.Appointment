@@ -19,7 +19,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
         PetzeyDbContext db = new PetzeyDbContext();
 
         
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         
         //-------------------------------------------------
@@ -34,8 +33,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
-                Logger.Info("id does not exist...");
-                Logger.Error("id does not exists ... error");
+                
                 return null;
             }
 
@@ -81,7 +79,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error while saving...");
                     return false;
                 }
                 else
@@ -190,7 +187,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error in saving in db inside patch appointment");
 
                     return false;
                 }
