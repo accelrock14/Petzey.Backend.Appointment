@@ -32,14 +32,25 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // GET: api/Appointment
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
         {
-            return repo.GetAppointmentDetails();
+            try
+            {
+                return repo.GetAppointmentDetails();
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return (IQueryable<AppointmentDetail>)InternalServerError();
+
+            }
         }
 
         // GET: api/Appointment/5
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult GetAppointmentDetail(int id)
         {
-            AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);  //db.AppointmentDetails.Find(id);
+            try
+            {
+                AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);  //db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
                 
@@ -47,6 +58,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return Ok(appointmentDetail);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         // PUT: api/Appointment/5
@@ -54,7 +72,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/Appointment/1
         public IHttpActionResult PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
         {
-            if (!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -109,13 +129,22 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         // POST: api/Appointment
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult PostAppointmentDetail(AppointmentDetail appointmentDetail)
         {
-            if(!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -148,6 +177,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
             return CreatedAtRoute("DefaultApi", new { id = appointmentDetail.AppointmentID }, appointmentDetail);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
 
         }
 
@@ -155,7 +191,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [ResponseType(typeof(AppointmentDetail))]
         public IHttpActionResult DeleteAppointmentDetail(int id)
         {
-            AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);   // db.AppointmentDetails.Find(id);
+            try
+            {
+                AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);   // db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
                 return NotFound();
@@ -167,14 +205,32 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return Ok(appointmentDetail);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         
 
-        private bool AppointmentDetailExists(int id)
+       /* private bool AppointmentDetailExists(int id)
         {
-            return repo.AppointmentDetailExists(id);
-        }
+            try
+            {
+
+                return repo.AppointmentDetailExists(id);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }*/
 
         // end point to fetch all list of petissues
         // GET: api/AppointmentDetails
@@ -185,7 +241,16 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         public IQueryable<GeneralPetIssue> GetAllGeneralPetIssues()
         {
-            return repo.GetAllGeneralPetIssues();
+            try
+            {
+                return repo.GetAllGeneralPetIssues();
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return (IQueryable<GeneralPetIssue>)InternalServerError();
+
+            }
         }
 
         // end point for adding a new petissue
@@ -194,7 +259,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/GeneralPetIssues
         public IHttpActionResult PostGeneralPetIssue(GeneralPetIssue generalPetIssue)
         {
-            if (!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -208,6 +275,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
             return Ok(generalPetIssue);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         [HttpGet]
@@ -229,7 +303,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // in body send 0,1,2,3 for the required status.
         public IHttpActionResult PatchAppointmentStatus(int id, [FromBody] Status status)
         {
-            if (!ModelState.IsValid)
+            try
+            {
+                if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -248,6 +324,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
         //get doctor schedule based on date (first get today's schedule)
@@ -258,9 +341,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/schedules/1/2024-04-26
         public IHttpActionResult GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
         {
-            List<bool> schedules = repo.GetScheduledTimeSlotsBasedOnDocIDandDate(doctorId,date);
+            try
+            {
+                List<bool> schedules = repo.GetScheduledTimeSlotsBasedOnDocIDandDate(doctorId, date);
 
-            return Ok(schedules);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
 
         }
 
