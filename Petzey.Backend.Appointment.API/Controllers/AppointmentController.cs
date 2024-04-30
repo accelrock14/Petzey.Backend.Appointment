@@ -13,9 +13,11 @@ using System.Web.Http.Description;
 using System.Text;
 using Petzey.Backend.Appointment.Domain.Interfaces;
 using Petzey.Backend.Appointment.Data.Repository;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AppointmentController : ApiController
     {
 
