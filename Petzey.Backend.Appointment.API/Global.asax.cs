@@ -6,7 +6,10 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using NLog;
+using System.Web.Http;
+
+
+using Petzey.Backend.Appointment.Domain.Interfaces;
 
 namespace Petzey.Backend.Appointment.API
 {
@@ -28,14 +31,13 @@ namespace Petzey.Backend.Appointment.API
             // this line is only once so it gave exception so I commented
 
             // Configure NLog
-            LogManager.LoadConfiguration(Server.MapPath("~/NLog.config"));
+            
         }
 
-        protected void Application_Error(object sender, EventArgs e)
-        {
-            var exception = Server.GetLastError();
-            LogManager.GetCurrentClassLogger().Error(exception, "Unhandled exception");
-        }
+       
+     
+
 
     }
+   
 }

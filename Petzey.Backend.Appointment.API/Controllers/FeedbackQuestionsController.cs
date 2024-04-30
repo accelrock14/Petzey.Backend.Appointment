@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Petzey.Backend.Appointment.Data;
 using Petzey.Backend.Appointment.Domain.Entities;
+using Petzey.Backend.Appointment.Domain.Interfaces;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
@@ -17,10 +18,29 @@ namespace Petzey.Backend.Appointment.API.Controllers
     {
         private PetzeyDbContext db = new PetzeyDbContext();
 
-        // GET: api/FeedbackQuestions
-        public IQueryable<FeedbackQuestion> GetFeedbackQuestions()
+        private readonly ICacheService _cacheService;
+
+        public FeedbackQuestionsController(ICacheService cache)
         {
-            return db.FeedbackQuestions;
+            _cacheService = cache;
+        }
+
+        // GET: api/FeedbackQuestions
+        public IHttpActionResult GetFeedbackQuestions()
+        {
+
+            var cachedQuestions = _cacheService.Get <List<FeedbackQuestion>>("FeedbackQuestions5");
+
+            if (cachedQuestions != null)
+            {
+                return Ok(cachedQuestions);
+            }
+
+            var questions = db.FeedbackQuestions.ToList();
+
+            _cacheService.Set("FeedbackQuestions5", questions, TimeSpan.FromMinutes(10));
+
+            return Ok(questions);
         }
 
         // GET: api/FeedbackQuestions/5
