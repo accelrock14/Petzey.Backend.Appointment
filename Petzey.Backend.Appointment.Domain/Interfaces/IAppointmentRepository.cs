@@ -39,6 +39,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date);
 
 
+        List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID);
+        List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID);
+
+
         // GET METHODS
         // APPOINTMENTS 
         List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);

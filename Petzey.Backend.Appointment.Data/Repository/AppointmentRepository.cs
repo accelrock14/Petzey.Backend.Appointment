@@ -230,7 +230,30 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return schedules;
         }
 
-        
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID)
+        {
+            return db.AppointmentDetails.Where(a => a.DoctorID == VetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+
         //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
