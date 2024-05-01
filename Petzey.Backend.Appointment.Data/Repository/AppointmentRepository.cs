@@ -182,12 +182,25 @@ namespace Petzey.Backend.Appointment.Data.Repository
             appointment.Status = status;
             if (status == Status.Closed)
             {
-                appointment.Report = new Report();
+                Prescription prescription = new Prescription();
+                Report report = new Report();
+                prescription.PrescribedMedicines = new List<PrescribedMedicine>();
+                
+                db.Prescriptions.Add(prescription);
+                report.Prescription = prescription;
+                db.SaveChanges();
+                db.Reports.Add(report);
+                
+                appointment.Report = report;
+                
+
+               
             }
             try
             {
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
+                
             }
             catch (DbUpdateConcurrencyException ex)
             {
