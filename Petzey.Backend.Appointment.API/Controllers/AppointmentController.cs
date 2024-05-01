@@ -13,9 +13,11 @@ using System.Web.Http.Description;
 using System.Text;
 using Petzey.Backend.Appointment.Domain.Interfaces;
 using Petzey.Backend.Appointment.Data.Repository;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AppointmentController : ApiController
     {
 
@@ -39,6 +41,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return (IQueryable<AppointmentDetail>)InternalServerError();
 
+            }
+        }
+
+        // get all appointments of a doctor
+        [HttpGet]
+        [Route("api/AppointmentDetails/ofdoctor")]
+        public IHttpActionResult GetAppointmentsOfDoctor(int docId)
+        {
+            try
+            {
+                // call repo
+                return Ok(repo.GetAppointmentsOfDoctor(docId));
+                
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
             }
         }
 
@@ -214,13 +234,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         
 
-        private bool AppointmentDetailExists(int id)
+       /* private bool AppointmentDetailExists(int id)
         {
-           
+            try
+            {
+
                 return repo.AppointmentDetailExists(id);
-            
-          
-        }
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }*/
 
         // end point to fetch all list of petissues
         // GET: api/AppointmentDetails

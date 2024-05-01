@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
@@ -185,6 +187,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
             petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.ScheduleDate=mostRecentAppointment.ScheduleDate;
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
             petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
@@ -229,10 +232,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+
             }
         }
 
-
+/*
         // Add a symptom to the report
         // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
@@ -241,8 +245,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                repo.AddSymptomToReport( reportID, reportSymptom);
-            return Created("location",reportSymptom.ReportSymptomID);
+                repo.AddSymptomToReport(reportID, reportSymptom);
+                return Created("location", reportSymptom.ReportSymptomID);
             }
             catch (Exception ex)
             {
@@ -262,7 +266,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 repo.AddTestToReport(reportID, reportTest);
-            return Created("location",reportTest.ReportTestID);
+                return Created("location", reportTest.ReportTestID);
             }
             catch (Exception ex)
             {
@@ -282,18 +286,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 repo.AddDoctorRecommendation(reportID, recommendedDoctor);
-            return Created("location", recommendedDoctor.ID);
+                return Created("location", recommendedDoctor.ID);
             }
+      /*      }
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
             }
-        }
+        }*/
 
 
-        // Edit details in a report for an appointment
+            // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
         public IHttpActionResult PutEditReport([FromBody] Report report)
@@ -341,7 +346,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
-
+/*
         // Remove a symptom from the report
         // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
@@ -392,14 +397,15 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
-            }
+        }*/
+          /*  }
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
             }
-        }
+        }*/
 
 
         // Temp api to post a new report

@@ -6,10 +6,6 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web.Http;
-
-
-using Petzey.Backend.Appointment.Domain.Interfaces;
 
 namespace Petzey.Backend.Appointment.API
 {
@@ -30,14 +26,9 @@ namespace Petzey.Backend.Appointment.API
             //GlobalConfiguration.Configure(WebApiConfig.Register);
             // this line is only once so it gave exception so I commented
 
-            // Configure NLog
-            
+           
         }
 
        
-     
-
-
     }
-   
 }

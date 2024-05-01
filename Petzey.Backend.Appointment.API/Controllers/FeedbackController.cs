@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
