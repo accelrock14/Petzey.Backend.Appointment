@@ -14,6 +14,7 @@ using System.Text;
 using Petzey.Backend.Appointment.Domain.Interfaces;
 using Petzey.Backend.Appointment.Data.Repository;
 using System.Web.Http.Cors;
+using Petzey.Backend.Appointment.Domain.DTO;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
@@ -364,6 +365,46 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 List<bool> schedules = repo.GetScheduledTimeSlotsBasedOnDocIDandDate(doctorId, date);
 
                 return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("api/AppointmentDetails/allappointmentsbyvetid/{vetID}")]
+        public IHttpActionResult GetAllClosedAppointmentByVetID(int vetID)
+        {
+            try
+            {
+                List<AppointmentCardDto> resultList=repo.GetAllClosedAppointmentsByVetID(vetID);
+
+                return Ok(resultList);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("api/AppointmentDetails/allappointmentsbypetid/{petID}")]
+        public IHttpActionResult GetAllClosedAppointmentByPetID(int petID)
+        {
+            try
+            {
+                List<AppointmentCardDto> resultList = repo.GetAllClosedAppointmentsByPetID(petID);
+
+                return Ok(resultList);
             }
             catch (Exception ex)
             {

@@ -182,12 +182,25 @@ namespace Petzey.Backend.Appointment.Data.Repository
             appointment.Status = status;
             if (status == Status.Closed)
             {
-                appointment.Report = new Report();
+                Prescription prescription = new Prescription();
+                Report report = new Report();
+                prescription.PrescribedMedicines = new List<PrescribedMedicine>();
+                
+                db.Prescriptions.Add(prescription);
+                report.Prescription = prescription;
+                db.SaveChanges();
+                db.Reports.Add(report);
+                
+                appointment.Report = report;
+                
+
+               
             }
             try
             {
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
+                
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -230,7 +243,30 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return schedules;
         }
 
-        
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID)
+        {
+            return db.AppointmentDetails.Where(a => a.DoctorID == VetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+
         //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
