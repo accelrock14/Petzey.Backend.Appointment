@@ -12,13 +12,25 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // GET api/values
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return new string[] { "value1", "value2" };
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return (IEnumerable<string>)InternalServerError();
+
+            }
         }
 
         // GET api/values/5
         public string Get(int id)
         {
-            return "value";
+            
+                return "value";
+                 
+
         }
 
         // POST api/values

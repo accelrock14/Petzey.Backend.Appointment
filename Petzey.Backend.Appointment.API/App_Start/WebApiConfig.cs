@@ -10,6 +10,10 @@ namespace Petzey.Backend.Appointment.API
     {
         public static void Register(HttpConfiguration config)
         {
+
+            // Enable CORS
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
             // Web API configuration and services
             var cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
