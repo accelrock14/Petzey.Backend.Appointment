@@ -6,13 +6,15 @@ using System;
 using System.Web.Http.Results;
 using System.Web.Http;
 using Petzey.Backend.Appointment.Domain.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PetzeyAPIUnitTest
 {
     [TestClass]
     public class FeedbackTest1
     {
-        [TestMethod]
+        /*[TestMethod]
         public void PostFeedback_ShouldReturnCreatedAtRoute()
         {
             var mockRepo = new Mock<IAppointmentRepository>();
@@ -106,6 +108,150 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(actionResult, typeof(NotFoundResult));
+        }*/
+        [TestMethod]
+        public void GetFeedback_Returns_AllFeedbacks()
+        {
+            // Arrange
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            var expectedFeedbacks = new List<Feedback>
+            {
+                new Feedback { FeedbackID = 1, Recommendation = "Recommendation 1" },
+                new Feedback { FeedbackID = 2, Recommendation = "Recommendation 2" }
+            };
+            mockRepo.Setup(repo => repo.getAllFeedbacks()).Returns(expectedFeedbacks.AsQueryable());
+
+            // Act
+            var result = controller.GetFeedback();
+
+            // Assert
+            Assert.IsNotNull(result);
+            CollectionAssert.AreEqual(expectedFeedbacks, result.ToList());
+        }
+
+        [TestMethod]
+        public void GetFeedback_Returns_SingleFeedback_ById()
+        {
+            // Arrange
+            int appointmentId = 123; // Use a valid appointment ID
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            var expectedFeedback = new Feedback { FeedbackID = 1, Recommendation = "Recommendation 1", AppointmentId = appointmentId };
+            mockRepo.Setup(repo => repo.getFeedbackByAppointmrntId(appointmentId)).Returns(expectedFeedback);
+
+            // Act
+            var result = controller.GetFeedback(appointmentId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<Feedback>));
+            var contentResult = (OkNegotiatedContentResult<Feedback>)result;
+            Assert.AreEqual(expectedFeedback, contentResult.Content);
+        }
+
+
+        [TestMethod]
+        public void PostFeedback_Returns_Created()
+        {
+            // Arrange
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            var newFeedback = new Feedback { FeedbackID = 1, Recommendation = "New Recommendation" };
+
+            // Act
+            var result = controller.PostFeedback(newFeedback);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result is System.Web.Http.Results.CreatedAtRouteNegotiatedContentResult<Feedback>);
+        }
+        [TestMethod]
+        public void GetFeedback_Returns_EmptyList_IfNoFeedbacks()
+        {
+            // Arrange
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            mockRepo.Setup(repo => repo.getAllFeedbacks()).Returns(new List<Feedback>().AsQueryable());
+
+            // Act
+            var result = controller.GetFeedback();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [TestMethod]
+        public void GetFeedback_Returns_InternalServerError_IfExceptionThrown()
+        {
+            // Arrange
+            int id = 1;
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            mockRepo.Setup(repo => repo.getFeedbackByAppointmrntId(id)).Throws<Exception>();
+
+            // Act
+            var result = controller.GetFeedback(id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(InternalServerErrorResult));
+        }
+
+
+        [TestMethod]
+        public void GetFeedback_Returns_NotFound_IfNoFeedbackFoundById()
+        {
+            // Arrange
+            int id = 1;
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            mockRepo.Setup(repo => repo.getFeedbackByAppointmrntId(id)).Returns((Feedback)null);
+
+            // Act
+            var result = controller.GetFeedback(id);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public void PostFeedback_Returns_CreatedAtRoute_IfModelStateValid()
+        {
+            // Arrange
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            var feedback = new Feedback { FeedbackID = 1, Recommendation = "New Recommendation" };
+
+            // Act
+            var result = controller.PostFeedback(feedback);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(CreatedAtRouteNegotiatedContentResult<Feedback>));
+        }
+
+
+
+
+
+        [TestMethod]
+        public void PostFeedback_Returns_InternalServerError_IfExceptionThrown()
+        {
+            // Arrange
+            var mockRepo = new Mock<IAppointmentRepository>();
+            var controller = new FeedbackController(mockRepo.Object);
+            mockRepo.Setup(repo => repo.Addfeedback(It.IsAny<Feedback>())).Throws<Exception>();
+            var feedback = new Feedback();
+
+            // Act
+            var result = controller.PostFeedback(feedback);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(InternalServerErrorResult));
         }
     }
 }

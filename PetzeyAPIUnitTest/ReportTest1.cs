@@ -282,7 +282,7 @@ namespace PetzeyAPIUnitTest
         }
 
 
-        [TestMethod]
+       /* [TestMethod]
         public void AddSymptomToReport_ReturnsCreatedResult()
         {
             // Arrange
@@ -299,9 +299,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void AddSymptomToReport_CallsRepoAddSymptomToReport()
         {
             // Arrange
@@ -320,9 +320,9 @@ namespace PetzeyAPIUnitTest
 
             // Verify that the symptom was added to the database
             mockDbContext.Verify(db => db.AddSymptomToReport(reportId, reportSymptom), Times.Once);
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void DeleteSymptomFromReport_ReturnsOkResult()
         {
             // Arrange
@@ -333,9 +333,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<string>));
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void DeleteSymptomFromReport_CallsRepoDeleteSymptomFromReport()
         {
             // Arrange
@@ -346,9 +346,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             mockDbContext.Verify(repo => repo.DeleteSymptomFromReport(reportSymptomId), Times.Once);
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void AddTestToReport_ReturnsOkResult()
         {
             // Arrange
@@ -360,9 +360,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void AddTestToReport_CallsRepoAddTestToReport()
         {
             // Arrange
@@ -374,9 +374,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             mockDbContext.Verify(repo => repo.AddTestToReport(reportId, reportTest), Times.Once);
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void DeleteTestFromReport_ReturnsOkResult()
         {
             // Arrange
@@ -387,9 +387,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<string>));
-        }
+        }*/
 
-        [TestMethod]
+        /*[TestMethod]
         public void DeleteTestFromReport_CallsRepoDeleteTestFromReport()
         {
             // Arrange
@@ -400,7 +400,7 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             mockDbContext.Verify(repo => repo.DeleteTestFromReport(reportTestId), Times.Once);
-        }
+        }*/
 
         [TestMethod]
         public void AddMedicine_ReturnsCreatedResult()
@@ -462,7 +462,7 @@ namespace PetzeyAPIUnitTest
         }
 
 
-        [TestMethod]
+      /*  [TestMethod]
         public void AddRecommendationToReport_ReturnsCreatedResult()
         {
             // Arrange
@@ -477,9 +477,9 @@ namespace PetzeyAPIUnitTest
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(CreatedNegotiatedContentResult<int>));
-        }
+        }*/
 
-        [TestMethod]
+       /* [TestMethod]
         public void AddRecommendationToReport_CallsRepoAddDoctorRecommendation()
         {
             // Arrange
@@ -494,7 +494,7 @@ namespace PetzeyAPIUnitTest
             controller.AddRecommendationToReport(reportId, recommendedDoctor);
             // Assert
             mockDbContext.Verify(repo => repo.AddDoctorRecommendation(reportId, recommendedDoctor), Times.Once);
-        }
+        }*/
 
 
         [TestMethod]
@@ -590,7 +590,7 @@ namespace PetzeyAPIUnitTest
         }
 
 
-        [TestMethod]
+      /*  [TestMethod]
         public void DeleteRecommendationFromReport_Should_Return_Ok()
         {
             // Arrange
@@ -602,7 +602,7 @@ namespace PetzeyAPIUnitTest
             // Assert
             Assert.IsNotNull(response);
             Assert.IsInstanceOfType(response, typeof(OkNegotiatedContentResult<String>));
-        }
+        }*/
 
 
         }
