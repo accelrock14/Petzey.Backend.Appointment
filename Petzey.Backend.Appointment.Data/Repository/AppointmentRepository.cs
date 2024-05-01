@@ -320,7 +320,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -346,7 +347,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -387,7 +389,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -428,7 +431,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -447,7 +451,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -699,6 +704,55 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
             return true;
         }
+
+        //change!
+        public List<AppointmentCardDto> GetAllAppointments()
+        {
+            var appointments = db.AppointmentDetails.ToList();
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+
+        }
+        public List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid)
+        {
+            var appointments = db.AppointmentDetails.Where(a => a.OwnerID == ownerid);
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+        }
+        public List<AppointmentCardDto> GetAppointmentsByVetId(int vetid)
+        {
+            var appointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid);
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+        }
+
 
         List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(int docId)
         {

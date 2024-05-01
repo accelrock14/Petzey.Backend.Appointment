@@ -47,7 +47,11 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         // APPOINTMENTS 
         List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);
         List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid);
-        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);    
+        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);
+        //change!
+        List<AppointmentCardDto> GetAllAppointments();
+        List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetId(int vetid);
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
