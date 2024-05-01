@@ -157,6 +157,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 a.VetSpecialization = "NAVLE";
             }
             return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
     }
 }

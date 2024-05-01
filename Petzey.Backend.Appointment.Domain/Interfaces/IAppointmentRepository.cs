@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
@@ -17,6 +18,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         IQueryable<AppointmentDetail> GetAppointmentDetails();
 
         AppointmentDetail GetAppointmentDetail(int id);
+        List<AppointmentDetail> GetAppointmentsOfDoctor(int docId);
 
         bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail);
 

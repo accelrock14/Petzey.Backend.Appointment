@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API
 {
@@ -9,8 +10,12 @@ namespace Petzey.Backend.Appointment.API
     {
         public static void Register(HttpConfiguration config)
         {
-            config.EnableCors();
+
+            // Enable CORS
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
             // Web API configuration and services
+            config.EnableCors();
 
             // Web API routes
             config.MapHttpAttributeRoutes();
