@@ -8,10 +8,14 @@ namespace Petzey.Backend.Appointment.Domain.Entities
 {
     public class Feedback
     {
+
         public int FeedbackID { get; set; }
-        public int AppointmentID { get; set; }
-        //public Appointment Appointment { get; set; } // Navigation property for one-to-one
-        public virtual List<Rating> Ratings { get; set; } 
-        public string Comment { get; set; }
+
+        public virtual  List<Question> Questions{  get; set; }
+        public string Recommendation {  get; set; }
+        public string Comments { get; set; }
+        public int AppointmentId { get; set; }
+
+
     }
 }

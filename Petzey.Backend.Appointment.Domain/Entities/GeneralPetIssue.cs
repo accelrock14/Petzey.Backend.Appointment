@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Domain.Entities
 {
-    public class Rating
+    public class GeneralPetIssue
     {
-        public int RatingID { get; set; }
-        public string Question { get; set; }
-        public int RatingValue {  get; set; }
+        public int GeneralPetIssueID { get; set; }
+        public string IssueName { get; set; }
     }
 }

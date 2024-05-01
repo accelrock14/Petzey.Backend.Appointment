@@ -6,14 +6,12 @@ namespace Petzey.Backend.Appointment.Domain
     {
         public int ReportID { get; set; }
         public virtual Prescription Prescription { get; set; }
-        public virtual List<Symptom> Symptoms { get; set; }
-        public virtual List<Test> Tests { get; set; }
+        public virtual List<ReportSymptom> Symptoms { get; set; } = new List<ReportSymptom>();
+        public virtual List<ReportTest> Tests { get; set; } = new List<ReportTest>();
         public int HeartRate {  get; set; }
         public float Temperature { get; set; }
         public float OxygenLevel { get; set; }
-        public List<int> RecommendedDoctorIDs { get; set; }
+        public virtual List<RecommendedDoctor> RecommendedDoctors { get; set; }
         public string Comment {  get; set; }
-
     }
-
 }
