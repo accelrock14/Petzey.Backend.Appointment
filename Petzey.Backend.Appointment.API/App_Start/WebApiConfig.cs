@@ -12,11 +12,10 @@ namespace Petzey.Backend.Appointment.API
         {
 
             // Enable CORS
-            var cors = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(cors);
+            config.EnableCors();
             // Web API configuration and services
-            var cors = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(cors);
+
+
 
             // Web API routes
             config.MapHttpAttributeRoutes();
