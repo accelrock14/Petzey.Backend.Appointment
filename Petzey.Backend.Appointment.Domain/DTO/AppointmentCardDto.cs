@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Petzey.Backend.Appointment.Domain.Entities;
+using System;
 
 namespace Petzey.Backend.Appointment.Domain.DTO
 {
@@ -11,10 +12,13 @@ namespace Petzey.Backend.Appointment.Domain.DTO
         public int PetAge { get; set; }
         public string PetGender { get; set; }
         public string OwnerName { get; set; }
-        // PET PHOTO
+        public byte[] PetPhoto { get; set; }
         public string DoctorName { get; set; }
         public string VetSpecialization { get; set; }
         public string DoctorPhoto { get; set; }
         public DateTime ScheduleDate { get; set; }
+
+        //added status for filtering in UI rather than backend
+        public string Status { get; set; }
     }
 }
