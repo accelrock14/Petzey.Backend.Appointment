@@ -8,7 +8,7 @@ namespace Petzey.Backend.Appointment.Domain.DTO
         public int HeartRate { get; set; }
         public float Temperature {  get; set; }
         public float OxygenLevel { get; set; }
-        public DateTime ScheduleDate { get; set; }
+        public List<DateTime> ScheduleDate { get; set; }
         public List<ReportTest> Tests { get; set; }
         public List<ReportSymptom> Symptoms { get; set;}
         public List<Prescription> Prescriptions { get; set;}
