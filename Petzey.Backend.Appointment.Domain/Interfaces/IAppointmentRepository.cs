@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
@@ -17,6 +18,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         IQueryable<AppointmentDetail> GetAppointmentDetails();
 
         AppointmentDetail GetAppointmentDetail(int id);
+        List<AppointmentDetail> GetAppointmentsOfDoctor(int docId);
 
         bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail);
 
@@ -37,9 +39,19 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date);
 
 
+        List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID);
+        List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID);
+
+
         // GET METHODS
-        // APPOINTMENTS
-        List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams);
+        // APPOINTMENTS 
+        List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);
+        List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);
+        //change!
+        List<AppointmentCardDto> GetAllAppointments();
+        List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetId(int vetid);
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
@@ -67,12 +79,10 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         void RemoveMedicineFromPrescription(int prescriptionId);
         void RemoveDoctorRecommendation(int recommendedDoctorID);
 
+        void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription);
+        void UpdateReportStatus(Report oldReport, Report newReport);
 
-
-
-
-
-
+        PrescribedMedicine GetPrescribed(int prescriptionID);
 
         ///////feedback
         ///
@@ -80,6 +90,13 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         IQueryable<Feedback> getAllFeedbacks();
         Feedback getFeedbackByAppointmrntId(int id);
         bool Addfeedback(Feedback feedback);
+
+        List<FeedbackQuestion> getfeedbackquestion();
+         FeedbackQuestion getfeedbackquestionbyid(int id);
+        void updatefeedbackquestion(int id, FeedbackQuestion feedbackQuestion);
+         void deletefeedbackquestion(int id);
+         void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
+        bool checkfeedbackquestion(int id);
     }
 }
 

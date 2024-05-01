@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ReportController : ApiController
     {
         IAppointmentRepository repo;
@@ -28,8 +30,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/report/{reportId}")]
         public IHttpActionResult GetReport(int reportId)
         {
-            //Report report = db.AppointmentDetails.Find(id).Report;
-            Report report = repo.GetReportByID(reportId);
+            try
+            {
+                //Report report = db.AppointmentDetails.Find(id).Report;
+                Report report = repo.GetReportByID(reportId);
 
             if(report == null)
             {
@@ -37,6 +41,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return Ok(report);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -45,8 +56,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/symptoms")]
         public IHttpActionResult GetSymptoms()
         {
-            IEnumerable<Symptom> symptoms = repo.GetAllSymptoms();
+            try
+            {
+                IEnumerable<Symptom> symptoms = repo.GetAllSymptoms();
             return Ok(symptoms);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -55,8 +75,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/tests")]
         public IHttpActionResult GetTests()
         {
-            IEnumerable<Test> tests = repo.GetAllTests();
+            try
+            {
+                IEnumerable<Test> tests = repo.GetAllTests();
             return Ok(tests);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -66,12 +95,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/medicine/{medicineId}")]
         public IHttpActionResult GetMedicine(int medicineId)
         {
-            Medicine medicine = repo.GetMedicineById(medicineId);
+            try
+            {
+                Medicine medicine = repo.GetMedicineById(medicineId);
             if (medicine == null)
             {
                 return NotFound();
             }
             return Ok(medicine);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -81,7 +119,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/recent/{PetID}")]
         public IHttpActionResult GetRecentAppointments(int PetID)
         {
-            if (PetID <= 0)
+            try
+            {
+                if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
@@ -93,6 +133,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
             return Ok(recentAppointments);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -101,8 +148,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/medicines")]
         public IHttpActionResult GetAllMedicine()
         {
-            var allMedicines = repo.GetAllMedicines();
+            try
+            {
+                var allMedicines = repo.GetAllMedicines();
             return Ok(allMedicines);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -112,7 +168,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/reporthistory/{PetID}")]
         public IHttpActionResult GetReportHistoryOfThePet(int PetID)
         {
-            if (PetID <= 0)
+            try
+            {
+                if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
@@ -126,11 +184,28 @@ namespace Petzey.Backend.Appointment.API.Controllers
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
             petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
+            petReportHistoryDto.ScheduleDate=mostRecentAppointment.ScheduleDate;
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
             petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
 
             return Ok(petReportHistoryDto);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult GetPrescription(int id)
+        {
+            PrescribedMedicine prescribedMedicine = repo.GetPrescribed(id);
+            return Ok(prescribedMedicine);
         }
 
 
@@ -140,23 +215,42 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/prescription/{prescriptionId}")]
         public IHttpActionResult AddMedicine(int prescriptionId, PrescribedMedicine prescribedMedicine)
         {
-            if (prescribedMedicine == null)
+            try
+            {
+                if (prescribedMedicine == null)
             {
                 return BadRequest("invalid medicine data");
             }
             repo.AddMedicineToPrescription(prescriptionId, prescribedMedicine);
             return Created("location",prescribedMedicine.PrescribedMedicineID);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+
+            }
         }
 
-
+/*
         // Add a symptom to the report
         // Pass the ReportId of the report to which you want to add the symptom
         [HttpPost]
         [Route("api/appointment/reportsymptom/{reportID}")]
         public IHttpActionResult AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
         {
-            repo.AddSymptomToReport( reportID, reportSymptom);
-            return Created("location",reportSymptom.ReportSymptomID);
+            try
+            {
+                repo.AddSymptomToReport(reportID, reportSymptom);
+                return Created("location", reportSymptom.ReportSymptomID);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -166,8 +260,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/reporttest/{reportID}")]
         public IHttpActionResult AddTestToReport(int reportID, ReportTest reportTest)
         {
-            repo.AddTestToReport(reportID, reportTest);
-            return Created("location",reportTest.ReportTestID);
+            try
+            {
+                repo.AddTestToReport(reportID, reportTest);
+                return Created("location", reportTest.ReportTestID);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -177,17 +280,29 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/recommendation/{reportID}")]
         public IHttpActionResult AddRecommendationToReport(int reportID, RecommendedDoctor recommendedDoctor)
         {
-            repo.AddDoctorRecommendation(reportID, recommendedDoctor);
-            return Created("location", recommendedDoctor.ID);
-        }
+            try
+            {
+                repo.AddDoctorRecommendation(reportID, recommendedDoctor);
+                return Created("location", recommendedDoctor.ID);
+            }
+      /*      }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }*/
 
 
-        // Edit details in a report for an appointment
+            // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
         public IHttpActionResult PutEditReport([FromBody] Report report)
         {
-            if (report == null)
+            try
+            {
+                if (report == null)
             {
                 return BadRequest("Missing data to put");
             }
@@ -199,6 +314,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             repo.EditReport(report);
 
             return Ok(report);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -208,19 +330,37 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/prescription/{prescribedMedicineId}")]
         public IHttpActionResult DeleteMedicine(int prescribedMedicineId)
         {
-            repo.RemoveMedicineFromPrescription(prescribedMedicineId);
+            try
+            {
+                repo.RemoveMedicineFromPrescription(prescribedMedicineId);
             return Ok("deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
-
+/*
         // Remove a symptom from the report
         // Pass the reportSymptomID of the symptom you want to remove
         [HttpDelete]
         [Route("api/appointment/reportsymptom/{reportsymptomID}")]
         public IHttpActionResult DeleteSymptomFromReport(int reportSymptomID)
         {
-            repo.DeleteSymptomFromReport(reportSymptomID);
+            try
+            {
+                repo.DeleteSymptomFromReport(reportSymptomID);
             return Ok("deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -230,8 +370,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/reporttest/{reportTestID}")]
         public IHttpActionResult DeleteTestFromReport(int reportTestID)
         {
-            repo.DeleteTestFromReport(reportTestID);
+            try
+            {
+                repo.DeleteTestFromReport(reportTestID);
             return Ok("deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
 
 
@@ -241,9 +390,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/recommendation/{recommendedDoctorID}")]
         public IHttpActionResult DeleteRecommendationFromReport(int recommendedDoctorID)
         {
-            repo.RemoveDoctorRecommendation(recommendedDoctorID);
+            try
+            {
+                repo.RemoveDoctorRecommendation(recommendedDoctorID);
             return Ok("deleted successfully");
-        }
+        }*/
+          /*  }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }*/
 
 
         // Temp api to post a new report
@@ -251,12 +410,67 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [Route("api/appointment/report")]
         public IHttpActionResult PostReport(Report report)
         {
-            if (report == null)
+            try
+            {
+                if (report == null)
             {
                 return BadRequest("Missing data to patch");
             }
             repo.AddReport(report);
             return Created("location", report.ReportID);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/report/{id}")]
+        public IHttpActionResult PatchReport(int id, [FromBody] Report report)
+        {
+            if (report == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingReport = repo.GetReportByID(id);
+
+
+            if (existingReport == null)
+            {
+
+                return BadRequest("canot find the report with this id");
+
+            }
+
+            repo.UpdateReportStatus(existingReport, report);
+            return Ok(report);
+        }
+
+        [HttpPatch]
+        [Route("api/appointment/prescription/{id}")]
+        public IHttpActionResult PatchPrescription(int id, [FromBody] PrescribedMedicine prescribedMedicine)
+        {
+            if (prescribedMedicine == null)
+            {
+                return BadRequest("Missing data to patch");
+            }
+
+            var existingPrescription = repo.GetPrescribed(id);
+
+
+            if (existingPrescription == null)
+            {
+
+                return BadRequest("canot find the prescription with this id");
+
+            }
+
+            repo.UpdateMedicine(existingPrescription, prescribedMedicine);
+            return Ok(prescribedMedicine);
         }
     }
 }

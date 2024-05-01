@@ -11,6 +11,7 @@ namespace Petzey.Backend.Appointment.Domain
         public int NumberOfDays { get; set; }
         public bool Consume {  get; set; } //before food false, after food true
         public virtual Dosage Dosages { get; set; }
+        public string Comment {  get; set; }
 
     }
 
