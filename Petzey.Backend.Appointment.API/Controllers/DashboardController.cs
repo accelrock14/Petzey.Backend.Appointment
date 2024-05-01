@@ -36,6 +36,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+
             }
         }
         [HttpPost]
@@ -86,6 +87,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+
             }
         }
         [HttpPost]
@@ -110,6 +112,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
+
 
             }
         }
@@ -137,6 +140,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+
             }
         }
         [HttpGet]
@@ -161,6 +165,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
+
 
             }
         }
@@ -187,6 +192,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
+
             }
         }
         [HttpGet]
@@ -211,6 +217,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
+
+
             }
         }
         [HttpGet]
