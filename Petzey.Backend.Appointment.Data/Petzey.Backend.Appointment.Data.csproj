@@ -68,6 +68,7 @@
     <Compile Include="PetzeyDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AppointmentRepository.cs" />
+    <Compile Include="Repository\feedbackquestionrepo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
