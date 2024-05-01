@@ -34,7 +34,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -59,7 +59,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -84,7 +84,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -109,7 +109,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -135,7 +135,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -160,7 +160,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -185,7 +185,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
+                return InternalServerError();
 
             }
         }
@@ -210,8 +210,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             catch (Exception ex)
             {
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return (IQueryable<AppointmentDetail>)InternalServerError();
-
+                return InternalServerError();
             }
         }
         [HttpGet]
