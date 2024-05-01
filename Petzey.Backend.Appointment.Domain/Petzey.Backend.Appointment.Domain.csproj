@@ -60,11 +60,13 @@
     <Compile Include="Entities\AppointmentDetail.cs" />
     <Compile Include="Entities\Dosage.cs" />
     <Compile Include="Entities\Feedback.cs" />
+    <Compile Include="Entities\FeedbackQuestion.cs" />
     <Compile Include="Entities\Medicine.cs" />
     <Compile Include="Entities\PetIssue.cs" />
     <Compile Include="Entities\GeneralPetIssue.cs" />
     <Compile Include="Entities\PrescribedMedicine.cs" />
     <Compile Include="Entities\Prescription.cs" />
+    <Compile Include="Entities\Question.cs" />
     <Compile Include="Entities\RecommendedDoctor.cs" />
     <Compile Include="Entities\Report.cs" />
     <Compile Include="Entities\ReportSymptom.cs" />
