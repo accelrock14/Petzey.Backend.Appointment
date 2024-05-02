@@ -97,7 +97,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
          void deletefeedbackquestion(int id);
          void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
         bool checkfeedbackquestion(int id);
-        List<int> getallpetidbyvetid(string vetid);
+        List<int> GetAllPetIDByVetId(string vetid);
     }
 }
 

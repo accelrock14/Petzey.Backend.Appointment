@@ -807,12 +807,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
 
-        public List<int> getallpetidbyvetid(string vetid)
+        public List<int> GetAllPetIDByVetId(string vetId)
         {
-            // var appointments= db.appointmentdetails.where(a=>a.doctorid== vetid).tolist();
+            // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
             return
                 db.AppointmentDetails
-               .Where(a => a.DoctorID == vetid)
+               .Where(a => a.DoctorID == vetId)
                .Select(a => a.PetID)
                .ToList();
 
