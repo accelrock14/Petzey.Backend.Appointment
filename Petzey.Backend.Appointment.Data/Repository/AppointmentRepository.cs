@@ -90,7 +90,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             try
             {
-                db.Entry(appointmentDetail).State = EntityState.Modified;
+                db.Entry(appointmentObj).State = EntityState.Modified;
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
