@@ -48,8 +48,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAllAppointmentsWithFilters(filters);
             foreach(var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -73,8 +73,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -99,8 +99,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -126,8 +126,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.AppointmentByPetIdAndDate(petid, date);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -152,8 +152,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.AppointmentByPetId(petid);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -178,8 +178,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAllAppointments();
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -204,8 +204,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAppointmentsByVetId(vetid);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
@@ -230,8 +230,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var appointments = repo.GetAppointmentsByOwnerId(ownerid);
             foreach (var a in appointments)
             {
-                a.PetName = "Chotu";
-                a.DoctorName = "Kashyap Sharma";
+                a.PetName = "Marley";
+                a.DoctorName = "John Doe";
                 a.PetAge = 2;
                 a.PetGender = "Male";
                 a.OwnerName = "Parth";
