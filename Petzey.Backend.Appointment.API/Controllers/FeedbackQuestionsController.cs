@@ -10,24 +10,29 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Petzey.Backend.Appointment.Data;
 using Petzey.Backend.Appointment.Domain.Entities;
+using Petzey.Backend.Appointment.Domain.Interfaces;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
     public class FeedbackQuestionsController : ApiController
     {
-        private PetzeyDbContext db = new PetzeyDbContext();
+        IAppointmentRepository repo;
+        public FeedbackQuestionsController(IAppointmentRepository repo)
+        {
+            this.repo = repo;  
+        }
 
         // GET: api/FeedbackQuestions
-        public IQueryable<FeedbackQuestion> GetFeedbackQuestions()
+        public List<FeedbackQuestion> GetFeedbackQuestions()
         {
-            return db.FeedbackQuestions;
+            return repo.getfeedbackquestion();
         }
 
         // GET: api/FeedbackQuestions/5
         [ResponseType(typeof(FeedbackQuestion))]
         public IHttpActionResult GetFeedbackQuestion(int id)
         {
-            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            FeedbackQuestion feedbackQuestion =repo.getfeedbackquestionbyid(id);
             if (feedbackQuestion == null)
             {
                 return NotFound();
@@ -49,12 +54,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 return BadRequest();
             }
-
-            db.Entry(feedbackQuestion).State = EntityState.Modified;
-
             try
             {
-                db.SaveChanges();
+                repo.updatefeedbackquestion(id, feedbackQuestion);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -80,8 +82,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.FeedbackQuestions.Add(feedbackQuestion);
-            db.SaveChanges();
+            repo.Addfeedbackquestion(feedbackQuestion);
 
             return CreatedAtRoute("DefaultApi", new { id = feedbackQuestion.FeedbackQuestionId }, feedbackQuestion);
         }
@@ -90,30 +91,22 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [ResponseType(typeof(FeedbackQuestion))]
         public IHttpActionResult DeleteFeedbackQuestion(int id)
         {
-            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            FeedbackQuestion feedbackQuestion = repo.getfeedbackquestionbyid(id);
             if (feedbackQuestion == null)
             {
                 return NotFound();
             }
 
-            db.FeedbackQuestions.Remove(feedbackQuestion);
-            db.SaveChanges();
+            repo.deletefeedbackquestion(id);
 
             return Ok(feedbackQuestion);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+       
 
         private bool FeedbackQuestionExists(int id)
         {
-            return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+            return repo.checkfeedbackquestion(id);
         }
     }
 }
