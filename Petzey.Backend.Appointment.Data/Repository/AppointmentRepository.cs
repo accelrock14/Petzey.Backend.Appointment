@@ -286,10 +286,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
         // get count of appointments in different statuses
-        public AppointmentStatusCountsDto AppointmentStatusCounts()
+        public AppointmentStatusCountsDto AppointmentStatusCounts(string vetid)
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList();
+            var allAppointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid).ToList();
             dto.Total = allAppointments.Count;
             dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
             dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
