@@ -54,7 +54,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             int hoursToAdd = 9 + (slot * 30 / 60);
             int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
+            // if it is the lunch break theen   
             if (slot >= 8)
             {
                 hoursToAdd += 1;
@@ -74,10 +74,24 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 return false;
             }
 
-            db.Entry(appointmentDetail).State = EntityState.Modified;
+            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Include(a => a.Report).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
+
+            appointmentObj.DoctorID = appointmentDetail.DoctorID;
+            appointmentObj.PetID= appointmentDetail.PetID;
+            appointmentObj.OwnerID = appointmentDetail.OwnerID;
+            appointmentObj.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+            appointmentObj.ScheduleTimeSlot = appointmentDetail.ScheduleTimeSlot;
+            appointmentObj.BookingDate = appointmentDetail.BookingDate;
+            appointmentObj.ReasonForVisit = appointmentDetail.ReasonForVisit;
+            appointmentObj.Status = appointmentDetail.Status;
+            appointmentObj.Report= appointmentDetail.Report;
+            appointmentObj.PetIssues= appointmentDetail.PetIssues;
 
             try
             {
+                db.Entry(appointmentObj).State = EntityState.Modified;
+
+            
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
@@ -758,6 +772,50 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
         }
+
+
+        public List<FeedbackQuestion> getfeedbackquestion()
+        {
+            var questions = db.FeedbackQuestions.ToList();
+            return questions;
+        }
+        public FeedbackQuestion getfeedbackquestionbyid(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            return feedbackQuestion;
+        }
+        public void updatefeedbackquestion(int id, FeedbackQuestion feedbackQuestion)
+        {
+            db.Entry(feedbackQuestion).State = EntityState.Modified;
+            db.SaveChanges();
+
+        }
+        public void deletefeedbackquestion(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            db.FeedbackQuestions.Remove(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public void Addfeedbackquestion(FeedbackQuestion feedbackQuestion)
+        {
+            db.FeedbackQuestions.Add(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public bool checkfeedbackquestion(int id)
+        {
+            return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+        public List<int> GetAllPetIDByVetId(int vetId)
+        {
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+            return
+                db.AppointmentDetails
+               .Where(a => a.DoctorID == vetId)
+               .Select(a => a.PetID)
+               .ToList();
+
+        }
+
     }
 }
 

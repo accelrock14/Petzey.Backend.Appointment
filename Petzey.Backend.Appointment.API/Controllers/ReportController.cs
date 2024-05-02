@@ -183,11 +183,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return NotFound();
             }
 
+
             PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
             petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
-            petReportHistoryDto.ScheduleDate=mostRecentAppointment.ScheduleDate;
+            petReportHistoryDto.ScheduleDate = repo.GetAllClosedAppointmentsByPetID(PetID).Select(a => a.ScheduleDate).ToList();
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
             petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
@@ -235,67 +236,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             }
         }
-
-/*
-        // Add a symptom to the report
-        // Pass the ReportId of the report to which you want to add the symptom
-        [HttpPost]
-        [Route("api/appointment/reportsymptom/{reportID}")]
-        public IHttpActionResult AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
-        {
-            try
-            {
-                repo.AddSymptomToReport(reportID, reportSymptom);
-                return Created("location", reportSymptom.ReportSymptomID);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }
-
-
-        // Add a test to the report
-        // Pass the ReportId of the report to which you want to add the test
-        [HttpPost]
-        [Route("api/appointment/reporttest/{reportID}")]
-        public IHttpActionResult AddTestToReport(int reportID, ReportTest reportTest)
-        {
-            try
-            {
-                repo.AddTestToReport(reportID, reportTest);
-                return Created("location", reportTest.ReportTestID);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }
-
-
-        // Add a recommended doctor to the report
-        // Pass the ReportId of the report to which you want to add the recommendation
-        [HttpPost]
-        [Route("api/appointment/recommendation/{reportID}")]
-        public IHttpActionResult AddRecommendationToReport(int reportID, RecommendedDoctor recommendedDoctor)
-        {
-            try
-            {
-                repo.AddDoctorRecommendation(reportID, recommendedDoctor);
-                return Created("location", recommendedDoctor.ID);
-            }
-      /*      }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }*/
 
 
             // Edit details in a report for an appointment
@@ -346,66 +286,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
-/*
-        // Remove a symptom from the report
-        // Pass the reportSymptomID of the symptom you want to remove
-        [HttpDelete]
-        [Route("api/appointment/reportsymptom/{reportsymptomID}")]
-        public IHttpActionResult DeleteSymptomFromReport(int reportSymptomID)
-        {
-            try
-            {
-                repo.DeleteSymptomFromReport(reportSymptomID);
-            return Ok("deleted successfully");
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }
-
-
-        // Remove a test from the report
-        // Pass the reportTestID of the test you want to remove
-        [HttpDelete]
-        [Route("api/appointment/reporttest/{reportTestID}")]
-        public IHttpActionResult DeleteTestFromReport(int reportTestID)
-        {
-            try
-            {
-                repo.DeleteTestFromReport(reportTestID);
-            return Ok("deleted successfully");
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }
-
-
-        // Remove a doctor recommendation from the report
-        // Pass the recommendeddoctorID that you want to remove
-        [HttpDelete]
-        [Route("api/appointment/recommendation/{recommendedDoctorID}")]
-        public IHttpActionResult DeleteRecommendationFromReport(int recommendedDoctorID)
-        {
-            try
-            {
-                repo.RemoveDoctorRecommendation(recommendedDoctorID);
-            return Ok("deleted successfully");
-        }*/
-          /*  }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }*/
 
 
         // Temp api to post a new report

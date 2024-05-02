@@ -90,6 +90,14 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         IQueryable<Feedback> getAllFeedbacks();
         Feedback getFeedbackByAppointmrntId(int id);
         bool Addfeedback(Feedback feedback);
+
+        List<FeedbackQuestion> getfeedbackquestion();
+         FeedbackQuestion getfeedbackquestionbyid(int id);
+        void updatefeedbackquestion(int id, FeedbackQuestion feedbackQuestion);
+         void deletefeedbackquestion(int id);
+         void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
+        bool checkfeedbackquestion(int id);
+        List<int> GetAllPetIDByVetId(int vetId);
     }
 }
 
