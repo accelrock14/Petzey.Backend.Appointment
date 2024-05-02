@@ -74,7 +74,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 return false;
             }
 
-            db.Entry(appointmentDetail).State = EntityState.Modified;
+            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
+            appointmentObj.PetIssues= appointmentDetail.PetIssues;
+
+            db.Entry(appointmentObj).State = EntityState.Modified;
 
             try
             {
@@ -758,6 +761,40 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
         }
+
+
+        public List<FeedbackQuestion> getfeedbackquestion()
+        {
+            var questions = db.FeedbackQuestions.ToList();
+            return questions;
+        }
+        public FeedbackQuestion getfeedbackquestionbyid(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            return feedbackQuestion;
+        }
+        public void updatefeedbackquestion(int id, FeedbackQuestion feedbackQuestion)
+        {
+            db.Entry(feedbackQuestion).State = EntityState.Modified;
+            db.SaveChanges();
+
+        }
+        public void deletefeedbackquestion(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            db.FeedbackQuestions.Remove(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public void Addfeedbackquestion(FeedbackQuestion feedbackQuestion)
+        {
+            db.FeedbackQuestions.Add(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public bool checkfeedbackquestion(int id)
+        {
+            return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+
     }
 }
 
