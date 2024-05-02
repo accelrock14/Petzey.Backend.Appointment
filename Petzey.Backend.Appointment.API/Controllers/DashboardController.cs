@@ -20,12 +20,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
             repo = repository;
         }
         [HttpGet]
-        [Route("api/dashboard/statuscounts")]
-        public IHttpActionResult GetStatusCounts()
+        [Route("api/dashboard/statuscounts/{vetid}")]
+        public IHttpActionResult GetStatusCounts(string vetid)
         {
             try
             {
-                var status = repo.AppointmentStatusCounts();
+                var status = repo.AppointmentStatusCounts(vetid);
                 if (status == null)
                     return NotFound();
 
