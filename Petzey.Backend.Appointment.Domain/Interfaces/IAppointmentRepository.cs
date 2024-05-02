@@ -18,7 +18,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         IQueryable<AppointmentDetail> GetAppointmentDetails();
 
         AppointmentDetail GetAppointmentDetail(int id);
-        List<AppointmentDetail> GetAppointmentsOfDoctor(int docId);
+        List<AppointmentDetail> GetAppointmentsOfDoctor(string docId);
 
         bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail);
 
@@ -32,26 +32,26 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
 
         bool PostGeneralPetIssue(GeneralPetIssue generalPetIssue);
 
-        List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date);
+        List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date);
 
         bool PatchAppointmentStatus(int id, Status status);
 
-        List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date);
+        List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date);
 
 
-        List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID);
+        List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(string VetID);
         List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID);
 
 
         // GET METHODS
         // APPOINTMENTS 
         List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams);
-        List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid);
-        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid);
+        List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, string ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, string vetid);
         //change!
         List<AppointmentCardDto> GetAllAppointments();
-        List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid);
-        List<AppointmentCardDto> GetAppointmentsByVetId(int vetid);
+        List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid);
+        List<AppointmentCardDto> GetAppointmentsByVetId(string vetid);
         AppointmentStatusCountsDto AppointmentStatusCounts();
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
@@ -97,7 +97,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
          void deletefeedbackquestion(int id);
          void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
         bool checkfeedbackquestion(int id);
-        List<int> GetAllPetIDByVetId(int vetId);
+        List<int> GetAllPetIDByVetId(string vetid);
     }
 }
 
