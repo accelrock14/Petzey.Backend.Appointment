@@ -75,7 +75,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
-            appointmentObj.PetIssues= appointmentDetail.PetIssues;
+            appointmentObj = appointmentDetail;
 
             db.Entry(appointmentObj).State = EntityState.Modified;
 
