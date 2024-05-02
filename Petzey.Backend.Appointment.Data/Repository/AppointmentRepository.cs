@@ -74,13 +74,24 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 return false;
             }
 
-            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
-            appointmentObj = appointmentDetail;
+            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Include(a => a.Report).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
 
-            db.Entry(appointmentObj).State = EntityState.Modified;
+            appointmentObj.DoctorID = appointmentDetail.DoctorID;
+            appointmentObj.PetID= appointmentDetail.PetID;
+            appointmentObj.OwnerID = appointmentDetail.OwnerID;
+            appointmentObj.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+            appointmentObj.ScheduleTimeSlot = appointmentDetail.ScheduleTimeSlot;
+            appointmentObj.BookingDate = appointmentDetail.BookingDate;
+            appointmentObj.ReasonForVisit = appointmentDetail.ReasonForVisit;
+            appointmentObj.Status = appointmentDetail.Status;
+            appointmentObj.Report= appointmentDetail.Report;
+            appointmentObj.PetIssues= appointmentDetail.PetIssues;
 
             try
             {
+                db.Entry(appointmentObj).State = EntityState.Modified;
+
+            
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
