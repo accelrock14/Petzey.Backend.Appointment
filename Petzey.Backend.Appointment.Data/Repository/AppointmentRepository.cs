@@ -54,7 +54,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             int hoursToAdd = 9 + (slot * 30 / 60);
             int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
+            // if it is the lunch break theen   
             if (slot >= 8)
             {
                 hoursToAdd += 1;
@@ -804,6 +804,16 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public bool checkfeedbackquestion(int id)
         {
             return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+        public List<int> GetAllPetIDByVetId(int vetId)
+        {
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+            return
+                db.AppointmentDetails
+               .Where(a => a.DoctorID == vetId)
+               .Select(a => a.PetID)
+               .ToList();
+
         }
 
     }
