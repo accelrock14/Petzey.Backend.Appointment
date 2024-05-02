@@ -160,7 +160,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
+        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date)
         {
 
             var dateOnly = date.Date;
@@ -218,7 +218,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
+        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date)
         {
 
             List<bool> schedules = new List<bool>(18);
@@ -255,7 +255,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }).ToList();
         }
 
-        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID)
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(string VetID)
         {
             return db.AppointmentDetails.Where(a => a.DoctorID == VetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
             {
@@ -355,7 +355,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
-        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid)
+        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, string ownerid)
         {
             // Execute the query to check if appointments exist for the given petid
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
@@ -398,7 +398,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         }
 
 
-        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid)
+        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, string vetid)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
             List<AppointmentDetail> appointments = query.ToList();
@@ -722,7 +722,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointmentDtos;
 
         }
-        public List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid)
+        public List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid)
         {
             var appointments = db.AppointmentDetails.Where(a => a.OwnerID == ownerid);
 
@@ -737,7 +737,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return appointmentDtos;
         }
-        public List<AppointmentCardDto> GetAppointmentsByVetId(int vetid)
+        public List<AppointmentCardDto> GetAppointmentsByVetId(string vetid)
         {
             var appointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid);
 
@@ -754,7 +754,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         }
 
 
-        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(int docId)
+        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(string docId)
         {
             return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
         }

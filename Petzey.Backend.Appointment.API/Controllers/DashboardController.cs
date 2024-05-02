@@ -66,7 +66,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
         [HttpPost]
         [Route("api/dashboard/petappointments/filter/{ownerid}/{offset?}")]
-        public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, int ownerid, int offset = 0)
+        public IHttpActionResult GetPetAppointmentsWithFilters(FilterParamsDto filters, string ownerid, int offset = 0)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
         [HttpPost]
         [Route("api/dashboard/vetappointments/filter/{vetid}/{offset?}")]
-        public IHttpActionResult GetVetAppointmentsWithFilters(FilterParamsDto filters, int vetid, int offset = 0)
+        public IHttpActionResult GetVetAppointmentsWithFilters(FilterParamsDto filters, string vetid, int offset = 0)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
         [HttpGet]
         [Route("api/appointment/vets/{vetid}")]
-        public IHttpActionResult GetAllAppointmentsVets(int vetid)
+        public IHttpActionResult GetAllAppointmentsVets(string vetid)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
         [HttpGet]
         [Route("api/appointment/pets/{ownerid}")]
-        public IHttpActionResult GetAllAppointmentsPets(int ownerid)
+        public IHttpActionResult GetAllAppointmentsPets(string ownerid)
         {
             try
             {
