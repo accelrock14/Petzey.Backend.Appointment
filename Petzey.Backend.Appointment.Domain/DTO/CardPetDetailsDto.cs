@@ -14,6 +14,6 @@ namespace Petzey.Backend.Appointment.Domain.DTO
         public string PetGender { get; set; }
         public string OwnerName { get; set; }
 
-        //PET PHOTO
+        public string PetPhoto { get; set; }
     }
 }
