@@ -75,7 +75,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
-            appointmentObj.PetIssues= appointmentDetail.PetIssues;
+           // appointmentObj= appointmentDetail;
 
             db.Entry(appointmentObj).State = EntityState.Modified;
 
@@ -793,6 +793,16 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public bool checkfeedbackquestion(int id)
         {
             return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+        public List<int> GetAllPetIDByVetId(int vetId)
+        {
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+            return
+                db.AppointmentDetails
+               .Where(a => a.DoctorID == vetId)
+               .Select(a => a.PetID)
+               .ToList();
+
         }
 
     }
