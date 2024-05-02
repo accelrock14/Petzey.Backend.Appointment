@@ -805,22 +805,9 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
         }
-        public List<int> GetAllPetIDByVetId(int vetId)
-        {
-          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
-            return
-                db.AppointmentDetails
-               .Where(a => a.DoctorID == vetId)
-               .Select(a => a.PetID)
-               .ToList();
-
-        }
-
-
-
         public List<int> GetAllPetIDByVetId(string vetId)
         {
-            // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
             return
                 db.AppointmentDetails
                .Where(a => a.DoctorID == vetId)

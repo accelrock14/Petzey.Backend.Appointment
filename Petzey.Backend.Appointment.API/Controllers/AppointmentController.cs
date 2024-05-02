@@ -416,24 +416,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
         [HttpGet]
         [Route("api/PetIdByDocId/{vetID}")]
-        public IHttpActionResult GetAllPetIdByPetID(int vetID)
-        {
-            try
-            {
-                List<int> pestIds = repo.GetAllPetIDByVetId(vetID);
-
-                return Ok(pestIds);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-            }
-        }
-
-        [HttpGet]
-        [Route("api/PetIdByDocId/{vetID}")]
         public IHttpActionResult GetAllPetIdByPetID(string vetID)
         {
             try
@@ -449,6 +431,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             }
         }
+
 
     }
 }
