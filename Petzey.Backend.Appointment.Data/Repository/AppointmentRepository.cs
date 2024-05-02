@@ -54,7 +54,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             int hoursToAdd = 9 + (slot * 30 / 60);
             int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
+            // if it is the lunch break theen   
             if (slot >= 8)
             {
                 hoursToAdd += 1;
