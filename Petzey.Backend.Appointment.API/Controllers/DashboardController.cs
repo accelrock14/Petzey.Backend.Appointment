@@ -150,7 +150,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
 
                 // Apply Skip() and Take() without converting to List
                 appointments = appointments.Skip(offset).Take(3);
@@ -251,7 +251,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
 
                 // Apply Skip() and Take() without converting to List
                 appointments = appointments.Skip(offset).Take(3);
