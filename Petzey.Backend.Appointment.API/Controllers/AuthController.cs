@@ -2,6 +2,7 @@
 using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,9 +19,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         public async Task<IHttpActionResult> GetUser()
         {
-            var clientId = "fefb65bc-6eea-4e7b-bfab-d045735adc81";
-            var clientSecret = "r-U8Q~N2hE8HBxMKeCjRNeUG7Ihx3djyenQRKacD";
-            var tenantId = "c8867d57-716d-463c-9892-86b977e242dc";
+
+            var clientId = ConfigurationManager.AppSettings["clientId"];
+            var clientSecret = ConfigurationManager.AppSettings["clientSecret"];
+            var tenantId = ConfigurationManager.AppSettings["tenantId"];
             var scopes = new[] { "https://graph.microsoft.com/.default" };
             // Create an instance of ClientSecretCredential
             var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
@@ -40,7 +42,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 {
                     keyValuePairs[data[i].Id] = data[i].DisplayName;
                 }
-                return Ok(users);
+                return Ok(keyValuePairs);
             }
             catch (Exception ex)
             {
