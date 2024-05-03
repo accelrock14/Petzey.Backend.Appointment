@@ -40,7 +40,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
                 for (int i = 0; i < data.Length; i++)
                 {
-                    keyValuePairs[data[i].Id] = data[i].DisplayName;
+                    keyValuePairs[data[i].Id] = data[i].DisplayName+" "+data[i].Surname;
                 }
                 return Ok(keyValuePairs);
             }
