@@ -84,15 +84,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="PetzeyDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AppointmentRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="CSV Files\medicines.csv" />
-    <None Include="CSV Files\symptoms.csv" />
-    <None Include="CSV Files\tests.csv" />
+    <None Include="bin\Debug\Petzey.Backend.Appointment.Data.dll.config" />
+    <None Include="bin\Debug\Petzey.Backend.Appointment.Domain.dll.config" />
+    <None Include="bin\Release\Petzey.Backend.Appointment.Data.dll.config" />
+    <None Include="bin\Release\Petzey.Backend.Appointment.Domain.dll.config" />
+    <None Include="bin\CSV Files\medicines.csv" />
+    <None Include="bin\CSV Files\symptoms.csv" />
+    <None Include="bin\CSV Files\tests.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +108,41 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="CSV Files\petIssues.txt" />
+    <Content Include="bin\Debug\Elmah.dll" />
+    <Content Include="bin\Debug\EntityFramework.dll" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\Debug\EntityFramework.xml" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Data.dll" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Data.pdb" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Domain.dll" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Domain.pdb" />
+    <Content Include="bin\Release\CsvHelper.dll" />
+    <Content Include="bin\Release\CsvHelper.xml" />
+    <Content Include="bin\Release\Elmah.dll" />
+    <Content Include="bin\Release\EntityFramework.dll" />
+    <Content Include="bin\Release\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Release\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\Release\EntityFramework.xml" />
+    <Content Include="bin\Release\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <Content Include="bin\Release\Microsoft.Bcl.AsyncInterfaces.xml" />
+    <Content Include="bin\Release\Microsoft.Bcl.HashCode.dll" />
+    <Content Include="bin\Release\Microsoft.Bcl.HashCode.xml" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Data.dll" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Data.pdb" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Domain.dll" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Domain.pdb" />
+    <Content Include="bin\Release\System.Buffers.dll" />
+    <Content Include="bin\Release\System.Buffers.xml" />
+    <Content Include="bin\Release\System.Memory.dll" />
+    <Content Include="bin\Release\System.Memory.xml" />
+    <Content Include="bin\Release\System.Numerics.Vectors.dll" />
+    <Content Include="bin\Release\System.Numerics.Vectors.xml" />
+    <Content Include="bin\Release\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="bin\Release\System.Runtime.CompilerServices.Unsafe.xml" />
+    <Content Include="bin\Release\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="bin\Release\System.Threading.Tasks.Extensions.xml" />
+    <Content Include="bin\CSV Files\petIssues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
