@@ -50,5 +50,43 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
+
+        public async Task<IHttpActionResult> GetUserByID(string ID)
+        {
+
+            var clientId = ConfigurationManager.AppSettings["clientId"];
+            var clientSecret = ConfigurationManager.AppSettings["clientSecret"];
+            var tenantId = ConfigurationManager.AppSettings["tenantId"];
+            var scopes = new[] { "https://graph.microsoft.com/.default" };
+            // Create an instance of ClientSecretCredential
+            var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+
+            // Initialize the GraphServiceClient with the ClientSecretCredential
+            var graphService = new GraphServiceClient(clientSecretCredential, scopes);
+
+            try
+            {
+                // Retrieve user information using Microsoft Graph API
+                var users = await graphService.Users.GetAsync();
+                // Process the retrieved user information
+                var data = users.Value.ToArray();
+
+                Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    keyValuePairs[data[i].Id] = data[i].DisplayName + " " + data[i].Surname;
+                }
+
+                if(keyValuePairs.ContainsKey(ID))
+                return Ok(keyValuePairs[ID]);
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
     }
 }
