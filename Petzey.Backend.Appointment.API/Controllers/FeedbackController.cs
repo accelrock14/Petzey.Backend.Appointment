@@ -27,6 +27,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [ResponseType(typeof(Feedback))]
         public IQueryable<Feedback> GetFeedback()
         {
+
             return repo.getAllFeedbacks();
         }
        

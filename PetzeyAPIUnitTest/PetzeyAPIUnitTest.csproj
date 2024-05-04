@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppointmentTest1.cs" />
+    <Compile Include="FeedbackQuestionsControllerTests.cs" />
     <Compile Include="DashboardTest1.cs" />
     <Compile Include="FeedbackTest1.cs" />
     <Compile Include="ReportTest1.cs" />
