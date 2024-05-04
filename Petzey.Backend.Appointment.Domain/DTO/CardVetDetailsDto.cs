@@ -9,8 +9,9 @@ namespace Petzey.Backend.Appointment.Domain.DTO
     public class CardVetDetailsDto
     {
         public int VetId { get; set; }  
-        public string DoctorName { get; set; }
-        public string VetSpecialization { get; set; }  
-        public string DoctorPhoto { get; set; }
+        public string Name { get; set; }
+        public string Specialization { get; set; }  
+        public string Photo { get; set; }
+        public string NPINumber { get; set; }
     }
 }

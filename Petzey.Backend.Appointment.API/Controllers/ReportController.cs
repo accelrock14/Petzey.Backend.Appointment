@@ -235,7 +235,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-
             // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
@@ -283,7 +282,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             }
         }
-
 
 
 

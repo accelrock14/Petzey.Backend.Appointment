@@ -54,7 +54,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             int hoursToAdd = 9 + (slot * 30 / 60);
             int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
+            // if it is the lunch break theen   
             if (slot >= 8)
             {
                 hoursToAdd += 1;
@@ -74,13 +74,24 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 return false;
             }
 
-            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
-            appointmentObj = appointmentDetail;
+            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Include(a => a.Report).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
 
-            db.Entry(appointmentObj).State = EntityState.Modified;
+            appointmentObj.DoctorID = appointmentDetail.DoctorID;
+            appointmentObj.PetID= appointmentDetail.PetID;
+            appointmentObj.OwnerID = appointmentDetail.OwnerID;
+            appointmentObj.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+            appointmentObj.ScheduleTimeSlot = appointmentDetail.ScheduleTimeSlot;
+            appointmentObj.BookingDate = appointmentDetail.BookingDate;
+            appointmentObj.ReasonForVisit = appointmentDetail.ReasonForVisit;
+            appointmentObj.Status = appointmentDetail.Status;
+            appointmentObj.Report= appointmentDetail.Report;
+            appointmentObj.PetIssues= appointmentDetail.PetIssues;
 
             try
             {
+                db.Entry(appointmentObj).State = EntityState.Modified;
+
+            
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
@@ -163,7 +174,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
+        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date)
         {
 
             var dateOnly = date.Date;
@@ -221,7 +232,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
+        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date)
         {
 
             List<bool> schedules = new List<bool>(18);
@@ -258,7 +269,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }).ToList();
         }
 
-        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(int VetID)
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(string VetID)
         {
             return db.AppointmentDetails.Where(a => a.DoctorID == VetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
             {
@@ -275,10 +286,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
         // get count of appointments in different statuses
-        public AppointmentStatusCountsDto AppointmentStatusCounts()
+        public AppointmentStatusCountsDto AppointmentStatusCounts(string vetid)
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList();
+            var allAppointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid).ToList();
             dto.Total = allAppointments.Count;
             dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
             dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
@@ -358,7 +369,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
-        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, int ownerid)
+        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, string ownerid)
         {
             // Execute the query to check if appointments exist for the given petid
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
@@ -401,7 +412,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         }
 
 
-        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, int vetid)
+        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, string vetid)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
             List<AppointmentDetail> appointments = query.ToList();
@@ -725,7 +736,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointmentDtos;
 
         }
-        public List<AppointmentCardDto> GetAppointmentsByOwnerId(int ownerid)
+        public List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid)
         {
             var appointments = db.AppointmentDetails.Where(a => a.OwnerID == ownerid);
 
@@ -740,7 +751,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return appointmentDtos;
         }
-        public List<AppointmentCardDto> GetAppointmentsByVetId(int vetid)
+        public List<AppointmentCardDto> GetAppointmentsByVetId(string vetid)
         {
             var appointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid);
 
@@ -757,7 +768,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         }
 
 
-        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(int docId)
+        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(string docId)
         {
             return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
         }
@@ -793,6 +804,16 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public bool checkfeedbackquestion(int id)
         {
             return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+        public List<int> GetAllPetIDByVetId(string vetId)
+        {
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+            return
+                db.AppointmentDetails
+               .Where(a => a.DoctorID == vetId)
+               .Select(a => a.PetID)
+               .ToList();
+
         }
 
     }

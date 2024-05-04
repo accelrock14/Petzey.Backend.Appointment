@@ -48,7 +48,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // get all appointments of a doctor
         [HttpGet]
         [Route("api/AppointmentDetails/ofdoctor")]
-        public IHttpActionResult GetAppointmentsOfDoctor(int docId)
+        public IHttpActionResult GetAppointmentsOfDoctor(string docId)
         {
             try
             {
@@ -302,7 +302,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [HttpGet]
         [Route("api/AppointmentDetails/docondate/{doctorId}/{date:datetime}")]
         // sample url https://localhost:44327/api/AppointmentDetails/docondate/1/2024-04-26
-        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
+        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date)
         {
             return repo.GetAppointmentsOfDocOnDate(doctorId, date);
         }
@@ -352,7 +352,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         [HttpGet]
         [Route("api/AppointmentDetails/schedules/{doctorId}/{date:datetime}")]
         // sample url https://localhost:44327/api/AppointmentDetails/schedules/1/2024-04-26
-        public IHttpActionResult GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
+        public IHttpActionResult GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date)
         {
             try
             {
@@ -372,7 +372,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         [HttpGet]
         [Route("api/AppointmentDetails/allappointmentsbyvetid/{vetID}")]
-        public IHttpActionResult GetAllClosedAppointmentByVetID(int vetID)
+        public IHttpActionResult GetAllClosedAppointmentByVetID(string vetID)
         {
             try
             {
@@ -408,6 +408,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
 
         }
+        [HttpGet]
+        [Route("api/PetIdByDocId/{vetID}")]
+        public IHttpActionResult GetAllPetIdByPetID(string vetID)
+        {
+            try
+            {
+                List<int> pestIds = repo.GetAllPetIDByVetId(vetID);
+
+                return Ok(pestIds);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+
 
     }
 }
