@@ -57,9 +57,12 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
 
                 var docIds = new List<int>();
-                foreach(var appointment in appointments)
+                foreach (var appointment in appointments)
                 {
-                    docIds.Add(int.Parse(appointment.DoctorID));
+                    if (int.TryParse(appointment.DoctorID, out int doctorId))
+                    {
+                        docIds.Add(doctorId);
+                    }
                 }
                 var petIds = new List<int>();
                 foreach (var appointment in appointments)
@@ -89,7 +92,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i<Math.Min(3, cardVetDetailsList.Count); i++)
+                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
                         {
                             appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
                             appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
@@ -129,11 +132,45 @@ namespace Petzey.Backend.Appointment.API.Controllers
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
                             appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerName = "John Doe";
+                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
                         }
                     }
                 }
                 //ownername to be assigned!!!
+
+
+                //hit a get request to https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth and fetch it's data and store into a variable
+
+                using (var httpClient = new HttpClient())
+                {
+                    // Make the GET request
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Read the response content
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // Deserialize the JSON response to a Dictionary<string, string>
+                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+                        // Find the owner name based on ownerId
+                        foreach (var appointment in appointmentsList)
+                        {
+                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            {
+                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                            }
+                            else
+                            {
+                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // For example, set a default owner name or log a warning
+                                appointment.OwnerName = "Unknown Owner";
+                            }
+                        }
+                    }
+                }
+
 
                 return Ok(appointments); //3 appointments per page    
             }
@@ -160,7 +197,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var docIds = new List<int>();
                 foreach (var appointment in appointments)
                 {
-                    docIds.Add(int.Parse(appointment.DoctorID));
+                    if (int.TryParse(appointment.DoctorID, out int doctorId))
+                    {
+                        docIds.Add(doctorId);
+                    }
                 }
                 var petIds = new List<int>();
                 foreach (var appointment in appointments)
@@ -230,11 +270,44 @@ namespace Petzey.Backend.Appointment.API.Controllers
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
                             appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerName = "John Doe";
+                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
                         }
                     }
                 }
                 //ownername to be assigned!!!
+
+                using (var httpClient = new HttpClient())
+                {
+                    // Make the GET request
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Read the response content
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // Deserialize the JSON response to a Dictionary<string, string>
+                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+                        // Find the owner name based on ownerId
+                        foreach (var appointment in appointmentsList)
+                        {
+                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            {
+                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                            }
+                            else
+                            {
+                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // For example, set a default owner name or log a warning
+                                appointment.OwnerName = "Unknown Owner";
+                            }
+                        }
+                    }
+                }
+
+
+
                 return Ok(appointments); //3 appointments per page    
             }
             catch (Exception ex)
@@ -261,7 +334,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 var docIds = new List<int>();
                 foreach (var appointment in appointments)
                 {
-                    docIds.Add(int.Parse(appointment.DoctorID));
+                    if (int.TryParse(appointment.DoctorID, out int doctorId))
+                    {
+                        docIds.Add(doctorId);
+                    }
                 }
                 var petIds = new List<int>();
                 foreach (var appointment in appointments)
@@ -331,10 +407,42 @@ namespace Petzey.Backend.Appointment.API.Controllers
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
                             appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerName = "John Doe";
+                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
                         }
                     }
                 }
+
+                using (var httpClient = new HttpClient())
+                {
+                    // Make the GET request
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Read the response content
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // Deserialize the JSON response to a Dictionary<string, string>
+                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+                        // Find the owner name based on ownerId
+                        foreach (var appointment in appointmentsList)
+                        {
+                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            {
+                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                            }
+                            else
+                            {
+                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // For example, set a default owner name or log a warning
+                                appointment.OwnerName = "Unknown Owner";
+                            }
+                        }
+                    }
+                }
+
+
                 return Ok(appointments); //3 appointments per page    
             }
             catch (Exception ex)
