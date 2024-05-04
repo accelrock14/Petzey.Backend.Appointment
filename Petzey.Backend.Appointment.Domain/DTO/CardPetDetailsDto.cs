@@ -8,12 +8,11 @@ namespace Petzey.Backend.Appointment.Domain.DTO
 {
     public class CardPetDetailsDto 
     {
-        public int PetId { get; set; }
+        public int PetID { get; set; }
         public string PetName { get; set; }
-        public int PetAge { get; set; }
+        public int? PetAge { get; set; }
         public string PetGender { get; set; }
-        public string OwnerName { get; set; }
-
-        //PET PHOTO
+        public string OwnerID { get; set; }
+        public string petImage { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Petzey.Backend.Appointment.Domain;
+﻿using Elmah;
+using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
@@ -12,6 +13,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.ModelBinding;
 
+
+
+
+
 namespace Petzey.Backend.Appointment.Data.Repository
 {
     public class AppointmentRepository : IAppointmentRepository
@@ -19,7 +24,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
         PetzeyDbContext db = new PetzeyDbContext();
 
         
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         
         //-------------------------------------------------
@@ -34,8 +38,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
-                Logger.Info("id does not exist...");
-                Logger.Error("id does not exists ... error");
+                
                 return null;
             }
 
@@ -51,7 +54,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             int hoursToAdd = 9 + (slot * 30 / 60);
             int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
+            // if it is the lunch break theen   
             if (slot >= 8)
             {
                 hoursToAdd += 1;
@@ -71,17 +74,30 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 return false;
             }
 
-            db.Entry(appointmentDetail).State = EntityState.Modified;
+            var appointmentObj = db.AppointmentDetails.Include(a=>a.PetIssues).Include(a => a.Report).Where(ap=>ap.AppointmentID==id).FirstOrDefault();
+
+            appointmentObj.DoctorID = appointmentDetail.DoctorID;
+            appointmentObj.PetID= appointmentDetail.PetID;
+            appointmentObj.OwnerID = appointmentDetail.OwnerID;
+            appointmentObj.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+            appointmentObj.ScheduleTimeSlot = appointmentDetail.ScheduleTimeSlot;
+            appointmentObj.BookingDate = appointmentDetail.BookingDate;
+            appointmentObj.ReasonForVisit = appointmentDetail.ReasonForVisit;
+            appointmentObj.Status = appointmentDetail.Status;
+            appointmentObj.Report= appointmentDetail.Report;
+            appointmentObj.PetIssues= appointmentDetail.PetIssues;
 
             try
             {
+                db.Entry(appointmentObj).State = EntityState.Modified;
+
+            
                 db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error while saving...");
                     return false;
                 }
                 else
@@ -113,11 +129,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
             {
                 return false;
             }
-
-
-
-            db.AppointmentDetails.Add(appointmentDetail);
-            db.SaveChanges();
+            
+               
+                db.AppointmentDetails.Add(appointmentDetail);
+                db.SaveChanges();
+            
+          
 
             return true;
         }
@@ -157,7 +174,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(int doctorId, DateTime date)
+        public List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date)
         {
 
             var dateOnly = date.Date;
@@ -177,17 +194,32 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
+            if (status == Status.Closed)
+            {
+                Prescription prescription = new Prescription();
+                Report report = new Report();
+                prescription.PrescribedMedicines = new List<PrescribedMedicine>();
+                
+                db.Prescriptions.Add(prescription);
+                report.Prescription = prescription;
+                db.SaveChanges();
+                db.Reports.Add(report);
+                
+                appointment.Report = report;
+                
 
+               
+            }
             try
             {
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
+                
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 if (!AppointmentDetailExists(id))
                 {
-                    Logger.Error(ex, "Error in saving in db inside patch appointment");
 
                     return false;
                 }
@@ -200,7 +232,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return true;
         }
 
-        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(int doctorId, DateTime date)
+        public List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date)
         {
 
             List<bool> schedules = new List<bool>(18);
@@ -225,16 +257,39 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return schedules;
         }
 
-        
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByPetID(int PetID)
+        {
+            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+        public List<AppointmentCardDto> GetAllClosedAppointmentsByVetID(string VetID)
+        {
+            return db.AppointmentDetails.Where(a => a.DoctorID == VetID && a.Status == Status.Closed).Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate
+            }).ToList();
+        }
+
+
         //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 
         // get count of appointments in different statuses
-        public AppointmentStatusCountsDto AppointmentStatusCounts()
+        public AppointmentStatusCountsDto AppointmentStatusCounts(string vetid)
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList();
+            var allAppointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid).ToList();
             dto.Total = allAppointments.Count;
             dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
             dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
@@ -244,29 +299,24 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return dto;
         }
 
-        // filter appointments by date
-        public List<AppointmentCardDto> FilterDateStatus(FilterParamsDto filterParams)
+        public List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams)
         {
             IQueryable<AppointmentDetail> query = db.AppointmentDetails;
 
-            // Check if both Status and ScheduleDate are null or default values
-            if ((filterParams.Status == null) &&
-                (filterParams.ScheduleDate == null || filterParams.ScheduleDate == default(DateTime)))
+            // Filter by DoctorID if provided
+            if (filterParams.DoctorID != null)
             {
-                // Return all appointments
-                return query
-                    .Select(appointment => new AppointmentCardDto
-                    {
-                        AppointmentID = appointment.AppointmentID,
-                        DoctorID = appointment.DoctorID,
-                        PetID = appointment.PetID,
-                        ScheduleDate = appointment.ScheduleDate
-                    })
-                    .ToList();
+                query = query.Where(appointment => appointment.DoctorID == filterParams.DoctorID);
+            }
+
+            // If no appointments found for the given doctor, return empty list
+            if (!query.Any())
+            {
+                return new List<AppointmentCardDto>();
             }
 
             // Filter by ScheduleDate if provided
-            if (filterParams.ScheduleDate != null && filterParams.ScheduleDate != default(DateTime))
+            if (filterParams.ScheduleDate != default(DateTime))
             {
                 query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
             }
@@ -284,12 +334,14 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
             return filteredAppointments;
         }
+
 
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
@@ -309,12 +361,99 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
             return appointments;
         }
+
+        public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, string ownerid)
+        {
+            // Execute the query to check if appointments exist for the given petid
+            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
+            List<AppointmentDetail> appointments = query.ToList();
+
+            // If no appointments found, return empty list
+            if (appointments.Count == 0)
+            {
+                return new List<AppointmentCardDto>();
+            }
+
+            // Filter appointments based on filterParams
+            query = query.AsQueryable();
+
+            // Filter by ScheduleDate if provided
+            if (filterParams.ScheduleDate != default(DateTime))
+            {
+                query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
+            }
+
+            // Filter by Status if provided
+            if (filterParams.Status != null)
+            {
+                query = query.Where(appointment => appointment.Status == filterParams.Status);
+            }
+
+            // Map to AppointmentCardDto
+            List<AppointmentCardDto> filteredAppointments = query
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
+                })
+                .ToList();
+
+            return filteredAppointments;
+        }
+
+
+        public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, string vetid)
+        {
+            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
+            List<AppointmentDetail> appointments = query.ToList();
+
+            // If no appointments found, return empty list
+            if (appointments.Count == 0)
+            {
+                return new List<AppointmentCardDto>();
+            }
+
+            // Filter appointments based on filterParams
+            query = query.AsQueryable();
+
+            // Filter by ScheduleDate if provided
+            if (filterParams.ScheduleDate != default(DateTime))
+            {
+                query = query.Where(appointment => DbFunctions.TruncateTime(appointment.ScheduleDate) == DbFunctions.TruncateTime(filterParams.ScheduleDate));
+            }
+
+            // Filter by Status if provided
+            if (filterParams.Status != null)
+            {
+                query = query.Where(appointment => appointment.Status == filterParams.Status);
+            }
+
+            // Map to AppointmentCardDto
+            List<AppointmentCardDto> filteredAppointments = query
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
+                })
+                .ToList();
+
+            return filteredAppointments;
+        }
+
+
 
         // get all appointments for a pet
         public List<AppointmentCardDto> AppointmentByPetId(int petId)
@@ -326,7 +465,8 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     AppointmentID = appointment.AppointmentID,
                     DoctorID = appointment.DoctorID,
                     PetID = appointment.PetID,
-                    ScheduleDate = appointment.ScheduleDate
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
                 })
                 .ToList();
 
@@ -349,6 +489,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
             }
             db.Entry(report).State = System.Data.Entity.EntityState.Modified;
+            
             db.SaveChanges();
         }
 
@@ -455,8 +596,106 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        public void UpdateReportStatus(Report oldReport, Report newReport)
+        {
+            int id = oldReport.ReportID;
+            oldReport.HeartRate = newReport.HeartRate;
+            oldReport.Temperature = newReport.Temperature;
+            oldReport.OxygenLevel = newReport.OxygenLevel;
+            oldReport.Comment = newReport.Comment;
 
+            UpdateSymptoms(id,oldReport.Symptoms, newReport.Symptoms);
+            UpdateTests(id, oldReport.Tests, newReport.Tests);
+            UpdateRecommendation(id,oldReport.RecommendedDoctors,newReport.RecommendedDoctors);
+            db.SaveChanges ();
+        }
 
+        public void UpdateSymptoms(int id,List<ReportSymptom> oldSymptoms, List<ReportSymptom> newSymptoms)
+        {
+            List<ReportSymptom> deletedSymptoms = new List<ReportSymptom>();
+            foreach(ReportSymptom symptom in oldSymptoms)
+            {
+                if (!newSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
+                {
+                    //DeleteSymptomFromReport(oldSymptoms[i].ReportSymptomID);
+                    deletedSymptoms.Add(symptom);
+                }
+            }
+            foreach (ReportSymptom symptom in newSymptoms)
+            {
+                if (!oldSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
+                {
+                    AddSymptomToReport(id, symptom);
+                }
+            }
+            foreach(ReportSymptom symptom in deletedSymptoms)
+            {
+                DeleteSymptomFromReport(symptom.ReportSymptomID);
+            }
+        }
+
+        public void UpdateTests(int id, List<ReportTest> oldTests, List<ReportTest> newTests)
+        {
+            List<ReportTest> deletedTests = new List<ReportTest>();
+            foreach(ReportTest test in oldTests)
+            {
+                if (!newTests.Select(t=>t.TestID).Contains(test.TestID))
+                {
+                    //DeleteTestFromReport(oldTests[i].ReportTestID);
+                    deletedTests.Add(test);
+                }
+            }
+            foreach (ReportTest test in newTests)
+            {
+                if (!oldTests.Select(t=>t.TestID).Contains(test.TestID))
+                {
+                    AddTestToReport(id, test);
+                }
+            }
+            foreach(ReportTest test in deletedTests)
+            {
+                DeleteTestFromReport(test.ReportTestID);
+            }
+        }
+
+        public void UpdateRecommendation(int id, List<RecommendedDoctor> oldDoctors, List<RecommendedDoctor> newDoctors)
+        {
+            List<RecommendedDoctor> deletedDoctors = new List<RecommendedDoctor>();
+            foreach(RecommendedDoctor doctor in oldDoctors)
+            {
+                if (!newDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
+                {
+                    //DeleteTestFromReport(oldDoctors[i].ID);
+                    deletedDoctors.Add(doctor);
+                }
+            }
+            foreach (RecommendedDoctor doctor in newDoctors)
+            {
+                if (!oldDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
+                {
+                    AddDoctorRecommendation(id, doctor);
+                }
+            }
+            foreach (RecommendedDoctor doctor in deletedDoctors)
+            {
+                db.RecommendedDoctors.Remove(doctor);
+            }
+        }
+
+        public PrescribedMedicine GetPrescribed(int id)
+        {
+            return db.PrescribedMedics.Find(id);
+        }
+
+        public void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription)
+        {
+            oldPrescription.MedicineID = newPrescription.MedicineID;
+            oldPrescription.NumberOfDays = newPrescription.NumberOfDays;
+            oldPrescription.Dosages = newPrescription.Dosages;
+            oldPrescription.Consume =  newPrescription.Consume;
+            oldPrescription.Comment = newPrescription.Comment;
+            db.SaveChanges();
+        }
 
 
 
@@ -464,10 +703,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
         ///
         public IQueryable<Feedback> getAllFeedbacks()
         {
+            
             return db.Feedbacks;
         }
         public Feedback getFeedbackByAppointmrntId(int id)
         {
+           
             Feedback feedback = db.Feedbacks.Where(f => f.AppointmentId == id).FirstOrDefault();
             return feedback;
         }
@@ -476,6 +717,103 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.Feedbacks.Add(feedback);
             db.SaveChanges();
             return true;
+        }
+
+        //change!
+        public List<AppointmentCardDto> GetAllAppointments()
+        {
+            var appointments = db.AppointmentDetails.ToList();
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+
+        }
+        public List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid)
+        {
+            var appointments = db.AppointmentDetails.Where(a => a.OwnerID == ownerid);
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+        }
+        public List<AppointmentCardDto> GetAppointmentsByVetId(string vetid)
+        {
+            var appointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid);
+
+            var appointmentDtos = appointments.Select(appointment => new AppointmentCardDto
+            {
+                AppointmentID = appointment.AppointmentID,
+                DoctorID = appointment.DoctorID,
+                PetID = appointment.PetID,
+                ScheduleDate = appointment.ScheduleDate,
+                Status = appointment.Status.ToString()
+            }).ToList();
+
+            return appointmentDtos;
+        }
+
+
+        List<AppointmentDetail> IAppointmentRepository.GetAppointmentsOfDoctor(string docId)
+        {
+            return db.AppointmentDetails.Where(a=>a.DoctorID==docId).ToList();
+        }
+
+
+        public List<FeedbackQuestion> getfeedbackquestion()
+        {
+            var questions = db.FeedbackQuestions.ToList();
+            return questions;
+        }
+        public FeedbackQuestion getfeedbackquestionbyid(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            return feedbackQuestion;
+        }
+        public void updatefeedbackquestion(int id, FeedbackQuestion feedbackQuestion)
+        {
+            db.Entry(feedbackQuestion).State = EntityState.Modified;
+            db.SaveChanges();
+
+        }
+        public void deletefeedbackquestion(int id)
+        {
+            FeedbackQuestion feedbackQuestion = db.FeedbackQuestions.Find(id);
+            db.FeedbackQuestions.Remove(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public void Addfeedbackquestion(FeedbackQuestion feedbackQuestion)
+        {
+            db.FeedbackQuestions.Add(feedbackQuestion);
+            db.SaveChanges();
+        }
+        public bool checkfeedbackquestion(int id)
+        {
+            return db.FeedbackQuestions.Count(e => e.FeedbackQuestionId == id) > 0;
+        }
+        public List<int> GetAllPetIDByVetId(string vetId)
+        {
+          // var appointments= db.AppointmentDetails.Where(a=>a.DoctorID== vetId).ToList();
+            return
+                db.AppointmentDetails
+               .Where(a => a.DoctorID == vetId)
+               .Select(a => a.PetID)
+               .ToList();
+
         }
 
     }

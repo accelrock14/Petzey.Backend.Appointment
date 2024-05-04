@@ -11,5 +11,6 @@ namespace Petzey.Backend.Appointment.Domain.DTO
     {
         public DateTime ScheduleDate { get; set; }
         public Status? Status { get; set; } = null;
+        public string DoctorID { get; set; }
     }
 }

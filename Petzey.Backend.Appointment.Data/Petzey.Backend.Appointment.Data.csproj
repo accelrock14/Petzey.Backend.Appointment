@@ -34,23 +34,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=32.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.32.0.1\lib\net48\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.3.1\lib\net46\NLog.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="NLog.Web, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.Web.5.3.8\lib\net46\NLog.Web.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.0\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
@@ -62,10 +84,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202404260530454_InitialCreate.cs" />
-    <Compile Include="Migrations\202404260530454_InitialCreate.Designer.cs">
-      <DependentUpon>202404260530454_InitialCreate.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="PetzeyDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,12 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="bin\Debug\Petzey.Backend.Appointment.Data.dll.config" />
+    <None Include="bin\Debug\Petzey.Backend.Appointment.Domain.dll.config" />
+    <None Include="bin\Release\Petzey.Backend.Appointment.Data.dll.config" />
+    <None Include="bin\Release\Petzey.Backend.Appointment.Domain.dll.config" />
+    <None Include="bin\CSV Files\medicines.csv" />
+    <None Include="bin\CSV Files\symptoms.csv" />
+    <None Include="bin\CSV Files\tests.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -87,10 +106,43 @@
       <Name>Petzey.Backend.Appointment.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202404260530454_InitialCreate.resx">
-      <DependentUpon>202404260530454_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
+    <Content Include="bin\Debug\Elmah.dll" />
+    <Content Include="bin\Debug\EntityFramework.dll" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Debug\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\Debug\EntityFramework.xml" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Data.dll" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Data.pdb" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Domain.dll" />
+    <Content Include="bin\Debug\Petzey.Backend.Appointment.Domain.pdb" />
+    <Content Include="bin\Release\CsvHelper.dll" />
+    <Content Include="bin\Release\CsvHelper.xml" />
+    <Content Include="bin\Release\Elmah.dll" />
+    <Content Include="bin\Release\EntityFramework.dll" />
+    <Content Include="bin\Release\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Release\EntityFramework.SqlServer.xml" />
+    <Content Include="bin\Release\EntityFramework.xml" />
+    <Content Include="bin\Release\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <Content Include="bin\Release\Microsoft.Bcl.AsyncInterfaces.xml" />
+    <Content Include="bin\Release\Microsoft.Bcl.HashCode.dll" />
+    <Content Include="bin\Release\Microsoft.Bcl.HashCode.xml" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Data.dll" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Data.pdb" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Domain.dll" />
+    <Content Include="bin\Release\Petzey.Backend.Appointment.Domain.pdb" />
+    <Content Include="bin\Release\System.Buffers.dll" />
+    <Content Include="bin\Release\System.Buffers.xml" />
+    <Content Include="bin\Release\System.Memory.dll" />
+    <Content Include="bin\Release\System.Memory.xml" />
+    <Content Include="bin\Release\System.Numerics.Vectors.dll" />
+    <Content Include="bin\Release\System.Numerics.Vectors.xml" />
+    <Content Include="bin\Release\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Content Include="bin\Release\System.Runtime.CompilerServices.Unsafe.xml" />
+    <Content Include="bin\Release\System.Threading.Tasks.Extensions.dll" />
+    <Content Include="bin\Release\System.Threading.Tasks.Extensions.xml" />
+    <Content Include="bin\CSV Files\petIssues.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

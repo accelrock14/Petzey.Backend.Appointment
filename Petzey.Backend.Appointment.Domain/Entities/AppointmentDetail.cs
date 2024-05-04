@@ -9,9 +9,9 @@ namespace Petzey.Backend.Appointment.Domain
     {
         [Key]
         public int AppointmentID { get; set; }
-        public int DoctorID { get; set; }
+        public string DoctorID { get; set; }
         public int PetID { get; set; }
-        public int OwnerID { get; set; }
+        public string OwnerID { get; set; }
         public DateTime ScheduleDate { get; set; }
         public int ScheduleTimeSlot { get; set; }
         public DateTime BookingDate { get; set; }
