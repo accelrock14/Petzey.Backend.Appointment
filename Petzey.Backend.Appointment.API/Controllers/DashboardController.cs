@@ -78,7 +78,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -117,7 +117,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -154,7 +154,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -226,7 +226,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -265,7 +265,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -299,7 +299,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -373,7 +373,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -412,7 +412,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -446,7 +446,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
