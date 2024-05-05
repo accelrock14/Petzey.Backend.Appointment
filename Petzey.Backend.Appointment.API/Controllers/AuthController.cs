@@ -118,7 +118,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     User user = new User
                     {
                         Id = userData.Id,
-                        Name = userData.DisplayName,
+                        Name = userData.DisplayName + " "+userData.Surname,
                         City = userData.City,
                         State = userData.State,
                         Country = userData.Country,
