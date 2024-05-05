@@ -37,7 +37,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public AppointmentDetail GetAppointmentDetail(int id)
 
         {
-            AppointmentCaching.ClearAppointmentsCache();
+            //AppointmentCaching.ClearAppointmentsCache();
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
@@ -51,7 +51,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
         {
 
-            AppointmentCaching.ClearAppointmentsCache();
+            //AppointmentCaching.ClearAppointmentsCache();
             int slot = appointmentDetail.ScheduleTimeSlot;
 
             int hoursToAdd = 9 + (slot * 30 / 60);
@@ -114,7 +114,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool PostAppointmentDetail(AppointmentDetail appointmentDetail)
         {
-            AppointmentCaching.ClearAppointmentsCache();
+            //AppointmentCaching.ClearAppointmentsCache();
 
             int slot = appointmentDetail.ScheduleTimeSlot;
 
@@ -145,7 +145,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool DeleteAppointmentDetail(int id)
         {
-            AppointmentCaching.ClearAppointmentsCache();
+            //AppointmentCaching.ClearAppointmentsCache();
 
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
@@ -191,7 +191,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool PatchAppointmentStatus(int id, Status status)
         {
-            AppointmentCaching.ClearAppointmentsCache();
+            //AppointmentCaching.ClearAppointmentsCache();
 
             var appointment = db.AppointmentDetails.Find(id);
             if (appointment == null)
