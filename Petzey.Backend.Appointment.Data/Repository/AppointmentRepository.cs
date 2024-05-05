@@ -47,7 +47,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
         {
-
+            //AppointmentCaching.ClearAppointmentsCache();
 
             int slot = appointmentDetail.ScheduleTimeSlot;
 
