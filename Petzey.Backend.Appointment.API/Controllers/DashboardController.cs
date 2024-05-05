@@ -89,11 +89,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         { 
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                            for(int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -121,13 +128,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
                     }
                 }
@@ -222,11 +237,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -254,13 +276,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
                     }
                 }
@@ -354,11 +384,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -386,14 +423,23 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < appointmentsList.Count ; i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for(int j=0; j<minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
+
                     }
                 }
 
