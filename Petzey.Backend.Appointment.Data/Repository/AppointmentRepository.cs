@@ -1,4 +1,5 @@
 ﻿using Elmah;
+using Petzey.Backend.Appointment.Data.Caching;
 using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
@@ -301,7 +302,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams)
         {
-            IQueryable<AppointmentDetail> query = db.AppointmentDetails;
+            IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
+            if(query == null)
+            {
+                query = db.AppointmentDetails;
+                AppointmentCaching.CacheAppointments(query);
+            }
 
             // Filter by DoctorID if provided
             if (filterParams.DoctorID != null)
@@ -346,6 +352,13 @@ namespace Petzey.Backend.Appointment.Data.Repository
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
         {
+            //IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
+            //if (query == null)
+            //{
+            //    query = db.AppointmentDetails;
+            //    AppointmentCaching.CacheAppointments(query);
+            //}
+            //query = query.Where(appointment => appointment.PetID == petId);
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petId);
 
             // If date is provided, filter appointments by date
@@ -372,7 +385,14 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public List<AppointmentCardDto> GetAppointmentsByOwnerIdWithFilters(FilterParamsDto filterParams, string ownerid)
         {
             // Execute the query to check if appointments exist for the given petid
-            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
+            IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
+            if (query == null)
+            {
+                query = db.AppointmentDetails;
+                AppointmentCaching.CacheAppointments(query);
+            }
+            query = query.Where(appointment => appointment.OwnerID == ownerid);
+            //IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.OwnerID == ownerid);
             List<AppointmentDetail> appointments = query.ToList();
 
             // If no appointments found, return empty list
@@ -414,7 +434,14 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public List<AppointmentCardDto> GetAppointmentsByVetIdWithFilters(FilterParamsDto filterParams, string vetid)
         {
-            IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
+            IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
+            if (query == null)
+            {
+                query = db.AppointmentDetails;
+                AppointmentCaching.CacheAppointments(query);
+            }
+            query = query.Where(appointment => appointment.DoctorID == vetid);
+            //IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.DoctorID == vetid);
             List<AppointmentDetail> appointments = query.ToList();
 
             // If no appointments found, return empty list
@@ -701,10 +728,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         /////////////////////////////// feedback
         ///
-        public IQueryable<Feedback> getAllFeedbacks()
+        public List<Feedback> getAllFeedbacks()
         {
             
-            return db.Feedbacks;
+            return db.Feedbacks.ToList();
         }
         public Feedback getFeedbackByAppointmrntId(int id)
         {

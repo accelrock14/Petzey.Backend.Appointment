@@ -50,14 +50,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
 
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -65,7 +62,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -81,7 +78,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -92,12 +89,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
-                        {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
+                        { 
+                            for(int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -114,7 +117,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -125,14 +128,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
                     }
                 }
@@ -144,7 +154,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -172,7 +182,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -189,13 +199,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -203,7 +210,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -219,7 +226,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -230,12 +237,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -252,7 +265,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -263,14 +276,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
                     }
                 }
@@ -279,7 +299,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -308,7 +328,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -326,13 +346,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -340,7 +357,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -356,7 +373,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzyvetapi20240502220748.azurewebsites.net/api/vets/VetDetails", requestContent);
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -367,12 +384,18 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardVetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
-                            appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
-                            appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
-                            appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
+                            for (int j = 0; j < minLength; j++)
+                            {
+                                if (appointmentsList[i].DoctorID == (cardVetDetailsList[j].VetId).ToString())
+                                {
+                                    appointmentsList[i].VetSpecialization = cardVetDetailsList[j].Specialization;
+                                    appointmentsList[i].DoctorName = cardVetDetailsList[j].Name;
+                                    appointmentsList[i].DoctorPhoto = cardVetDetailsList[j].Photo;
+                                }
+                            }
                         }
                     }
                 }
@@ -389,7 +412,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YourToken");
 
                     // Make the POST request
-                    var response = await httpClient.PostAsync("https://petzeypetswebapi20240503003857.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -400,22 +423,30 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        int minLength = Math.Min(appointmentsList.Count, cardPetDetailsList.Count);
+                        for (int i = 0; i < minLength; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
-                            appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
-                            appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
-                            appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
-                            appointmentsList[i].PetAge = cardPetDetailsList[i].PetAge;
-                            appointmentsList[i].OwnerID = cardPetDetailsList[i].OwnerID;
+                            int id = appointmentsList[i].PetID;
+                            for(int j=0; j<minLength; j++)
+                            {
+                                if (appointmentsList[i].PetID == cardPetDetailsList[j].PetID)
+                                {
+                                    appointmentsList[i].PetName = cardPetDetailsList[j].PetName;
+                                    appointmentsList[i].PetGender = cardPetDetailsList[j].PetGender;
+                                    appointmentsList[i].PetPhoto = cardPetDetailsList[j].petImage;
+                                    appointmentsList[i].PetAge = cardPetDetailsList[j].PetAge;
+                                    appointmentsList[i].OwnerID = cardPetDetailsList[j].OwnerID;
+                                }
+                            }
                         }
+
                     }
                 }
 
                 using (var httpClient = new HttpClient())
                 {
                     // Make the GET request
-                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240502214622.azurewebsites.net//api/Auth");
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net//api/Auth");
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -443,7 +474,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -503,83 +534,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/all")]
-        public IHttpActionResult GetAllAppointments()
-        {
-            try
-            {
-                var appointments = repo.GetAllAppointments();
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/vets/{vetid}")]
-        public IHttpActionResult GetAllAppointmentsVets(string vetid)
-        {
-            try
-            {
-                var appointments = repo.GetAppointmentsByVetId(vetid);
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/pets/{ownerid}")]
-        public IHttpActionResult GetAllAppointmentsPets(string ownerid)
-        {
-            try
-            {
-                var appointments = repo.GetAppointmentsByOwnerId(ownerid);
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
 
             }
         }
