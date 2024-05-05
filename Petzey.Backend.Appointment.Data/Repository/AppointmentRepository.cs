@@ -307,15 +307,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public List<AppointmentCardDto> GetAllAppointmentsWithFilters(FilterParamsDto filterParams)
         {
-            //IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
-            //if(query == null)
-            //{
-            //    query = db.AppointmentDetails;
-            //    AppointmentCaching.CacheAppointments(query);
-            //}
-
             IQueryable<AppointmentDetail> query = db.AppointmentDetails;
-
 
             // Filter by DoctorID if provided
             if (filterParams.DoctorID != null)
@@ -355,7 +347,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return filteredAppointments;
         }
-
 
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)

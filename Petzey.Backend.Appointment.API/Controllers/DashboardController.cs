@@ -48,7 +48,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters).Skip(offset).Take(3);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -162,27 +162,38 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var responseContent = await response.Content.ReadAsStringAsync();
 
                         // Deserialize the JSON response to a Dictionary<string, string>
-                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+                        var ownerData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(responseContent);
 
                         // Find the owner name based on ownerId
                         foreach (var appointment in appointmentsList)
                         {
-                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            if (appointment.OwnerID != null)
                             {
-                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                                var owner = ownerData.FirstOrDefault(o => o.ContainsKey(appointment.OwnerID));
+                                if (owner != null)
+                                {
+                                    appointment.OwnerName = owner[appointment.OwnerID];
+                                }
+                                else
+                                {
+                                    // Handle the case where OwnerID is not found in the dictionary
+                                    // For example, set a default owner name or log a warning
+                                    appointment.OwnerName = "Unknown Owner";
+                                }
                             }
                             else
                             {
-                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // Handle the case where OwnerID is null
                                 // For example, set a default owner name or log a warning
                                 appointment.OwnerName = "Unknown Owner";
                             }
                         }
+
                     }
                 }
 
 
-                return Ok(appointmentsList); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -197,7 +208,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid).Skip(offset).Take(3);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -307,28 +318,39 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var responseContent = await response.Content.ReadAsStringAsync();
 
                         // Deserialize the JSON response to a Dictionary<string, string>
-                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+                        var ownerData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(responseContent);
 
                         // Find the owner name based on ownerId
                         foreach (var appointment in appointmentsList)
                         {
-                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            if (appointment.OwnerID != null)
                             {
-                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                                var owner = ownerData.FirstOrDefault(o => o.ContainsKey(appointment.OwnerID));
+                                if (owner != null)
+                                {
+                                    appointment.OwnerName = owner[appointment.OwnerID];
+                                }
+                                else
+                                {
+                                    // Handle the case where OwnerID is not found in the dictionary
+                                    // For example, set a default owner name or log a warning
+                                    appointment.OwnerName = "Unknown Owner";
+                                }
                             }
                             else
                             {
-                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // Handle the case where OwnerID is null
                                 // For example, set a default owner name or log a warning
                                 appointment.OwnerName = "Unknown Owner";
                             }
                         }
+
                     }
                 }
 
 
 
-                return Ok(appointmentsList); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -344,7 +366,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid).Skip(offset).Take(3);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -454,27 +476,38 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var responseContent = await response.Content.ReadAsStringAsync();
 
                         // Deserialize the JSON response to a Dictionary<string, string>
-                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+                        var ownerData = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(responseContent);
 
                         // Find the owner name based on ownerId
                         foreach (var appointment in appointmentsList)
                         {
-                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            if (appointment.OwnerID != null)
                             {
-                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                                var owner = ownerData.FirstOrDefault(o => o.ContainsKey(appointment.OwnerID));
+                                if (owner != null)
+                                {
+                                    appointment.OwnerName = owner[appointment.OwnerID];
+                                }
+                                else
+                                {
+                                    // Handle the case where OwnerID is not found in the dictionary
+                                    // For example, set a default owner name or log a warning
+                                    appointment.OwnerName = "Unknown Owner";
+                                }
                             }
                             else
                             {
-                                // Handle the case where OwnerID is null or not found in the dictionary
+                                // Handle the case where OwnerID is null
                                 // For example, set a default owner name or log a warning
                                 appointment.OwnerName = "Unknown Owner";
                             }
                         }
+
                     }
                 }
 
 
-                return Ok(appointmentsList); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
