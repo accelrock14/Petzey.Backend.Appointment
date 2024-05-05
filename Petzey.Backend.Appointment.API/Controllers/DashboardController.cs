@@ -50,14 +50,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
 
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -65,7 +62,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -92,9 +89,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
-                        {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
+                        for (int i = 0; i < appointmentsList.Count; i++)
+                        { 
                             appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
                             appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
                             appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
@@ -125,9 +121,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        for (int i = 0; i < appointmentsList.Count; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
                             appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
@@ -172,7 +167,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -189,13 +184,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -203,7 +195,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -230,9 +222,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
+                        for (int i = 0; i < appointmentsList.Count; i++)
                         {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
                             appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
                             appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
                             appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
@@ -263,9 +254,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        for (int i = 0; i < appointmentsList.Count; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
                             appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
@@ -308,7 +298,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -326,13 +316,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
 
-                // Apply Skip() and Take() without converting to List
-                appointments = appointments.Skip(offset).Take(3);
-
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
                 var docIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     if (int.TryParse(appointment.DoctorID, out int doctorId))
                     {
@@ -340,7 +327,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
                 var petIds = new List<int>();
-                foreach (var appointment in appointments)
+                foreach (var appointment in appointmentsList)
                 {
                     petIds.Add(appointment.PetID);
                 }
@@ -367,9 +354,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardVetDetailsList.Count); i++)
+                        for (int i = 0; i < appointmentsList.Count; i++)
                         {
-                            appointmentsList[i].DoctorID = (cardVetDetailsList[i].VetId).ToString();
                             appointmentsList[i].VetSpecialization = cardVetDetailsList[i].Specialization;
                             appointmentsList[i].DoctorName = cardVetDetailsList[i].Name;
                             appointmentsList[i].DoctorPhoto = cardVetDetailsList[i].Photo;
@@ -400,9 +386,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
 
                         // Process the data as needed
-                        for (int i = 0; i < Math.Min(3, cardPetDetailsList.Count); i++)
+                        for (int i = 0; i < appointmentsList.Count ; i++)
                         {
-                            appointmentsList[i].PetID = cardPetDetailsList[i].PetID;
                             appointmentsList[i].PetName = cardPetDetailsList[i].PetName;
                             appointmentsList[i].PetGender = cardPetDetailsList[i].PetGender;
                             appointmentsList[i].PetPhoto = cardPetDetailsList[i].petImage;
@@ -443,7 +428,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
 
 
-                return Ok(appointments); //3 appointments per page    
+                return Ok(appointmentsList.Skip(offset).Take(3)); //3 appointments per page    
             }
             catch (Exception ex)
             {
@@ -503,83 +488,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
 
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/all")]
-        public IHttpActionResult GetAllAppointments()
-        {
-            try
-            {
-                var appointments = repo.GetAllAppointments();
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/vets/{vetid}")]
-        public IHttpActionResult GetAllAppointmentsVets(string vetid)
-        {
-            try
-            {
-                var appointments = repo.GetAppointmentsByVetId(vetid);
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
-
-
-            }
-        }
-        [HttpGet]
-        [Route("api/appointment/pets/{ownerid}")]
-        public IHttpActionResult GetAllAppointmentsPets(string ownerid)
-        {
-            try
-            {
-                var appointments = repo.GetAppointmentsByOwnerId(ownerid);
-            foreach (var a in appointments)
-            {
-                a.PetName = "Marley";
-                a.DoctorName = "John Doe";
-                a.PetAge = 2;
-                a.PetGender = "Male";
-                a.OwnerName = "Parth";
-                a.VetSpecialization = "NAVLE";
-            }
-            return Ok(appointments);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
 
             }
         }
