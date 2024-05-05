@@ -701,10 +701,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         /////////////////////////////// feedback
         ///
-        public IQueryable<Feedback> getAllFeedbacks()
+        public List<Feedback> getAllFeedbacks()
         {
             
-            return db.Feedbacks;
+            return db.Feedbacks.ToList();
         }
         public Feedback getFeedbackByAppointmrntId(int id)
         {
