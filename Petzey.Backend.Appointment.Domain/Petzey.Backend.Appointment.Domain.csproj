@@ -74,6 +74,7 @@
     <Compile Include="Entities\Status.cs" />
     <Compile Include="Entities\Symptom.cs" />
     <Compile Include="Entities\Test.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Interfaces\IAppointmentRepository.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

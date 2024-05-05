@@ -1,5 +1,7 @@
 ﻿using Azure.Identity;
 using Microsoft.Graph;
+using Microsoft.Graph.Beta;
+using Petzey.Backend.Appointment.Domain;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,7 +19,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
     {
 
 
-        public async Task<IHttpActionResult> GetUser()
+       /* public async Task<IHttpActionResult> GetUser()
         {
 
             var clientId = ConfigurationManager.AppSettings["clientId"];
@@ -49,9 +51,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError(ex);
             }
         }
+*/
 
-
-        public async Task<IHttpActionResult> GetUserByID(string ID)
+       /* public async Task<IHttpActionResult> GetUserByID(string ID)
         {
 
             var clientId = ConfigurationManager.AppSettings["clientId"];
@@ -84,6 +86,57 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
             catch (Exception ex)
             {
+                return InternalServerError(ex);
+            }
+        }
+*/
+
+
+
+        public async Task<IHttpActionResult> GetAllUser()
+        {
+            var clientId = ConfigurationManager.AppSettings["clientId"];
+            var clientSecret = ConfigurationManager.AppSettings["clientSecret"];
+            var tenantId = ConfigurationManager.AppSettings["tenantId"];
+            var scopes = new[] { "https://graph.microsoft.com/.default" };
+
+            // Create an instance of ClientSecretCredential
+            var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+
+            // Initialize the GraphServiceClient with the ClientSecretCredential
+            var graphService = new GraphServiceClient(clientSecretCredential, scopes);
+
+            try
+            {
+                var users = await graphService.Users.GetAsync();
+                var data = users.Value.ToArray();
+                List<User> usersList = new List<User>();
+                user_class user_Class = new user_class();
+
+                foreach (var userData in data)
+                {
+                    User user = new User
+                    {
+                        Id = userData.Id,
+                        Name = userData.DisplayName,
+                        City = userData.City,
+                        State = userData.State,
+                        Country = userData.Country,
+                        Email = userData.Identities.FirstOrDefault()?.IssuerAssignedId?.ToString(),
+                        Role = user_Class.GetRoleFromAdditionalData(userData.AdditionalData),
+                        Npi = user_Class.GetNpiFromAdditionalData(userData.AdditionalData),
+                        Phone = user_Class.GetPhoneFromAdditionalData(userData.AdditionalData),
+                        Speciality = user_Class.GetSpecialityFromAdditionalData(userData.AdditionalData)
+                    };
+
+                    usersList.Add(user);
+                }
+
+                return Ok(usersList);
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur during the retrieval process
                 return InternalServerError(ex);
             }
         }
