@@ -1,4 +1,5 @@
 ﻿using Elmah;
+using Petzey.Backend.Appointment.Data.Caching;
 using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
@@ -15,7 +16,7 @@ using System.Web.ModelBinding;
 
 
 
-
+ 
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
@@ -34,7 +35,9 @@ namespace Petzey.Backend.Appointment.Data.Repository
         }
 
         public AppointmentDetail GetAppointmentDetail(int id)
+
         {
+            //AppointmentCaching.ClearAppointmentsCache();
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
             {
@@ -48,7 +51,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public bool PutAppointmentDetail(int id, AppointmentDetail appointmentDetail)
         {
 
-
+            //AppointmentCaching.ClearAppointmentsCache();
             int slot = appointmentDetail.ScheduleTimeSlot;
 
             int hoursToAdd = 9 + (slot * 30 / 60);
@@ -111,6 +114,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool PostAppointmentDetail(AppointmentDetail appointmentDetail)
         {
+            //AppointmentCaching.ClearAppointmentsCache();
 
             int slot = appointmentDetail.ScheduleTimeSlot;
 
@@ -141,6 +145,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool DeleteAppointmentDetail(int id)
         {
+            //AppointmentCaching.ClearAppointmentsCache();
 
             AppointmentDetail appointmentDetail = db.AppointmentDetails.Find(id);
             if (appointmentDetail == null)
@@ -186,6 +191,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         public bool PatchAppointmentStatus(int id, Status status)
         {
+            //AppointmentCaching.ClearAppointmentsCache();
 
             var appointment = db.AppointmentDetails.Find(id);
             if (appointment == null)
@@ -342,10 +348,16 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return filteredAppointments;
         }
 
-
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
         {
+            //IQueryable<AppointmentDetail> query = AppointmentCaching.GetAppointmentsFromCache();
+            //if (query == null)
+            //{
+            //    query = db.AppointmentDetails;
+            //    AppointmentCaching.CacheAppointments(query);
+            //}
+            //query = query.Where(appointment => appointment.PetID == petId);
             IQueryable<AppointmentDetail> query = db.AppointmentDetails.Where(appointment => appointment.PetID == petId);
 
             // If date is provided, filter appointments by date
@@ -452,7 +464,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             return filteredAppointments;
         }
-
 
 
         // get all appointments for a pet
@@ -701,10 +712,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         /////////////////////////////// feedback
         ///
-        public IQueryable<Feedback> getAllFeedbacks()
+        public List<Feedback> getAllFeedbacks()
         {
             
-            return db.Feedbacks;
+            return db.Feedbacks.ToList();
         }
         public Feedback getFeedbackByAppointmrntId(int id)
         {
@@ -818,4 +829,3 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
     }
 }
-

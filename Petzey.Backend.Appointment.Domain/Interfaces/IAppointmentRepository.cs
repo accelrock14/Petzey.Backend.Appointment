@@ -87,7 +87,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         ///////feedback
         ///
 
-        IQueryable<Feedback> getAllFeedbacks();
+        List<Feedback> getAllFeedbacks();
         Feedback getFeedbackByAppointmrntId(int id);
         bool Addfeedback(Feedback feedback);
 
