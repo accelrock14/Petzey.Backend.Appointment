@@ -18,8 +18,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
     public class AuthController : ApiController
     {
 
+        [Route("api/getalluseridsandname")]
 
-       /* public async Task<IHttpActionResult> GetUser()
+        public async Task<IHttpActionResult> GetUser()
         {
 
             var clientId = ConfigurationManager.AppSettings["clientId"];
@@ -42,7 +43,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
                 for (int i = 0; i < data.Length; i++)
                 {
-                    keyValuePairs[data[i].Id] = data[i].DisplayName+" "+data[i].Surname;
+                    keyValuePairs[data[i].Id] = data[i].DisplayName + " " + data[i].Surname;
                 }
                 return Ok(keyValuePairs);
             }
@@ -51,9 +52,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError(ex);
             }
         }
-*/
 
-       /* public async Task<IHttpActionResult> GetUserByID(string ID)
+        [Route("api/getuserbyid")]
+
+        public async Task<IHttpActionResult> GetUserByID(string ID)
         {
 
             var clientId = ConfigurationManager.AppSettings["clientId"];
@@ -79,8 +81,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     keyValuePairs[data[i].Id] = data[i].DisplayName + " " + data[i].Surname;
                 }
 
-                if(keyValuePairs.ContainsKey(ID))
-                return Ok(keyValuePairs[ID]);
+                if (keyValuePairs.ContainsKey(ID))
+                    return Ok(keyValuePairs[ID]);
                 else
                     return NotFound();
             }
@@ -89,10 +91,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError(ex);
             }
         }
-*/
 
 
 
+        [Route("api/getalluserobjects")]
         public async Task<IHttpActionResult> GetAllUser()
         {
             var clientId = ConfigurationManager.AppSettings["clientId"];
