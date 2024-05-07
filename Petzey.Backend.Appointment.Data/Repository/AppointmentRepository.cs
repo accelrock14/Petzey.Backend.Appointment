@@ -1,6 +1,4 @@
-﻿using Elmah;
-using Petzey.Backend.Appointment.Data.Caching;
-using Petzey.Backend.Appointment.Domain;
+﻿using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
@@ -9,14 +7,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.ModelBinding;
 
-
-
- 
 
 namespace Petzey.Backend.Appointment.Data.Repository
 {
@@ -28,12 +19,13 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         
         //-------------------------------------------------
-
+        // Get details of all appointments
         public IQueryable<AppointmentDetail> GetAppointmentDetails()
         {
             return db.AppointmentDetails;
         }
 
+        // Get the details of appointment with the repective appointmentID
         public AppointmentDetail GetAppointmentDetail(int id)
 
         {
@@ -484,7 +476,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return appointments;
         }
 
-
+        // add new report
         public void AddReport(Report report)
         {
             db.Reports.Add(report);
@@ -496,6 +488,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
         {
             foreach (PrescribedMedicine medicine in report.Prescription.PrescribedMedicines)
             {
+                // edit contents of prescription
                 db.Entry(medicine.Medicine).State = System.Data.Entity.EntityState.Modified;
                 db.Entry(medicine).State = System.Data.Entity.EntityState.Modified;
             }
@@ -522,57 +515,68 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return db.Tests.Distinct();
         }
 
+        // get list of top most recent appointment of a pet using petID
         public List<AppointmentDetail> GetRecentAppointmentsByPetID(int PetID)
         {
             return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).Take(10).ToList();
 
         }
 
+        // get report detial by reportID
         public Report GetReportByID(int id)
         {
             return db.Reports.Find(id);
         }
 
+        // get all past prescriptions of a pet using petID
         public List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID)
         {
             return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(a => a.Report.Prescription).ToList();
 
         }
 
+        // get the most recent appointment of a pet using petID
         public AppointmentDetail MostRecentAppointmentByPetID(int PetID)
         {
             return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
 
         }
 
+        // get medicine details by using medicineID
         public Medicine GetMedicineById(int medicineId)
         {
             return db.Medicines.Find(medicineId);
         }
 
+        // get detials of prescribed medicine by using prescribedMedicineID
         public PrescribedMedicine GetPrescribedMedicine(int medicineId)
         {
             return db.PrescribedMedics.Find(medicineId);
         }
 
+        // add a new prescribedMedicine to presription having prescriptionID
         public void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine)
         {
             db.Prescriptions.Find(prescriptionId).PrescribedMedicines.Add(medicine);
             db.SaveChanges();
         }
+
+        // remove prescribedMedicine that has prescribedMedicineID from prescription
         public void RemoveMedicineFromPrescription(int prescriptionId)
         {
             db.PrescribedMedics.Remove(db.PrescribedMedics.Find(prescriptionId));
             db.SaveChanges();
         }
 
+        // add a symptom to report
         public void AddSymptomToReport(int reportID, ReportSymptom reportSymptom)
         {
 
             db.Reports.Find(reportID).Symptoms.Add(reportSymptom);
             db.SaveChanges();
         }
-
+        
+        // remove a symptom from report
         public void DeleteSymptomFromReport(int reportsymptomID){
 
             db.ReportSymptoms.Remove(db.ReportSymptoms.Find(reportsymptomID));
@@ -580,7 +584,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
          }
 
-
+        // add a test to report
         public void AddTestToReport(int reportID, ReportTest reportTest)
         {
 
@@ -588,6 +592,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        // remove a test from a report
         public void DeleteTestFromReport(int reportTestID)
         {
 
@@ -595,18 +600,21 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        // add a doctor recommendation
         public void AddDoctorRecommendation(int reportID, RecommendedDoctor recommendedDoctor)
         {
             db.Reports.Find(reportID).RecommendedDoctors.Add(recommendedDoctor);
             db.SaveChanges();
         }
 
+        // remove a doctor recommendation
         public void RemoveDoctorRecommendation(int recommendedDoctorID)
         {
             db.RecommendedDoctors.Remove(db.RecommendedDoctors.Find(recommendedDoctorID));
             db.SaveChanges();
         }
 
+        // update report details
         public void UpdateReportStatus(Report oldReport, Report newReport)
         {
             int id = oldReport.ReportID;
@@ -621,11 +629,14 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges ();
         }
 
+        // update symptoms in report with reportID
         public void UpdateSymptoms(int id,List<ReportSymptom> oldSymptoms, List<ReportSymptom> newSymptoms)
         {
+            // keep track of deleted symptoms
             List<ReportSymptom> deletedSymptoms = new List<ReportSymptom>();
             foreach(ReportSymptom symptom in oldSymptoms)
             {
+                // get the symptoms where were removed and add them to list
                 if (!newSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
                 {
                     //DeleteSymptomFromReport(oldSymptoms[i].ReportSymptomID);
@@ -634,22 +645,27 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
             foreach (ReportSymptom symptom in newSymptoms)
             {
+                // add the new symptoms into the report
                 if (!oldSymptoms.Select(s => s.SymptomID).Contains(symptom.SymptomID))
                 {
                     AddSymptomToReport(id, symptom);
                 }
             }
+            // delete the symptoms in the deleted symptoms list
             foreach(ReportSymptom symptom in deletedSymptoms)
             {
                 DeleteSymptomFromReport(symptom.ReportSymptomID);
             }
         }
 
+        // update the tests in the report with reportID
         public void UpdateTests(int id, List<ReportTest> oldTests, List<ReportTest> newTests)
-        {
+        { 
+            // keep track with deleted tests
             List<ReportTest> deletedTests = new List<ReportTest>();
             foreach(ReportTest test in oldTests)
             {
+                // add the delted tests into the list
                 if (!newTests.Select(t=>t.TestID).Contains(test.TestID))
                 {
                     //DeleteTestFromReport(oldTests[i].ReportTestID);
@@ -658,22 +674,27 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
             foreach (ReportTest test in newTests)
             {
+                // add the new tests into the report
                 if (!oldTests.Select(t=>t.TestID).Contains(test.TestID))
                 {
                     AddTestToReport(id, test);
                 }
             }
+            // delete the list of tests from the report
             foreach(ReportTest test in deletedTests)
             {
                 DeleteTestFromReport(test.ReportTestID);
             }
         }
 
+        // update the recommended doctors in the report
         public void UpdateRecommendation(int id, List<RecommendedDoctor> oldDoctors, List<RecommendedDoctor> newDoctors)
         {
+            // keep track of deleted doctor recommmendations
             List<RecommendedDoctor> deletedDoctors = new List<RecommendedDoctor>();
             foreach(RecommendedDoctor doctor in oldDoctors)
             {
+                // add the deleted doctor recommendations to the list
                 if (!newDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
                 {
                     //DeleteTestFromReport(oldDoctors[i].ID);
@@ -682,22 +703,26 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
             foreach (RecommendedDoctor doctor in newDoctors)
             {
+                // add the new doctor recommendations to the report
                 if (!oldDoctors.Select(r => r.DoctorID).Contains(doctor.DoctorID))
                 {
                     AddDoctorRecommendation(id, doctor);
                 }
             }
+            // delete the doctor recommendations from the report
             foreach (RecommendedDoctor doctor in deletedDoctors)
             {
                 db.RecommendedDoctors.Remove(doctor);
             }
         }
 
+        // get the prescribedmedicine with the prescribedMedicineID
         public PrescribedMedicine GetPrescribed(int id)
         {
             return db.PrescribedMedics.Find(id);
         }
 
+        // update the details of a prescribedmedicine
         public void UpdateMedicine(PrescribedMedicine oldPrescription, PrescribedMedicine newPrescription)
         {
             oldPrescription.MedicineID = newPrescription.MedicineID;
