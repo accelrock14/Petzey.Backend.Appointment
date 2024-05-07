@@ -1,9 +1,11 @@
 ﻿using Azure.Identity;
 using Microsoft.Graph.Beta;
 using Microsoft.Graph.Beta.Models;
+using Petzey.Backend.Appointment.Domain;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IdentityModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +19,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
     public class GraphServiceClientFactory : IGraphServiceClientFactory
     {
-        private readonly string _clientId;
-        private readonly string _clientSecret;
-        private readonly string _tenantId;
-        private readonly string[] _scopes;
+        public readonly string _clientId;
+        public readonly string _clientSecret;
+        public readonly string _tenantId;
+        public readonly string[] _scopes;
 
         public GraphServiceClientFactory()
         {
@@ -40,7 +42,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
     
     public interface IGraphServiceClient
     {
-        Task<User[]> GetUsersAsync();
+        Task<List<Users>> GetUsersAsync();
     }
     public class GraphServiceClientImplementation : IGraphServiceClient
     {
@@ -51,11 +53,34 @@ namespace Petzey.Backend.Appointment.Data.Repository
             _graphServiceClientFactory = graphServiceClientFactory;
         }
 
-        public async Task<User[]> GetUsersAsync()
+        public async Task<List<Users>> GetUsersAsync()
         {
             var graphService = _graphServiceClientFactory.CreateGraphServiceClient();
-            var users = await graphService.Users.GetAsync();
-            return users.Value.ToArray();
+            var users = await graphService.Users.GetAsync(); 
+            var data = users.Value.ToArray();
+            List<Users> usersList = new List<Users>();
+            user_class user_Class = new user_class();
+
+            foreach (var userData in data)
+            {
+                Users user = new Users
+                {
+                    Id = userData.Id,
+                    Name = userData.DisplayName,
+                    City = userData.City,
+                    State = userData.State,
+                    Country = userData.Country,
+                    Email = userData.Identities.FirstOrDefault()?.IssuerAssignedId?.ToString(),
+                    Role = user_Class.GetRoleFromAdditionalData(userData.AdditionalData),
+                    Npi = user_Class.GetNpiFromAdditionalData(userData.AdditionalData),
+                    Phone = user_Class.GetPhoneFromAdditionalData(userData.AdditionalData),
+                    Speciality = user_Class.GetSpecialityFromAdditionalData(userData.AdditionalData)
+                };
+
+                usersList.Add(user);
+            }
+
+            return usersList;
         }
     }
 

@@ -184,6 +184,7 @@
     <Compile Include="FeedbackTest1.cs" />
     <Compile Include="ReportTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Auth_test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -193,6 +194,10 @@
     <ProjectReference Include="..\Petzey.Backend.Appointment.API\Petzey.Backend.Appointment.API.csproj">
       <Project>{8C37BC7E-47E5-438A-89AB-AD1D4AB37976}</Project>
       <Name>Petzey.Backend.Appointment.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Petzey.Backend.Appointment.Data\Petzey.Backend.Appointment.Data.csproj">
+      <Project>{89c8917d-80e2-4092-90e2-f30c0b802439}</Project>
+      <Name>Petzey.Backend.Appointment.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Petzey.Backend.Appointment.Domain\Petzey.Backend.Appointment.Domain.csproj">
       <Project>{CD315D33-BF60-4D05-8AC7-BFB4FAD8974E}</Project>
