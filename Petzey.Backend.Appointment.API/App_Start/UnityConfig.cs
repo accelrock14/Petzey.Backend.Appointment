@@ -13,12 +13,15 @@ namespace Petzey.Backend.Appointment.API
 			var container = new UnityContainer();
 
             container.RegisterType<IAppointmentRepository, AppointmentRepository>();
-            
+
+            container.RegisterType<IGraphServiceClientFactory, GraphServiceClientFactory>();
+            container.RegisterType<IGraphServiceClient, GraphServiceClientImplementation>();
+
             // register all your components with the container here
             // it is NOT necessary to register your controllers
-            
+
             // e.g. container.RegisterType<ITestService, TestService>();
-            
+
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }
     }
