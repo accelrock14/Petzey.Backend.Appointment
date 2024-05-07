@@ -1,12 +1,6 @@
 ﻿using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Data
 {

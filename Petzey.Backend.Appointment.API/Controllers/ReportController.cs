@@ -1,13 +1,9 @@
-﻿using Petzey.Backend.Appointment.Data;
-using Petzey.Backend.Appointment.Domain;
+﻿using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
-using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -20,6 +16,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         public ReportController(IAppointmentRepository _repo)
         {
+            //inject repo using unity
             repo = _repo;
         }
 
@@ -180,7 +177,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return NotFound();
             }
 
-
+            // using dto to return the data
             PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
             petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
             petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
@@ -201,6 +198,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+        // Get the prescribed medicine data
+        // Pass the PrescribedMedicineID
         [HttpGet]
         [Route("api/appointment/prescription/{id}")]
         public IHttpActionResult GetPrescription(int id)
@@ -235,7 +234,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-            // Edit details in a report for an appointment
+        // Edit details in a report for an appointment
         [HttpPut]
         [Route("api/appointment/report")]
         public IHttpActionResult PutEditReport([FromBody] Report report)
@@ -307,6 +306,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
+        // Edit the details in report (vitals, symptoms, tests, recommencded doctors and comment)
+        // Pass the reportID
         [HttpPatch]
         [Route("api/appointment/report/{id}")]
         public IHttpActionResult PatchReport(int id, [FromBody] Report report)
@@ -330,6 +331,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
             return Ok(report);
         }
 
+
+        // Update the details of a prescribed medicine
+        // Pass the id of the prescribed medicine
         [HttpPatch]
         [Route("api/appointment/prescription/{id}")]
         public IHttpActionResult PatchPrescription(int id, [FromBody] PrescribedMedicine prescribedMedicine)

@@ -15,6 +15,8 @@ using Petzey.Backend.Appointment.Domain.Interfaces;
 using Petzey.Backend.Appointment.Data.Repository;
 using System.Web.Http.Cors;
 using Petzey.Backend.Appointment.Domain.DTO;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
@@ -372,13 +374,108 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         [HttpGet]
         [Route("api/AppointmentDetails/allappointmentsbyvetid/{vetID}")]
-        public IHttpActionResult GetAllClosedAppointmentByVetID(string vetID)
+        public async Task<IHttpActionResult> GetAllClosedAppointmentByVetID(string vetID)
         {
             try
             {
-                List<AppointmentCardDto> resultList=repo.GetAllClosedAppointmentsByVetID(vetID);
+                List<AppointmentCardDto> appointmentsList = repo.GetAllClosedAppointmentsByVetID(vetID);
 
-                return Ok(resultList);
+                var docIds = new List<int>();
+                foreach (var appointment in appointmentsList)
+                {
+                    if (int.TryParse(appointment.DoctorID, out int doctorId))
+                    {
+                        docIds.Add(doctorId);
+                    }
+                }
+                var petIds = new List<int>();
+                foreach (var appointment in appointmentsList)
+                {
+                    petIds.Add(appointment.PetID);
+                }
+                using (var httpClient = new HttpClient())
+                {
+                    // Create request content with the JSON string and specify the content type
+                    var docIdsJson = JsonConvert.SerializeObject(docIds);
+                    var requestContent = new StringContent(docIdsJson, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        // Deserialize the JSON response to a list of CardVetDetailsDto objects
+                        var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            // If vet details are found, update the appointment object
+                            var doctorDetails = cardVetDetailsList.FirstOrDefault(d => (d.VetId).ToString() == appointment.DoctorID);
+                            if (doctorDetails != null)
+                            {
+                                appointment.VetSpecialization = doctorDetails.Specialization;
+                                appointment.DoctorName = doctorDetails.Name;
+                                appointment.DoctorPhoto = doctorDetails.Photo;
+                            }
+                        }
+                    }
+                }
+
+                // Fetch pet details
+                using (var httpClient = new HttpClient())
+                {
+                    // Convert the list of doctor IDs to a JSON string
+                    var petIdsJson = JsonConvert.SerializeObject(petIds);
+                    var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
+                        //convert the above list to dictionary for fastly find petdetails by its ID
+                        var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            // If vet details are found, update the appointment object
+                            if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
+                            {
+                                appointment.PetName = petDetails.PetName;
+                                appointment.PetGender = petDetails.PetGender;
+                                appointment.PetPhoto = petDetails.petImage;
+                                appointment.PetAge = petDetails.PetAge;
+                                appointment.OwnerID = petDetails.OwnerID;
+                            }
+                        }
+                    }
+                }
+
+                // Fetch owner details
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net/api/getalluseridsandname");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            {
+                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                            }
+                            else
+                            {
+                                appointment.OwnerName = "Unknown Owner";
+                            }
+                        }
+                    }
+                }
+
+
+                return Ok(appointmentsList);
             }
             catch (Exception ex)
             {
@@ -392,13 +489,109 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         [HttpGet]
         [Route("api/AppointmentDetails/allappointmentsbypetid/{petID}")]
-        public IHttpActionResult GetAllClosedAppointmentByPetID(int petID)
+        public async Task<IHttpActionResult> GetAllClosedAppointmentByPetID(int petID)
         {
             try
             {
-                List<AppointmentCardDto> resultList = repo.GetAllClosedAppointmentsByPetID(petID);
+                List<AppointmentCardDto> appointmentsList = repo.GetAllClosedAppointmentsByPetID(petID);
 
-                return Ok(resultList);
+                var docIds = new List<int>();
+                foreach (var appointment in appointmentsList)
+                {
+                    if (int.TryParse(appointment.DoctorID, out int doctorId))
+                    {
+                        docIds.Add(doctorId);
+                    }
+                }
+                var petIds = new List<int>();
+                foreach (var appointment in appointmentsList)
+                {
+                    petIds.Add(appointment.PetID);
+                }
+                using (var httpClient = new HttpClient())
+                {
+                    // Create request content with the JSON string and specify the content type
+                    var docIdsJson = JsonConvert.SerializeObject(docIds);
+                    var requestContent = new StringContent(docIdsJson, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync("https://petzyvetapi20240505160604.azurewebsites.net/api/vets/VetDetails", requestContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        // Deserialize the JSON response to a list of CardVetDetailsDto objects
+                        var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            // If vet details are found, update the appointment object
+                            var doctorDetails = cardVetDetailsList.FirstOrDefault(d => (d.VetId).ToString() == appointment.DoctorID);
+                            if (doctorDetails != null)
+                            {
+                                appointment.VetSpecialization = doctorDetails.Specialization;
+                                appointment.DoctorName = doctorDetails.Name;
+                                appointment.DoctorPhoto = doctorDetails.Photo;
+                            }
+                        }
+                    }
+                }
+
+                // Fetch pet details
+                using (var httpClient = new HttpClient())
+                {
+                    // Convert the list of doctor IDs to a JSON string
+                    var petIdsJson = JsonConvert.SerializeObject(petIds);
+                    var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
+                        //convert the above list to dictionary for fastly find petdetails by its ID
+                        var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            // If vet details are found, update the appointment object
+                            if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
+                            {
+                                appointment.PetName = petDetails.PetName;
+                                appointment.PetGender = petDetails.PetGender;
+                                appointment.PetPhoto = petDetails.petImage;
+                                appointment.PetAge = petDetails.PetAge;
+                                appointment.OwnerID = petDetails.OwnerID;
+                            }
+                        }
+                    }
+                }
+
+                // Fetch owner details
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync("https://petzeybackendappointmentapi20240505153736.azurewebsites.net/api/getalluseridsandname");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var ownerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+                        foreach (var appointment in appointmentsList)
+                        {
+                            if (appointment.OwnerID != null && ownerData.ContainsKey(appointment.OwnerID))
+                            {
+                                appointment.OwnerName = ownerData[appointment.OwnerID];
+                            }
+                            else
+                            {
+                                appointment.OwnerName = "Unknown Owner";
+                            }
+                        }
+                    }
+                }
+
+
+
+                return Ok(appointmentsList);
             }
             catch (Exception ex)
             {
