@@ -22,13 +22,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo = repository;
         }
-        [HttpGet]
-        [Route("api/dashboard/statuscounts/{vetid}")]
-        public IHttpActionResult GetStatusCounts(string vetid)
+        [HttpPost]
+        [Route("api/dashboard/statuscounts/")]
+        public IHttpActionResult GetStatusCounts(IDFiltersDto ids)
         {
             try
             {
-                var status = repo.AppointmentStatusCounts(vetid);
+                var status = repo.AppointmentStatusCounts(ids);
                 if (status == null)
                     return NotFound();
 
