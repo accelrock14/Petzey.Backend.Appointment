@@ -22,13 +22,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo = repository;
         }
-        [HttpGet]
-        [Route("api/dashboard/statuscounts/{vetid}")]
-        public IHttpActionResult GetStatusCounts(string vetid)
+        [HttpPost]
+        [Route("api/dashboard/statuscounts/")]
+        public IHttpActionResult GetStatusCounts(IDFiltersDto ids)
         {
             try
             {
-                var status = repo.AppointmentStatusCounts(vetid);
+                var status = repo.AppointmentStatusCounts(ids);
                 if (status == null)
                     return NotFound();
 
@@ -48,7 +48,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAllAppointmentsWithFilters(filters).Skip(offset).Take(4);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -148,7 +148,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
 
                 // Paginate and return appointments
-                return Ok(appointmentsList.Skip(offset).Take(4)); // 4 appointments per page    
+                return Ok(appointmentsList); // 4 appointments per page    
             }
             catch (Exception ex)
             {
@@ -162,7 +162,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByOwnerIdWithFilters(filters, ownerid).Skip(offset).Take(4);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -258,7 +258,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
 
-                return Ok(appointmentsList.Skip(offset).Take(4)); // 4 appointments per page    
+                return Ok(appointmentsList); // 4 appointments per page    
             }
             catch (Exception ex)
             {
@@ -272,7 +272,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid);
+                IEnumerable<AppointmentCardDto> appointments = repo.GetAppointmentsByVetIdWithFilters(filters, vetid).Skip(offset).Take(4);
 
                 // Now if you need appointments as List, you can convert it
                 List<AppointmentCardDto> appointmentsList = appointments.ToList();
@@ -368,7 +368,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     }
                 }
 
-                return Ok(appointmentsList.Skip(offset).Take(4)); // 4 appointments per page    
+                return Ok(appointmentsList); // 4 appointments per page    
             }
             catch (Exception ex)
             {

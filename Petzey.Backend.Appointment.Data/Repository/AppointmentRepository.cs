@@ -284,10 +284,19 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
         // get count of appointments in different statuses
-        public AppointmentStatusCountsDto AppointmentStatusCounts(string vetid)
+        public AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids) 
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.Where(a => a.DoctorID == vetid).ToList();
+            var allAppointments = db.AppointmentDetails.ToList(); 
+
+            if(ids.OwnerID != null && ids.OwnerID != "")
+            {
+                allAppointments = allAppointments.Where(a => a.OwnerID == ids.OwnerID).ToList();
+            }
+            if (ids.DoctorID != null && ids.DoctorID != "")
+            {
+                allAppointments = allAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
+            }
             dto.Total = allAppointments.Count;
             dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
             dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
@@ -335,6 +344,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
+                // Sort appointments by status in the specified order
+                .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
+                                appointment.Status == "Confirmed" ? 1 :
+                                appointment.Status == "Cancelled" ? 2 : 3)
                 .ToList();
 
             return filteredAppointments;
@@ -410,6 +423,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
+                // Sort appointments by status in the specified order
+                .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
+                                appointment.Status == "Confirmed" ? 1 :
+                                appointment.Status == "Cancelled" ? 2 : 3)
                 .ToList();
 
             return filteredAppointments;
@@ -452,6 +469,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
+                // Sort appointments by status in the specified order
+                .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
+                                appointment.Status == "Confirmed" ? 1 :
+                                appointment.Status == "Cancelled" ? 2 : 3)
                 .ToList();
 
             return filteredAppointments;
