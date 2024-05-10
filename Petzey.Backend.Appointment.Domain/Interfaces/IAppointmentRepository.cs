@@ -98,6 +98,8 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
          void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
         bool checkfeedbackquestion(int id);
         List<int> GetAllPetIDByVetId(string vetid);
+        bool PostCancellationReason(Cancellation cancellation);
+        Cancellation GetCancellationReason(int id);
     }
 }
 

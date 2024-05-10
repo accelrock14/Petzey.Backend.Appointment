@@ -33,6 +33,7 @@ namespace Petzey.Backend.Appointment.Data
         public DbSet<ReportTest> ReportTests { get; set; }
         public DbSet<RecommendedDoctor> RecommendedDoctors { get;set; }
         public DbSet<FeedbackQuestion> FeedbackQuestions { get; set; }
+        public DbSet<Cancellation>Cancellations { get; set; }
 
     }
 }
