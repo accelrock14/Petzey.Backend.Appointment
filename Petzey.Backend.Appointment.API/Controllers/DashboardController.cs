@@ -375,6 +375,25 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
                 return InternalServerError();
             }
-        } 
+        }
+        [HttpPost]
+        [Route("api/dashboard/upcoming/")]
+        public IHttpActionResult GetUpcomingAppointments(IDFiltersDto ids)
+        {
+            try
+            {
+                var appointments = repo.UpcomingAppointments(ids);
+                if (appointments == null)
+                    return NotFound();
+
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
     }
 }

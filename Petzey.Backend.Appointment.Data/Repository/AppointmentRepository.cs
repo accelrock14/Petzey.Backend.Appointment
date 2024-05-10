@@ -353,6 +353,34 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return filteredAppointments;
         }
 
+        public List<AppointmentCardDto> UpcomingAppointments(IDFiltersDto ids)
+        {
+            DateTime today = DateTime.Today;
+
+            var upcomingAppointments = db.AppointmentDetails
+                .Where(a => a.Status == Status.Confirmed && a.ScheduleDate >= today)
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString()
+                })
+                .ToList();
+
+            if(ids.DoctorID != null && ids.DoctorID != "")
+            {
+                upcomingAppointments = upcomingAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
+            }
+            if(ids.OwnerID != null && ids.OwnerID != "")
+            {
+                upcomingAppointments = upcomingAppointments.Where(a => a.OwnerID == ids.OwnerID).ToList();
+            }
+
+            return upcomingAppointments;
+        }
+
         // get appointments for pet on a particular date
         public List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date)
         {
