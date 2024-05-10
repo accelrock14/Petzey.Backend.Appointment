@@ -1,4 +1,5 @@
-﻿using Petzey.Backend.Appointment.Domain;
+﻿using Newtonsoft.Json;
+using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
@@ -358,7 +359,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             DateTime today = DateTime.Today;
 
             var upcomingAppointments = db.AppointmentDetails
-                .Where(a => a.Status == Status.Confirmed && a.ScheduleDate >= today)
+                .Where(a => a.Status == Status.Confirmed )//&& a.ScheduleDate >= today)
                 .Select(appointment => new AppointmentCardDto
                 {
                     AppointmentID = appointment.AppointmentID,
@@ -368,8 +369,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     Status = appointment.Status.ToString()
                 })
                 .ToList();
-
-            if(ids.DoctorID != null && ids.DoctorID != "")
+            if (ids.DoctorID != null && ids.DoctorID != "")
             {
                 upcomingAppointments = upcomingAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
             }
