@@ -9,10 +9,12 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class FeedbackController : ApiController
     {
 
@@ -22,10 +24,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             repo = _repo;
         }
-        [ResponseType(typeof(Feedback))]
-        public IQueryable<Feedback> GetFeedback()
+       
+        public List<Feedback> GetFeedback()
         {
-            return repo.getAllFeedbacks();
+            return (List<Feedback>)repo.getAllFeedbacks();
+            
         }
        
 
