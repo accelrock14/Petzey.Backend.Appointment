@@ -382,7 +382,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
         {
             try
             {
-                var appointments = repo.UpcomingAppointmentsAsync(ids);
+                var appointments = repo.UpcomingAppointments(ids);
                 if (appointments == null)
                     return NotFound();
 
