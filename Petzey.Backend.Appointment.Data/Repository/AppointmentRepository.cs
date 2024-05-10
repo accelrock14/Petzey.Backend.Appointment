@@ -180,6 +180,23 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 .Where(a => a.DoctorID == doctorId && DbFunctions.TruncateTime(a.ScheduleDate) == dateOnly)
                 .ToList();
         }
+        public bool PostCancellationReason(Cancellation cancellation)
+        {
+            /*Cancellation cancellation=new Cancellation();
+            cancellation.AppointmentID= id;
+            cancellation.Reason_for_cancellation= reason;*/
+
+            db.Cancellations.Add(cancellation);
+            db.SaveChanges();
+
+            return true;
+        }
+        public Cancellation GetCancellationReason(int id)
+        {
+            return db.Cancellations.Where(c => c.AppointmentID == id).FirstOrDefault();
+        }
+
+
 
         public bool PatchAppointmentStatus(int id, Status status)
         {
