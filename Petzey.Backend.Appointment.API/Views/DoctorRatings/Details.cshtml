@@ -1,0 +1,42 @@
+﻿@model Petzey.Backend.Appointment.Domain.Entities.DoctorRating
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DoctorRating</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DoctorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DoctorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AppointmentId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AppointmentId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AvgRating)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AvgRating)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DoctorRatingId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
