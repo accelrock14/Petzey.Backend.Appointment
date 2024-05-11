@@ -3,6 +3,7 @@ using Petzey.Backend.Appointment.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
