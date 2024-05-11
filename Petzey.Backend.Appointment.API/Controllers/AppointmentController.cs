@@ -316,6 +316,53 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
+
+        // POST Cancellation reason
+        [HttpPost]
+        [Route("api/AppointmentCancellationReason")]
+        public IHttpActionResult PostCancellationReason(Cancellation cancellation)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (!repo.PostCancellationReason(cancellation))
+                {
+                    return BadRequest();
+                }
+
+                return Ok(cancellation.Reason_for_cancellation);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+        [HttpGet]
+        [Route("api/GetAppointmentCancellationReason/{id}")]
+        public IHttpActionResult GetCancellationReason(int id)
+        {
+            try
+            {
+                Cancellation cancellation = repo.GetCancellationReason(id);
+
+                return Ok(cancellation);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+
+        }
+
+
         // PATCH: api/AppointmentDetails/5/status
         [HttpPatch]
         [Route("api/AppointmentDetails/{id}/status")]

@@ -51,14 +51,14 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
         List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
-        AppointmentDetail MostRecentAppointmentByPetID(int PetID);
         //REPORT
         Report GetReportByID(int id);
         IEnumerable<Symptom> GetAllSymptoms();
         IEnumerable<Test> GetAllTests();
         List<Medicine> GetAllMedicines();
-        List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID);
+        List<PetAppointmentHistoryDto> GetAppointmentHistoryByPetID(int PetID);
         Medicine GetMedicineById(int id);
+        void UpdateDoctorRecommendation(RecommendedDoctor recommendedDoctor);
 
         // POST METHODS
         void AddReport(Report report);
@@ -93,6 +93,8 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
          void Addfeedbackquestion(FeedbackQuestion feedbackQuestion);
         bool checkfeedbackquestion(int id);
         List<int> GetAllPetIDByVetId(string vetid);
+        bool PostCancellationReason(Cancellation cancellation);
+        Cancellation GetCancellationReason(int id);
     }
 }
 

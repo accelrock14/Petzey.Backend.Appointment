@@ -162,35 +162,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-        // Get report history of a pet
+       
+
+        // Get appointment history of a pet
         // Pass the PetID of the pet
         [HttpGet]
-        [Route("api/appointment/reporthistory/{PetID}")]
-        public IHttpActionResult GetReportHistoryOfThePet(int PetID)
+        [Route("api/appointment/appointmenthistory/{PetID}")]
+        public IHttpActionResult GetAppointmentHistoryOfThePet(int PetID)
         {
             try
             {
-                if (PetID <= 0)
+            if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
-            var mostRecentAppointment = repo.MostRecentAppointmentByPetID(PetID);
-            if (mostRecentAppointment == null)
-            {
-                return NotFound();
-            }
 
-            // using dto to return the data
-            PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
-            petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
-            petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
-            petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
-            petReportHistoryDto.ScheduleDate = repo.GetAllClosedAppointmentsByPetID(PetID).Select(a => a.ScheduleDate).ToList();
-            petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
-            petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
-            petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
 
-            return Ok(petReportHistoryDto);
+            return Ok(repo.GetAppointmentHistoryByPetID(PetID));
+
             }
             catch (Exception ex)
             {
@@ -198,7 +187,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError();
 
             }
+
         }
+
 
 
         // Get the prescribed medicine data
@@ -358,6 +349,71 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             repo.UpdateMedicine(existingPrescription, prescribedMedicine);
             return Ok(prescribedMedicine);
+        }
+
+        [HttpDelete]
+        [Route("api/appointment/doctor/{recommendedDoctorID}")]
+        public IHttpActionResult DeleteDoctorRecommendation(int recommendedDoctorID)
+        {
+            try
+            {
+                repo.RemoveDoctorRecommendation(recommendedDoctorID);
+                return Ok("deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+
+        [HttpPut]
+        [Route("api/appointment/doctor")]
+        public IHttpActionResult PutDoctorRecommendation([FromBody] RecommendedDoctor recommendedDoctor)
+        {
+            try
+            {
+                if (recommendedDoctor == null)
+                {
+                    return BadRequest("Missing data to put");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid report details");
+                }
+
+                repo.UpdateDoctorRecommendation(recommendedDoctor);
+
+                return Ok(recommendedDoctor);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
+
+        [HttpPost]
+        [Route("api/appointment/doctor/{id}")]
+        public IHttpActionResult PostDoctorRecommendation(int id, RecommendedDoctor recommendedDoctor)
+        {
+            try
+            {
+                if (recommendedDoctor == null)
+                {
+                    return BadRequest("Missing data to patch");
+                }
+                repo.AddDoctorRecommendation(id, recommendedDoctor);
+                return Created("location", recommendedDoctor.ID);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
         }
     }
 }

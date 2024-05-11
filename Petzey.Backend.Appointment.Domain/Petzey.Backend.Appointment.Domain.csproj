@@ -57,8 +57,9 @@
     <Compile Include="DTO\CardVetDetailsDto.cs" />
     <Compile Include="DTO\FilterParamsDto.cs" />
     <Compile Include="DTO\IDFiltersDto.cs" />
-    <Compile Include="DTO\PetReportHistoryDto.cs" />
+    <Compile Include="DTO\PetAppointmentHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
+    <Compile Include="Entities\Cancellation.cs" />
     <Compile Include="Entities\Dosage.cs" />
     <Compile Include="Entities\Feedback.cs" />
     <Compile Include="Entities\FeedbackQuestion.cs" />
