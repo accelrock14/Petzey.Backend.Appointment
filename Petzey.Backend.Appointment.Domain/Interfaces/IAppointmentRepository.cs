@@ -58,6 +58,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<Medicine> GetAllMedicines();
         List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID);
         Medicine GetMedicineById(int id);
+        void UpdateDoctorRecommendation(RecommendedDoctor recommendedDoctor);
 
         // POST METHODS
         void AddReport(Report report);

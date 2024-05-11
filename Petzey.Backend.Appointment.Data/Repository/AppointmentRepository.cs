@@ -614,6 +614,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
             db.SaveChanges();
         }
 
+        public void UpdateDoctorRecommendation(RecommendedDoctor recommendedDoctor)
+        {
+            db.Entry(recommendedDoctor).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+        }
+
         // update report details
         public void UpdateReportStatus(Report oldReport, Report newReport)
         {
@@ -625,7 +631,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             UpdateSymptoms(id,oldReport.Symptoms, newReport.Symptoms);
             UpdateTests(id, oldReport.Tests, newReport.Tests);
-            UpdateRecommendation(id,oldReport.RecommendedDoctors,newReport.RecommendedDoctors);
+            //UpdateRecommendation(id,oldReport.RecommendedDoctors,newReport.RecommendedDoctors);
             db.SaveChanges ();
         }
 
