@@ -566,19 +566,17 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return db.Reports.Find(id);
         }
 
-        // get all past prescriptions of a pet using petID
-        public List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID)
+        // get all past appointments of a pet using petID
+        public List<PetAppointmentHistoryDto> GetAppointmentHistoryByPetID(int PetID)
         {
-            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(a => a.Report.Prescription).ToList();
-
+            return db.AppointmentDetails.Where(a=>a.PetID==PetID).OrderByDescending(a=>a.ScheduleDate).Select(a => new PetAppointmentHistoryDto { 
+                AppointmentID=a.AppointmentID,
+                DoctorID=a.DoctorID,
+                ReasonOfAppointment=a.ReasonForVisit,
+                ScheduleDate=a.ScheduleDate
+            }).ToList();
         }
 
-        // get the most recent appointment of a pet using petID
-        public AppointmentDetail MostRecentAppointmentByPetID(int PetID)
-        {
-            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
-
-        }
 
         // get medicine details by using medicineID
         public Medicine GetMedicineById(int medicineId)
@@ -586,11 +584,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return db.Medicines.Find(medicineId);
         }
 
-        // get detials of prescribed medicine by using prescribedMedicineID
-        public PrescribedMedicine GetPrescribedMedicine(int medicineId)
-        {
-            return db.PrescribedMedics.Find(medicineId);
-        }
 
         // add a new prescribedMedicine to presription having prescriptionID
         public void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine)
