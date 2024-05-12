@@ -7,12 +7,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using Petzey.Backend.Appointment.Data;
 using Petzey.Backend.Appointment.Domain.Entities;
 
 namespace Petzey.Backend.Appointment.API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class DoctorRatingsController : ApiController
     {
         private PetzeyDbContext db = new PetzeyDbContext();
