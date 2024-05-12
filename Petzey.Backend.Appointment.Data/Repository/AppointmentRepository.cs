@@ -423,6 +423,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     Status = appointment.Status.ToString(),
                     OwnerID = appointment.OwnerID
                 })
+                .OrderBy(appointment => appointment.ScheduleDate)
                 .ToList();
 
             var petIds = new List<int>();
