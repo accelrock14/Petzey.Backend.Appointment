@@ -349,7 +349,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
                             appointment.PetName = petDetails.PetName;
                             appointment.PetGender = petDetails.PetGender;
                             appointment.PetPhoto = petDetails.petImage;
-                            appointment.PetAge = petDetails.PetAge;
                             appointment.OwnerID = petDetails.OwnerID;
                         }
                     }
@@ -468,7 +467,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
                             appointment.PetName = petDetails.PetName;
                             appointment.PetGender = petDetails.PetGender;
                             appointment.PetPhoto = petDetails.petImage;
-                            appointment.PetAge = petDetails.PetAge;
                             appointment.OwnerID = petDetails.OwnerID;
                         }
                     }
