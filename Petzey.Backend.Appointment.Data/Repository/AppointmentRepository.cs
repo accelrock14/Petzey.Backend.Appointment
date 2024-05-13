@@ -305,42 +305,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
         // get count of appointments in different statuses
-        public async Task<AppointmentStatusCountsDto> AppointmentStatusCounts(IDFiltersDto ids) 
+        public AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids) 
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
             var allAppointments = db.AppointmentDetails.ToList();
-
-
-            var petIds = new List<int>();
-            foreach (var appointment in allAppointments)
-            {
-                petIds.Add(appointment.PetID);
-            }
-            // Fetch pet details
-            using (var httpClient = new HttpClient())
-            {
-                // Convert the list of doctor IDs to a JSON string
-                var petIdsJson = JsonConvert.SerializeObject(petIds);
-                var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("https://localhost:44374/api/pets/getPetsByIDs", requestContent);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
-                    //convert the above list to dictionary for fastly find petdetails by its ID
-                    var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
-
-                    foreach (var appointment in allAppointments)
-                    {
-                        // If vet details are found, update the appointment object
-                        if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
-                        {
-                            appointment.OwnerID = petDetails.OwnerID;
-                        }
-                    }
-                }
-            }
 
             if (ids.OwnerID != null && ids.OwnerID != "")
             {
@@ -351,10 +319,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 allAppointments = allAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
             }
             dto.Total = allAppointments.Count;
-            dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
-            dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
-            dto.Cancelled = allAppointments.Count(a => a.Status == Domain.Entities.Status.Cancelled);
-            dto.Confirmed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Confirmed);
+            dto.Closed = allAppointments.Count(a => a.Status == Status.Closed);
+            dto.Pending = allAppointments.Count(a => a.Status == Status.Pending);
+            dto.Cancelled = allAppointments.Count(a => a.Status == Status.Cancelled);
+            dto.Confirmed = allAppointments.Count(a => a.Status == Status.Confirmed);
 
             return dto;
         }
@@ -408,7 +376,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return filteredAppointments;
         }
 
-        public async Task<List<AppointmentCardDto>> UpcomingAppointments(IDFiltersDto ids)
+        public List<AppointmentCardDto> UpcomingAppointments(IDFiltersDto ids)
         {
             DateTime today = DateTime.Today;
 
@@ -426,41 +394,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 .OrderBy(appointment => appointment.ScheduleDate)
                 .ToList();
 
-            var petIds = new List<int>();
-            foreach (var appointment in upcomingAppointments)
-            {
-                petIds.Add(appointment.PetID);
-            }
-            // Fetch pet details
-            using (var httpClient = new HttpClient())
-            {
-                // Convert the list of doctor IDs to a JSON string
-                var petIdsJson = JsonConvert.SerializeObject(petIds);
-                var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
-                var response = await httpClient.PostAsync("https://localhost:44374/api/pets/getPetsByIDs", requestContent);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
-                    //convert the above list to dictionary for fastly find petdetails by its ID
-                    var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
-
-                    foreach (var appointment in upcomingAppointments)
-                    {
-                        // If vet details are found, update the appointment object
-                        if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
-                        {
-                            appointment.PetName = petDetails.PetName;
-                            appointment.PetGender = petDetails.PetGender;
-                            appointment.PetPhoto = petDetails.petImage;
-                            appointment.PetAge = petDetails.PetAge;
-                            appointment.OwnerID = petDetails.OwnerID;
-                        }
-                    }
-                }
-            }
-
+            
             if (ids.DoctorID != null && ids.DoctorID != "")
             {
                 upcomingAppointments = upcomingAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
@@ -991,6 +925,34 @@ namespace Petzey.Backend.Appointment.Data.Repository
                .Select(a => a.PetID)
                .ToList();
 
+        }
+
+        public bool DeletedPetHandler(int petid)
+        {
+            try
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    var appointmentsToUpdate = db.AppointmentDetails.Where(a => a.PetID == petid);
+
+                    foreach (var appointment in appointmentsToUpdate)
+                    {
+                        if (appointment.Status == Status.Pending || appointment.Status == Status.Confirmed)
+                        {
+                            appointment.Status = Status.Cancelled;
+                        }
+                    }
+
+                    db.SaveChanges();
+                    transaction.Commit();
+                }
+
+            }
+            catch (DbUpdateException ex)
+            {
+                return false;
+            }
+            return true;
         }
 
     }

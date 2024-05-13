@@ -56,7 +56,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             {
                 // call repo
                 return Ok(repo.GetAppointmentsOfDoctor(docId));
-                
+
             }
             catch (Exception ex)
             {
@@ -72,13 +72,13 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);  //db.AppointmentDetails.Find(id);
-            if (appointmentDetail == null)
-            {
-                
-                return NotFound();
-            }
+                if (appointmentDetail == null)
+                {
 
-            return Ok(appointmentDetail);
+                    return NotFound();
+                }
+
+                return Ok(appointmentDetail);
             }
             catch (Exception ex)
             {
@@ -96,60 +96,60 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                {
+                    return BadRequest(ModelState);
+                }
 
-            int slot = appointmentDetail.ScheduleTimeSlot;
+                int slot = appointmentDetail.ScheduleTimeSlot;
 
-            int hoursToAdd = 9 + (slot * 30 / 60);
-            int minutesToAdd = (slot * 30) % 60;
+                int hoursToAdd = 9 + (slot * 30 / 60);
+                int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
-            if (slot >= 8)
-            {
-                hoursToAdd += 1;
-            }
+                // if it is the lunch break theen
+                if (slot >= 8)
+                {
+                    hoursToAdd += 1;
+                }
 
-            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+                appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
 
-            if (slot < 0 || slot > 17)
-            {
-                return BadRequest("Invalid time slot.");
-            }
+                if (slot < 0 || slot > 17)
+                {
+                    return BadRequest("Invalid time slot.");
+                }
 
 
 
-            if (id != appointmentDetail.AppointmentID)
-            {
-                return BadRequest();
-            }
+                if (id != appointmentDetail.AppointmentID)
+                {
+                    return BadRequest();
+                }
 
-            //db.Entry(appointmentDetail).State = EntityState.Modified;
+                //db.Entry(appointmentDetail).State = EntityState.Modified;
 
-            //try
-            //{
-            //    db.SaveChanges();
-            //}
-            //catch (DbUpdateConcurrencyException ex)
-            //{
-            //    if (!AppointmentDetailExists(id))
-            //    {
-            //        Logger.Error(ex, "Error while saving...");
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
+                //try
+                //{
+                //    db.SaveChanges();
+                //}
+                //catch (DbUpdateConcurrencyException ex)
+                //{
+                //    if (!AppointmentDetailExists(id))
+                //    {
+                //        Logger.Error(ex, "Error while saving...");
+                //        return NotFound();
+                //    }
+                //    else
+                //    {
+                //        throw;
+                //    }
+                //}
 
-            if( ! repo.PutAppointmentDetail(id, appointmentDetail))
-            {
-                return NotFound();
-            }
+                if (!repo.PutAppointmentDetail(id, appointmentDetail))
+                {
+                    return NotFound();
+                }
 
-            return StatusCode(HttpStatusCode.NoContent);
+                return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception ex)
             {
@@ -166,38 +166,38 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                {
+                    return BadRequest(ModelState);
+                }
 
-            int slot = appointmentDetail.ScheduleTimeSlot;
+                int slot = appointmentDetail.ScheduleTimeSlot;
 
-            int hoursToAdd = 9 + (slot * 30 / 60);
-            int minutesToAdd = (slot * 30) % 60;
+                int hoursToAdd = 9 + (slot * 30 / 60);
+                int minutesToAdd = (slot * 30) % 60;
 
-            // if it is the lunch break theen
-            if (slot >= 8)
-            {
-                hoursToAdd += 1;
-            }
+                // if it is the lunch break theen
+                if (slot >= 8)
+                {
+                    hoursToAdd += 1;
+                }
 
-            appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
+                appointmentDetail.ScheduleDate = appointmentDetail.ScheduleDate.Date.AddHours(hoursToAdd).AddMinutes(minutesToAdd);
 
-            if (slot < 0 || slot > 17)
-            {
-                return BadRequest("Invalid time slot.");
-            }
+                if (slot < 0 || slot > 17)
+                {
+                    return BadRequest("Invalid time slot.");
+                }
 
-            if ( ! repo.PostAppointmentDetail(appointmentDetail))
-            {
-                return BadRequest();
-            }
-
-            
+                if (!repo.PostAppointmentDetail(appointmentDetail))
+                {
+                    return BadRequest();
+                }
 
 
 
-            return CreatedAtRoute("DefaultApi", new { id = appointmentDetail.AppointmentID }, appointmentDetail);
+
+
+                return CreatedAtRoute("DefaultApi", new { id = appointmentDetail.AppointmentID }, appointmentDetail);
             }
             catch (Exception ex)
             {
@@ -215,17 +215,17 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 AppointmentDetail appointmentDetail = repo.GetAppointmentDetail(id);   // db.AppointmentDetails.Find(id);
-            if (appointmentDetail == null)
-            {
-                return NotFound();
-            }
+                if (appointmentDetail == null)
+                {
+                    return NotFound();
+                }
 
-            if (!repo.DeleteAppointmentDetail(id))
-            {
-                return NotFound();
-            }
+                if (!repo.DeleteAppointmentDetail(id))
+                {
+                    return NotFound();
+                }
 
-            return Ok(appointmentDetail);
+                return Ok(appointmentDetail);
             }
             catch (Exception ex)
             {
@@ -235,23 +235,23 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
-        
 
-       /* private bool AppointmentDetailExists(int id)
-        {
-            try
-            {
 
-                return repo.AppointmentDetailExists(id);
-            }
-            catch (Exception ex)
-            {
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
-                return InternalServerError();
+        /* private bool AppointmentDetailExists(int id)
+         {
+             try
+             {
 
-            }
+                 return repo.AppointmentDetailExists(id);
+             }
+             catch (Exception ex)
+             {
+                 Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                 return InternalServerError();
 
-        }*/
+             }
+
+         }*/
 
         // end point to fetch all list of petissues
         // GET: api/AppointmentDetails
@@ -283,19 +283,19 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                {
+                    return BadRequest(ModelState);
+                }
 
-            if (!repo.PostGeneralPetIssue(generalPetIssue))
-            {
-                return BadRequest();
-            }
+                if (!repo.PostGeneralPetIssue(generalPetIssue))
+                {
+                    return BadRequest();
+                }
 
-            
 
-            //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
-            return Ok(generalPetIssue);
+
+                //return CreatedAtRoute("DefaultApi", new { id = petIssue.PetIssueID }, petIssue);
+                return Ok(generalPetIssue);
             }
             catch (Exception ex)
             {
@@ -310,8 +310,8 @@ namespace Petzey.Backend.Appointment.API.Controllers
         // sample url https://localhost:44327/api/AppointmentDetails/docondate/1/2024-04-26
         public List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date)
         {
-            
-            
+
+
             return repo.GetAppointmentsOfDocOnDate(doctorId, date);
         }
 
@@ -374,24 +374,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
             try
             {
                 if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                {
+                    return BadRequest(ModelState);
+                }
 
-            var appointment = repo.GetAppointmentDetail(id);
-            if (appointment == null)
-            {
-                return NotFound();
-            }
+                var appointment = repo.GetAppointmentDetail(id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
 
-            appointment.Status = status;
+                appointment.Status = status;
 
-            if (!repo.PatchAppointmentStatus(id, status))
-            {
-                return InternalServerError();
-            }
+                if (!repo.PatchAppointmentStatus(id, status))
+                {
+                    return InternalServerError();
+                }
 
-            return StatusCode(HttpStatusCode.NoContent);
+                return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception ex)
             {
@@ -496,7 +496,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                                 appointment.PetName = petDetails.PetName;
                                 appointment.PetGender = petDetails.PetGender;
                                 appointment.PetPhoto = petDetails.petImage;
-                                appointment.PetAge = petDetails.PetAge;
                                 appointment.OwnerID = petDetails.OwnerID;
                             }
                         }
@@ -611,7 +610,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
                                 appointment.PetName = petDetails.PetName;
                                 appointment.PetGender = petDetails.PetGender;
                                 appointment.PetPhoto = petDetails.petImage;
-                                appointment.PetAge = petDetails.PetAge;
                                 appointment.OwnerID = petDetails.OwnerID;
                             }
                         }
@@ -672,6 +670,21 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
+        // to make all pending and confirmed appointments of a pet as cancelled once that pet is deleted.
 
+        [HttpPatch]
+        [Route("api/AppointmentDetails/DeletedPetHandler/{petid}")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult DeletedPetHandler(int petid)
+        {
+            if (repo.DeletedPetHandler(petid))
+            {
+                return Ok();
+            }
+            else
+            {
+                return InternalServerError();
+            }
+        }
     }
 }

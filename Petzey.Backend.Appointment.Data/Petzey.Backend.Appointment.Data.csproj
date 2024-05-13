@@ -89,10 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caching\AppointmentCaching.cs" />
-    <Compile Include="Migrations\202405130603250_InitialCreate.cs" />
-    <Compile Include="Migrations\202405130603250_InitialCreate.Designer.cs">
-      <DependentUpon>202405130603250_InitialCreate.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="PetzeyDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

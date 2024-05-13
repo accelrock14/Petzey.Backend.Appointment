@@ -47,8 +47,8 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<AppointmentCardDto> GetAllAppointments();
         List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid);
         List<AppointmentCardDto> GetAppointmentsByVetId(string vetid);
-        Task<AppointmentStatusCountsDto> AppointmentStatusCounts(IDFiltersDto ids);
-        Task<List<AppointmentCardDto>> UpcomingAppointments(IDFiltersDto ids); 
+        AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids);
+        List<AppointmentCardDto> UpcomingAppointments(IDFiltersDto ids); 
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
         List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
@@ -96,6 +96,8 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<int> GetAllPetIDByVetId(string vetid);
         bool PostCancellationReason(Cancellation cancellation);
         Cancellation GetCancellationReason(int id);
+
+        bool DeletedPetHandler(int petid);
     }
 }
 

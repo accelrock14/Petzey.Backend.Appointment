@@ -11,7 +11,6 @@
         {
             AutomaticMigrationsEnabled = true;
             this.AutomaticMigrationDataLossAllowed = true;
-            ContextKey = "Petzey.Backend.Appointment.Data.PetzeyDbContext";
         }
 
         protected override void Seed(Petzey.Backend.Appointment.Data.PetzeyDbContext context)
