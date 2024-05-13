@@ -3,6 +3,7 @@ using Petzey.Backend.Appointment.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Petzey.Backend.Appointment.Domain.Interfaces
 {
@@ -46,17 +47,17 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         List<AppointmentCardDto> GetAllAppointments();
         List<AppointmentCardDto> GetAppointmentsByOwnerId(string ownerid);
         List<AppointmentCardDto> GetAppointmentsByVetId(string vetid);
-        AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids); 
+        AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids);
+        List<AppointmentCardDto> UpcomingAppointments(IDFiltersDto ids); 
         List<AppointmentCardDto> AppointmentByPetIdAndDate(int petId, DateTime date);
         List<AppointmentCardDto> AppointmentByPetId(int petId);
         List<AppointmentDetail> GetRecentAppointmentsByPetID(int petID);
-        AppointmentDetail MostRecentAppointmentByPetID(int PetID);
         //REPORT
         Report GetReportByID(int id);
         IEnumerable<Symptom> GetAllSymptoms();
         IEnumerable<Test> GetAllTests();
         List<Medicine> GetAllMedicines();
-        List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID);
+        List<PetAppointmentHistoryDto> GetAppointmentHistoryByPetID(int PetID);
         Medicine GetMedicineById(int id);
         void UpdateDoctorRecommendation(RecommendedDoctor recommendedDoctor);
 

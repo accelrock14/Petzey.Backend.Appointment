@@ -162,32 +162,24 @@ namespace Petzey.Backend.Appointment.API.Controllers
         }
 
 
-        // Get report history of a pet
+       
+
+        // Get appointment history of a pet
         // Pass the PetID of the pet
         [HttpGet]
-        [Route("api/appointment/reporthistory/{PetID}")]
-        public IHttpActionResult GetReportHistoryOfThePet(int PetID)
+        [Route("api/appointment/appointmenthistory/{PetID}")]
+        public IHttpActionResult GetAppointmentHistoryOfThePet(int PetID)
         {
             try
             {
-                if (PetID <= 0)
+            if (PetID <= 0)
             {
                 return BadRequest("Bad Request");
             }
-            var mostRecentAppointment = repo.MostRecentAppointmentByPetID(PetID);
-            if (mostRecentAppointment == null)
-            {
-                return NotFound();
-            }
 
-            // using dto to return the data
-            PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
-            petReportHistoryDto.ScheduleDate = repo.GetAllClosedAppointmentsByPetID(PetID).Select(a => a.ScheduleDate).ToList();
-            petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
-            petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;
-            petReportHistoryDto.Prescriptions = repo.GetHistoryOfPrescriptionsByPetID(PetID);
 
-            return Ok(petReportHistoryDto);
+            return Ok(repo.GetAppointmentHistoryByPetID(PetID));
+
             }
             catch (Exception ex)
             {
@@ -195,7 +187,9 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError();
 
             }
+
         }
+
 
 
         // Get the prescribed medicine data

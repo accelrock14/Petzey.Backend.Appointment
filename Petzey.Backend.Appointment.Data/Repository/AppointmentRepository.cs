@@ -1,4 +1,5 @@
-﻿using Petzey.Backend.Appointment.Domain;
+﻿using Newtonsoft.Json;
+using Petzey.Backend.Appointment.Domain;
 using Petzey.Backend.Appointment.Domain.DTO;
 using Petzey.Backend.Appointment.Domain.Entities;
 using Petzey.Backend.Appointment.Domain.Interfaces;
@@ -7,6 +8,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace Petzey.Backend.Appointment.Data.Repository
@@ -209,7 +213,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
-            if (status == Status.Closed)
+            if (status == Status.Confirmed)
             {
                 Prescription prescription = new Prescription();
                 Report report = new Report();
@@ -304,9 +308,41 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public AppointmentStatusCountsDto AppointmentStatusCounts(IDFiltersDto ids) 
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList(); 
+            var allAppointments = db.AppointmentDetails.ToList();
 
-            if(ids.OwnerID != null && ids.OwnerID != "")
+
+            var petIds = new List<int>();
+            foreach (var appointment in allAppointments)
+            {
+                petIds.Add(appointment.PetID);
+            }
+            // Fetch pet details
+            //using (var httpClient = new HttpClient())
+            //{
+            //    // Convert the list of doctor IDs to a JSON string
+            //    var petIdsJson = JsonConvert.SerializeObject(petIds);
+            //    var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
+            //    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        var responseContent = await response.Content.ReadAsStringAsync();
+            //        var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
+            //        //convert the above list to dictionary for fastly find petdetails by its ID
+            //        var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
+
+            //        foreach (var appointment in allAppointments)
+            //        {
+            //            // If vet details are found, update the appointment object
+            //            if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
+            //            {
+            //                appointment.OwnerID = petDetails.OwnerID;
+            //            }
+            //        }
+            //    }
+            //}
+
+            if (ids.OwnerID != null && ids.OwnerID != "")
             {
                 allAppointments = allAppointments.Where(a => a.OwnerID == ids.OwnerID).ToList();
             }
@@ -361,13 +397,80 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
-                // Sort appointments by status in the specified order
+                // Sort appointments by ScheduleDate first (earlier dates come first)
                 .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
-                                appointment.Status == "Confirmed" ? 1 :
-                                appointment.Status == "Cancelled" ? 2 : 3)
+                    appointment.Status == "Confirmed" ? 1 :
+                    appointment.Status == "Cancelled" ? 2 : 3)
+                // Then sort appointments by status in the specified order
+                .ThenBy(appointment => appointment.ScheduleDate)
                 .ToList();
 
             return filteredAppointments;
+        }
+
+        public List<AppointmentCardDto> UpcomingAppointments(IDFiltersDto ids)
+        {
+            DateTime today = DateTime.Today;
+
+            var upcomingAppointments = db.AppointmentDetails
+                .Where(a => a.Status == Status.Confirmed && a.ScheduleDate >= today)
+                .Select(appointment => new AppointmentCardDto
+                {
+                    AppointmentID = appointment.AppointmentID,
+                    DoctorID = appointment.DoctorID,
+                    PetID = appointment.PetID,
+                    ScheduleDate = appointment.ScheduleDate,
+                    Status = appointment.Status.ToString(),
+                    OwnerID = appointment.OwnerID
+                })
+                .OrderBy(appointment => appointment.ScheduleDate)
+                .ToList();
+
+            var petIds = new List<int>();
+            foreach (var appointment in upcomingAppointments)
+            {
+                petIds.Add(appointment.PetID);
+            }
+            // Fetch pet details
+            //using (var httpClient = new HttpClient())
+            //{
+            //    // Convert the list of doctor IDs to a JSON string
+            //    var petIdsJson = JsonConvert.SerializeObject(petIds);
+            //    var requestContent = new StringContent(petIdsJson, Encoding.UTF8, "application/json");
+            //    var response = await httpClient.PostAsync("https://petzeypetwebapi20240505153103.azurewebsites.net/api/pets/getPetsByIDs", requestContent);
+
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        var responseContent = await response.Content.ReadAsStringAsync();
+            //        var cardPetDetailsList = JsonConvert.DeserializeObject<List<CardPetDetailsDto>>(responseContent);
+            //        //convert the above list to dictionary for fastly find petdetails by its ID
+            //        var petDetailsDictionary = cardPetDetailsList.ToDictionary(p => p.PetID);
+
+            //        foreach (var appointment in upcomingAppointments)
+            //        {
+            //            // If vet details are found, update the appointment object
+            //            if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
+            //            {
+            //                appointment.PetName = petDetails.PetName;
+            //                appointment.PetGender = petDetails.PetGender;
+            //                appointment.PetPhoto = petDetails.petImage;
+            //                appointment.PetAge = petDetails.PetAge;
+            //                appointment.OwnerID = petDetails.OwnerID;
+            //            }
+            //        }
+            //    }
+            //}
+
+            if (ids.DoctorID != null && ids.DoctorID != "")
+            {
+                upcomingAppointments = upcomingAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
+            }
+            if(ids.OwnerID != null && ids.OwnerID != "")
+            {
+                upcomingAppointments = upcomingAppointments.Where(a => a.OwnerID == ids.OwnerID).ToList();
+            }
+
+            return upcomingAppointments;
         }
 
         // get appointments for pet on a particular date
@@ -440,10 +543,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
-                // Sort appointments by status in the specified order
+                // Sort appointments by ScheduleDate first (earlier dates come first)
                 .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
-                                appointment.Status == "Confirmed" ? 1 :
-                                appointment.Status == "Cancelled" ? 2 : 3)
+                    appointment.Status == "Confirmed" ? 1 :
+                    appointment.Status == "Cancelled" ? 2 : 3)
+                // Then sort appointments by status in the specified order
+                .ThenBy(appointment => appointment.ScheduleDate)
                 .ToList();
 
             return filteredAppointments;
@@ -486,10 +591,12 @@ namespace Petzey.Backend.Appointment.Data.Repository
                     ScheduleDate = appointment.ScheduleDate,
                     Status = appointment.Status.ToString()
                 })
-                // Sort appointments by status in the specified order
+                // Sort appointments by ScheduleDate first (earlier dates come first)
                 .OrderBy(appointment => appointment.Status == "Pending" ? 0 :
-                                appointment.Status == "Confirmed" ? 1 :
-                                appointment.Status == "Cancelled" ? 2 : 3)
+                    appointment.Status == "Confirmed" ? 1 :
+                    appointment.Status == "Cancelled" ? 2 : 3)
+                // Then sort appointments by status in the specified order
+                .ThenBy(appointment => appointment.ScheduleDate)
                 .ToList();
 
             return filteredAppointments;
@@ -566,19 +673,17 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return db.Reports.Find(id);
         }
 
-        // get all past prescriptions of a pet using petID
-        public List<Prescription> GetHistoryOfPrescriptionsByPetID(int PetID)
+        // get all past appointments of a pet using petID
+        public List<PetAppointmentHistoryDto> GetAppointmentHistoryByPetID(int PetID)
         {
-            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).Select(a => a.Report.Prescription).ToList();
-
+            return db.AppointmentDetails.Where(a=>a.PetID==PetID).OrderByDescending(a=>a.ScheduleDate).Select(a => new PetAppointmentHistoryDto { 
+                AppointmentID=a.AppointmentID,
+                DoctorID=a.DoctorID,
+                ReasonOfAppointment=a.ReasonForVisit,
+                ScheduleDate=a.ScheduleDate
+            }).ToList();
         }
 
-        // get the most recent appointment of a pet using petID
-        public AppointmentDetail MostRecentAppointmentByPetID(int PetID)
-        {
-            return db.AppointmentDetails.Where(a => a.PetID == PetID && a.Status == Status.Closed).OrderByDescending(a => a.ScheduleDate).FirstOrDefault();
-
-        }
 
         // get medicine details by using medicineID
         public Medicine GetMedicineById(int medicineId)
@@ -586,11 +691,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
             return db.Medicines.Find(medicineId);
         }
 
-        // get detials of prescribed medicine by using prescribedMedicineID
-        public PrescribedMedicine GetPrescribedMedicine(int medicineId)
-        {
-            return db.PrescribedMedics.Find(medicineId);
-        }
 
         // add a new prescribedMedicine to presription having prescriptionID
         public void AddMedicineToPrescription(int prescriptionId, PrescribedMedicine medicine)

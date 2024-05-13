@@ -28,6 +28,7 @@ namespace Petzey.Backend.Appointment.Data
         public DbSet<RecommendedDoctor> RecommendedDoctors { get;set; }
         public DbSet<FeedbackQuestion> FeedbackQuestions { get; set; }
         public DbSet<Cancellation> Cancellations { get; set; }
+        public DbSet<DoctorRating> DoctorRatings { get; set;}
 
     }
 }
