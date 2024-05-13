@@ -112,7 +112,11 @@
       <Name>Petzey.Backend.Appointment.Domain</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202405130603250_InitialCreate.resx">
+      <DependentUpon>202405130603250_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\Elmah.dll" />
     <Content Include="bin\Debug\EntityFramework.dll" />

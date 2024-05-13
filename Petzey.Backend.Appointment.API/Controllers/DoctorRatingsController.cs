@@ -25,7 +25,26 @@ namespace Petzey.Backend.Appointment.API.Controllers
            var doc=db.DoctorRatings;
             return Ok(doc);
         }
+        
+        [Route("api/DoctorRatings/DoctorAverageRating")]
+        [ResponseType(typeof(List<DoctorAvgRating>))]
+        public IHttpActionResult GetDoctorRatingById()
+        {
+          
+            List<DoctorAvgRating> c = (from doc in db.DoctorRatings
+                                       group doc by doc.DoctorId into grouped
+                                       select new DoctorAvgRating
+                                       {
+                                           DoctorId = grouped.Key,
+                                           DoctorRating = grouped.Average(doc => doc.AvgRating),
+                                           NumberOfRatings=grouped.Count()
+                                           
+                                       }).ToList();
 
+
+            return Ok(c);
+            
+        }
         // GET: api/DoctorRatings/5
         [ResponseType(typeof(DoctorRating))]
         public IHttpActionResult GetDoctorRating(int id)
