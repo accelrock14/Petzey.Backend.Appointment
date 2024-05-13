@@ -6,7 +6,7 @@ namespace Petzey.Backend.Appointment.Domain
     {
         [Key]
         public int ID { get; set; }
-        public int DoctorID { get; set; }
+        public string DoctorID { get; set; }
         public string Reason { get; set; }
     }
 }
