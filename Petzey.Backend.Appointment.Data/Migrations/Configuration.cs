@@ -14,6 +14,7 @@
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+            this.AutomaticMigrationDataLossAllowed = true;
         }
 
         protected override void Seed(Petzey.Backend.Appointment.Data.PetzeyDbContext context)
