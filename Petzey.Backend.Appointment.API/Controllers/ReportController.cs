@@ -182,9 +182,6 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
             // using dto to return the data
             PetReportHistoryDto petReportHistoryDto = new PetReportHistoryDto();
-            petReportHistoryDto.HeartRate = mostRecentAppointment.Report.HeartRate;
-            petReportHistoryDto.Temperature = mostRecentAppointment.Report.Temperature;
-            petReportHistoryDto.OxygenLevel = mostRecentAppointment.Report.OxygenLevel;
             petReportHistoryDto.ScheduleDate = repo.GetAllClosedAppointmentsByPetID(PetID).Select(a => a.ScheduleDate).ToList();
             petReportHistoryDto.Symptoms = mostRecentAppointment.Report.Symptoms;
             petReportHistoryDto.Tests = mostRecentAppointment.Report.Tests;

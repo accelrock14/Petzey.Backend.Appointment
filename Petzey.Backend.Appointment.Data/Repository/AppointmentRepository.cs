@@ -662,9 +662,6 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public void UpdateReportStatus(Report oldReport, Report newReport)
         {
             int id = oldReport.ReportID;
-            oldReport.HeartRate = newReport.HeartRate;
-            oldReport.Temperature = newReport.Temperature;
-            oldReport.OxygenLevel = newReport.OxygenLevel;
             oldReport.Comment = newReport.Comment;
 
             UpdateSymptoms(id,oldReport.Symptoms, newReport.Symptoms);
