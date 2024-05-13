@@ -308,7 +308,17 @@ namespace Petzey.Backend.Appointment.Data.Repository
         public async Task<AppointmentStatusCountsDto> AppointmentStatusCounts(IDFiltersDto ids) 
         {
             AppointmentStatusCountsDto dto = new AppointmentStatusCountsDto();
-            var allAppointments = db.AppointmentDetails.ToList();
+            var allAppointments = db.AppointmentDetails
+                                .Select(appointment => new AppointmentCardDto
+                                {
+                                    AppointmentID = appointment.AppointmentID,
+                                    DoctorID = appointment.DoctorID,
+                                    PetID = appointment.PetID,
+                                    ScheduleDate = appointment.ScheduleDate,
+                                    Status = appointment.Status.ToString(),
+                                    OwnerID = appointment.OwnerID
+                                })
+                                .ToList();
 
 
             var petIds = new List<int>();
@@ -336,6 +346,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                         // If vet details are found, update the appointment object
                         if (petDetailsDictionary.TryGetValue(appointment.PetID, out var petDetails))
                         {
+                            appointment.PetName = petDetails.PetName;
+                            appointment.PetGender = petDetails.PetGender;
+                            appointment.PetPhoto = petDetails.petImage;
+                            appointment.PetAge = petDetails.PetAge;
                             appointment.OwnerID = petDetails.OwnerID;
                         }
                     }
@@ -351,10 +365,10 @@ namespace Petzey.Backend.Appointment.Data.Repository
                 allAppointments = allAppointments.Where(a => a.DoctorID == ids.DoctorID).ToList();
             }
             dto.Total = allAppointments.Count;
-            dto.Closed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Closed);
-            dto.Pending = allAppointments.Count(a => a.Status == Domain.Entities.Status.Pending);
-            dto.Cancelled = allAppointments.Count(a => a.Status == Domain.Entities.Status.Cancelled);
-            dto.Confirmed = allAppointments.Count(a => a.Status == Domain.Entities.Status.Confirmed);
+            dto.Closed = allAppointments.Count(a => a.Status == Status.Closed.ToString());
+            dto.Pending = allAppointments.Count(a => a.Status == Status.Pending.ToString());
+            dto.Cancelled = allAppointments.Count(a => a.Status == Status.Cancelled.ToString());
+            dto.Confirmed = allAppointments.Count(a => a.Status == Status.Confirmed.ToString());
 
             return dto;
         }
