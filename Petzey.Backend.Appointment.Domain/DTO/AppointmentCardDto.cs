@@ -21,5 +21,7 @@ namespace Petzey.Backend.Appointment.Domain.DTO
 
         //added status for filtering in UI rather than backend
         public string Status { get; set; }
+        // total number of appointments
+        public int All { get; set; }
     }
 }
