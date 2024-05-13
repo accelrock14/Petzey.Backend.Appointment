@@ -23,7 +23,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
             repo = repository;
         }
         [HttpPost]
-        [Route("api/dashboard/statuscounts/")]
+        [Route("api/dashboard/statuscounts")]
         public IHttpActionResult GetStatusCounts(IDFiltersDto ids)
         {
             try
