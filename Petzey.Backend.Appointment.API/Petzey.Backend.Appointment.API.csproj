@@ -358,6 +358,7 @@
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DoctorRatingsController.cs" />
     <Compile Include="Controllers\FeedbackController.cs" />
     <Compile Include="Controllers\FeedbackQuestionsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -436,6 +437,11 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\DoctorRatings\Create.cshtml" />
+    <Content Include="Views\DoctorRatings\Delete.cshtml" />
+    <Content Include="Views\DoctorRatings\Details.cshtml" />
+    <Content Include="Views\DoctorRatings\Edit.cshtml" />
+    <Content Include="Views\DoctorRatings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -213,7 +213,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
-            if (status == Status.Closed)
+            if (status == Status.Confirmed)
             {
                 Prescription prescription = new Prescription();
                 Report report = new Report();

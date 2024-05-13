@@ -60,6 +60,7 @@
     <Compile Include="DTO\PetAppointmentHistoryDto.cs" />
     <Compile Include="Entities\AppointmentDetail.cs" />
     <Compile Include="Entities\Cancellation.cs" />
+    <Compile Include="Entities\DoctorRating.cs" />
     <Compile Include="Entities\Dosage.cs" />
     <Compile Include="Entities\Feedback.cs" />
     <Compile Include="Entities\FeedbackQuestion.cs" />
