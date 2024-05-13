@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Petzey.Backend.Appointment.Domain.Entities.DoctorRating>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DoctorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AppointmentId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvgRating)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DoctorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AppointmentId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AvgRating)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.DoctorRatingId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.DoctorRatingId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.DoctorRatingId })
+        </td>
+    </tr>
+}
+
+</table>
