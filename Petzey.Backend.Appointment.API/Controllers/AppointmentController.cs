@@ -625,6 +625,71 @@ namespace Petzey.Backend.Appointment.API.Controllers
             }
         }
 
+        // appointment cancellations
+
+        // post AppointmentCancellation
+        [HttpPost]
+        [Route("api/PostAppointmentCancellation")]
+        public IHttpActionResult PostAppointmentCancellation(AppointmentCancellation ac)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (repo.PostAppointmentCancellation(ac))
+            {
+                return Ok(ac);
+            }
+            else
+            {
+                return InternalServerError();
+            }
+        }
+
+        // get AppointmentCancellation by appointment id
+        [HttpGet]
+        [Route("api/GetAppointmentCancellation/{appointmentID}")]
+
+        public IHttpActionResult GetAppointmentCancellation(int appointmentID)
+        {
+            AppointmentCancellation ac = repo.GetAppointmentCancellation(appointmentID);
+            if (ac == null)
+            {
+                return NotFound();
+            }
+            return Ok(ac);
+        }
+
+        // get all AppointmentCancellations
+        [HttpGet]
+        [Route("api/GetAllAppointmentCancellations")]
+        public IHttpActionResult GetAllAppointmentCancellations()
+        {
+            return Ok(repo.GetAllAppointmentCancellations());
+        }
+
+        // delete appointment cancellation by appointment id
+        [HttpDelete]
+        [Route("api/DeleteAppointmentCancellation/{appointmentID}")]
+        public IHttpActionResult DeleteAppointmentCancellation(int appointmentID)
+        {
+
+            AppointmentCancellation ac = repo.GetAppointmentCancellation(appointmentID);
+            if (ac == null)
+            {
+                return NotFound();
+            }
+
+            if (repo.DeleteAppointmentCancellation(appointmentID))
+            {
+                return Ok();
+            }
+            else
+            {
+                return InternalServerError();
+            }
+            
+        }
 
     }
 }

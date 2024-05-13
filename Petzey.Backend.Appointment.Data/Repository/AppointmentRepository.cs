@@ -873,5 +873,54 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
         }
 
+        // appointment cancellations
+
+        // post AppointmentCancellation
+        public bool PostAppointmentCancellation(AppointmentCancellation ac)
+        {
+            try
+            {
+                db.AppointmentCancellations.Add(ac);
+                db.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return false;
+                
+            }
+            return true;
+        }
+
+        // get AppointmentCancellation by appointment id
+        public AppointmentCancellation GetAppointmentCancellation(int appointmentID)
+        {
+            AppointmentCancellation ac = db.AppointmentCancellations.Where(x=>x.AppointmentID==appointmentID).FirstOrDefault();
+            if (ac == null)
+            {
+                return null;
+            }
+            return ac;
+        }
+
+        // get all AppointmentCancellations
+        public List<AppointmentCancellation> GetAllAppointmentCancellations()
+        {
+            return db.AppointmentCancellations.ToList();
+        }
+
+        // delete appointment cancellation by appointment id
+        public bool DeleteAppointmentCancellation(int appointmentID)
+        {
+            AppointmentCancellation ac = db.AppointmentCancellations.Where(x=>x.AppointmentID==appointmentID).FirstOrDefault();
+            if(ac == null)
+            {
+                return false;
+            }
+
+            db.AppointmentCancellations.Remove(ac);
+            db.SaveChanges();
+            return true;
+        }
+
     }
 }
