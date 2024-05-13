@@ -10,7 +10,6 @@ namespace Petzey.Backend.Appointment.Domain.DTO
     {
         public int PetID { get; set; }
         public string PetName { get; set; }
-        public int? PetAge { get; set; }
         public string PetGender { get; set; }
         public string OwnerID { get; set; }
         public string petImage { get; set; }
