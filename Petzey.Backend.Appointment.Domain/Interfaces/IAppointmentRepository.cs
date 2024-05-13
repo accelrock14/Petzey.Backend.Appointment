@@ -98,6 +98,8 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
         Cancellation GetCancellationReason(int id);
 
         bool DeletedPetHandler(int petid);
+        //List<int> GetRecentPetIds(List<int> petIds);
+        List<int> PostRecentPetIds(List<int> petIds, int maxPets);
     }
 }
 

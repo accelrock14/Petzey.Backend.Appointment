@@ -954,6 +954,44 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
             return true;
         }
+        /*public List<int> GetRecentPetIds(List<int> petIds)
+        {
+            
+            return db.AppointmentDetails.Where(a=>petIds.Contains(a.PetID)&& a.Status==Status.Closed )
+                .OrderByDescending(a => a.ScheduleDate).Select(a => a.PetID).ToList();
+        }*/
+
+        public List<int> PostRecentPetIds(List<int> petIds, int maxPets = 4)
+        {
+            var petAppointments = new Dictionary<int, DateTime>();
+
+            //  most recent appointment for each pet
+            foreach (var appointment in db.AppointmentDetails.Where(a => petIds.Contains(a.PetID) && a.Status == Status.Closed))
+            {
+               
+                var mostRecentDate = petAppointments.ContainsKey(appointment.PetID) ?
+                  petAppointments[appointment.PetID] : DateTime.MinValue;
+
+               
+                // if (petAppointments.TryGetValue(appointment.PetId, out var mostRecentDate))
+
+                petAppointments[appointment.PetID] = new DateTime( Math.Max(mostRecentDate.Ticks, appointment.ScheduleDate.Ticks));
+            }
+
+            //  pet IDs with recent appointments and sort by appointment date (descending)
+            var recentPetIds = petAppointments.Keys.ToList();
+            recentPetIds.Sort((a, b) => petAppointments[b].CompareTo(petAppointments[a]));
+
+            // if it is an empty list 
+            if (!recentPetIds.Any())
+            {
+                // when no pet IDs have recent appointments
+                return new List<int>();
+            }
+
+            // top maxPets pet IDs
+            return recentPetIds.Take(maxPets).ToList();
+        }
 
     }
 }

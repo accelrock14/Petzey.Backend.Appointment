@@ -686,5 +686,26 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 return InternalServerError();
             }
         }
+        [HttpPost]
+        [Route("api/AppointmentDetails/getRecentPetIds")]
+        public IHttpActionResult PostRecentPetIds([FromBody] List<int> petIds)
+        {
+            try
+            {
+                if (petIds == null || petIds.Count == 0)
+                {
+                    return BadRequest("Please provide a list of pet IDs.");
+                }
+
+                var appointmentPetIds = repo.PostRecentPetIds(petIds,4);
+                return Ok(appointmentPetIds);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                return InternalServerError();
+
+            }
+        }
     }
 }
