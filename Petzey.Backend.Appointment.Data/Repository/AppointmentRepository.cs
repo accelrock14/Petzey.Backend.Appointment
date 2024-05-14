@@ -980,7 +980,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
             //  pet IDs with recent appointments and sort by appointment date (descending)
             var recentPetIds = petAppointments.Keys.ToList();
-            recentPetIds.Sort((a, b) => petAppointments[b].CompareTo(petAppointments[a]));
+            recentPetIds.Sort((b, a) => petAppointments[b].CompareTo(petAppointments[a]));
 
             // if it is an empty list 
             if (!recentPetIds.Any())
