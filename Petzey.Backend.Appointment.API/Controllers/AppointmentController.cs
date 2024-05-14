@@ -365,11 +365,11 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
         // PATCH: api/AppointmentDetails/5/status
         [HttpPatch]
-        [Route("api/AppointmentDetails/{id}/status")]
+        [Route("api/AppointmentDetails/{id}/status/{generateReport}")]
         [ResponseType(typeof(void))]
-        // sample url https://localhost:44327/api/AppointmentDetails/5/status
+        // sample url https://localhost:44327/api/AppointmentDetails/5/status/false
         // in body send 0,1,2,3 for the required status.
-        public IHttpActionResult PatchAppointmentStatus(int id, [FromBody] Status status)
+        public IHttpActionResult PatchAppointmentStatus(int id, bool generateReport, [FromBody] Status status)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace Petzey.Backend.Appointment.API.Controllers
 
                 appointment.Status = status;
 
-                if (!repo.PatchAppointmentStatus(id, status))
+                if (!repo.PatchAppointmentStatus(id, generateReport,status))
                 {
                     return InternalServerError();
                 }

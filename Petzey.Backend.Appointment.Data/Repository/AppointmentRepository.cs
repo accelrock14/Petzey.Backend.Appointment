@@ -202,7 +202,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
 
 
 
-        public bool PatchAppointmentStatus(int id, Status status)
+        public bool PatchAppointmentStatus(int id,bool GenerateReport, Status status)
         {
             //AppointmentCaching.ClearAppointmentsCache();
 
@@ -213,7 +213,7 @@ namespace Petzey.Backend.Appointment.Data.Repository
             }
 
             appointment.Status = status;
-            if (status == Status.Confirmed)
+            if (status == Status.Confirmed && GenerateReport)
             {
                 Prescription prescription = new Prescription();
                 Report report = new Report();

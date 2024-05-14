@@ -29,7 +29,7 @@ namespace Petzey.Backend.Appointment.Domain.Interfaces
 
         List<AppointmentDetail> GetAppointmentsOfDocOnDate(string doctorId, DateTime date);
 
-        bool PatchAppointmentStatus(int id, Status status);
+        bool PatchAppointmentStatus(int id, bool GenerateReport, Status status);
 
         List<bool> GetScheduledTimeSlotsBasedOnDocIDandDate(string doctorId, DateTime date);
 
