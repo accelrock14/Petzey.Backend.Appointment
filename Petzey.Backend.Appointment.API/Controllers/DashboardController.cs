@@ -76,27 +76,30 @@ namespace Petzey.Backend.Appointment.API.Controllers
                     // Create request content with the JSON string and specify the content type
                     var docIdsJson = JsonConvert.SerializeObject(docIds);
                     var requestContent = new StringContent(docIdsJson, Encoding.UTF8, "application/json");
+
                     var response = await httpClient.PostAsync("https://localhost:44304/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        // Deserialize the JSON response to a list of CardVetDetailsDto objects
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
+
+                        // Convert vet details list into a dictionary keyed by VetId
+                        var vetDetailsDictionary = cardVetDetailsList.ToDictionary(v => v.VetId);
 
                         foreach (var appointment in appointmentsList)
                         {
                             // If vet details are found, update the appointment object
-                            var doctorDetails = cardVetDetailsList.FirstOrDefault(d => (d.VetId).ToString() == appointment.DoctorID);
-                            if (doctorDetails != null)
+                            if (vetDetailsDictionary.TryGetValue(int.Parse(appointment.DoctorID), out var vetDetails))
                             {
-                                appointment.VetSpecialization = doctorDetails.Specialization;
-                                appointment.DoctorName = doctorDetails.Name;
-                                appointment.DoctorPhoto = doctorDetails.Photo;
+                                appointment.VetSpecialization = vetDetails.Specialization;
+                                appointment.DoctorName = vetDetails.Name;
+                                appointment.DoctorPhoto = vetDetails.Photo;
                             }
                         }
                     }
                 }
+
 
                 // Fetch pet details
                 using (var httpClient = new HttpClient())
@@ -190,29 +193,33 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 }
                 using (var httpClient = new HttpClient())
                 {
+                    // Create request content with the JSON string and specify the content type
                     var docIdsJson = JsonConvert.SerializeObject(docIds);
                     var requestContent = new StringContent(docIdsJson, Encoding.UTF8, "application/json");
+
                     var response = await httpClient.PostAsync("https://localhost:44304/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        // Deserialize the JSON response to a list of CardVetDetailsDto objects
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
-                        // Iterate through each appointment to map corresponding vet details
+                        // Convert vet details list into a dictionary keyed by VetId
+                        var vetDetailsDictionary = cardVetDetailsList.ToDictionary(v => v.VetId);
+
                         foreach (var appointment in appointmentsList)
                         {
-                            var doctorDetails = cardVetDetailsList.FirstOrDefault(d => (d.VetId).ToString() == appointment.DoctorID);
-                            if (doctorDetails != null)
+                            // If vet details are found, update the appointment object
+                            if (vetDetailsDictionary.TryGetValue(int.Parse(appointment.DoctorID), out var vetDetails))
                             {
-                                appointment.VetSpecialization = doctorDetails.Specialization;
-                                appointment.DoctorName = doctorDetails.Name;
-                                appointment.DoctorPhoto = doctorDetails.Photo;
+                                appointment.VetSpecialization = vetDetails.Specialization;
+                                appointment.DoctorName = vetDetails.Name;
+                                appointment.DoctorPhoto = vetDetails.Photo;
                             }
                         }
                     }
                 }
+
 
                 //// Fetch pet details
                 using (var httpClient = new HttpClient())
@@ -305,8 +312,10 @@ namespace Petzey.Backend.Appointment.API.Controllers
                 //Fetch Vet details
                 using (var httpClient = new HttpClient())
                 {
+                    // Create request content with the JSON string and specify the content type
                     var docIdsJson = JsonConvert.SerializeObject(docIds);
                     var requestContent = new StringContent(docIdsJson, Encoding.UTF8, "application/json");
+
                     var response = await httpClient.PostAsync("https://localhost:44304/api/vets/VetDetails", requestContent);
 
                     if (response.IsSuccessStatusCode)
@@ -314,18 +323,22 @@ namespace Petzey.Backend.Appointment.API.Controllers
                         var responseContent = await response.Content.ReadAsStringAsync();
                         var cardVetDetailsList = JsonConvert.DeserializeObject<List<CardVetDetailsDto>>(responseContent);
 
+                        // Convert vet details list into a dictionary keyed by VetId
+                        var vetDetailsDictionary = cardVetDetailsList.ToDictionary(v => v.VetId);
+
                         foreach (var appointment in appointmentsList)
                         {
-                            var doctorDetails = cardVetDetailsList.FirstOrDefault(d => (d.VetId).ToString() == appointment.DoctorID);
-                            if (doctorDetails != null)
+                            // If vet details are found, update the appointment object
+                            if (vetDetailsDictionary.TryGetValue(int.Parse(appointment.DoctorID), out var vetDetails))
                             {
-                                appointment.VetSpecialization = doctorDetails.Specialization;
-                                appointment.DoctorName = doctorDetails.Name;
-                                appointment.DoctorPhoto = doctorDetails.Photo;
+                                appointment.VetSpecialization = vetDetails.Specialization;
+                                appointment.DoctorName = vetDetails.Name;
+                                appointment.DoctorPhoto = vetDetails.Photo;
                             }
                         }
                     }
                 }
+
 
                 // Fetch pet details
                 using (var httpClient = new HttpClient())
